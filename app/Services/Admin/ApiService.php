@@ -1145,21 +1145,21 @@ class ApiService
 
         try {
 
-            $exists = $this->db->table('product')
-                ->select('uid, name')
-                ->where('sort_order', $newSortOrder)
-                ->where('uid !=', $productUid)
-                ->get()
-                ->getRowArray();
+            // $exists = $this->db->table('product')
+            //     ->select('uid, name')
+            //     ->where('sort_order', $newSortOrder)
+            //     ->where('uid !=', $productUid)
+            //     ->get()
+            //     ->getRowArray();
 
-            if ($exists) {
-                return [
-                    false,
-                    409,
-                    "Sort number already assigned to product: {$exists['name']}",
-                    ['error' => 'Duplicate sort_order']
-                ];
-            }
+            // if ($exists) {
+            //     return [
+            //         false,
+            //         409,
+            //         "Sort number already assigned to product: {$exists['name']}",
+            //         ['error' => 'Duplicate sort_order']
+            //     ];
+            // }
 
 
             $updateData = [
