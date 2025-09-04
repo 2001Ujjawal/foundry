@@ -414,4 +414,39 @@ class ApiController extends Common
             $this->apiSuccess($resp[1], $resp[2], $resp[3]);
         }
     }
+
+
+    public function productOrdering()
+    {
+        $payload = $this->validateJwtApiToken();
+
+        $productDetails = $this->request->getJSON(true);
+        $productDetails['user_id'] = $payload->user_id;
+        $productDetails['user_type'] = $payload->user_type;
+
+        $resp = $this->apiService->productOrdering($productDetails);
+        if (!$resp[0]) {
+            $this->apiError($resp[1], $resp[2], $resp[3]);
+        } else {
+            $this->apiSuccess($resp[1], $resp[2], $resp[3]);
+        }
+    }
+
+
+    public function getExcelData()
+    {
+        $payload = $this->validateJwtApiToken();
+
+        $productDetails = $this->request->getJSON(true);
+
+        $productDetails['user_id'] = $payload->user_id;
+        $productDetails['user_type'] = $payload->user_type;
+
+        $resp = $this->apiService->getExcelData($productDetails);
+        if (!$resp[0]) {
+            $this->apiError($resp[1], $resp[2], $resp[3]);
+        } else {
+            $this->apiSuccess($resp[1], $resp[2], $resp[3]);
+        }
+    }
 }

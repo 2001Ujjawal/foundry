@@ -154,8 +154,9 @@ class WebModel extends Model
         $builder->where('v.status', ACTIVE_STATUS);
         $builder->where('p.is_verify', 1);
         $builder->where('p.is_admin_allow', true);
-        $builder->orderBy('p.is_verify', 'DESC');
-        $builder->orderBy('p.uid', 'DESC');
+        $builder
+            ->orderBy('(p.sort_order = 0)', 'ASC', false)           // false => don't escape; non-zeros first
+            ->orderBy('p.sort_order', 'ASC');                       // then ascending within non-zeros
         $builder->limit(20);
         $result = $builder->get()->getResultArray();
 

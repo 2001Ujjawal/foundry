@@ -15,6 +15,7 @@
                         <th>Product Name</th>
                         <!-- <th>Image</th> -->
                         <th>Category</th>
+                        <th>Sort No</th>
                         <th>Approval</th>
                         <th>Sponsored</th>
                         <th>Status</th>
@@ -48,6 +49,16 @@
                                     <div><?= $row['category_name']; ?></div>
                                 </td>
                                 <td>
+                                    <div class="d-flex align-items-center">
+                                        <input type="number"
+                                            class="form-control form-control-sm sort-order-input"
+                                            value="<?= esc($row['sort_order']) ?>"
+                                            data-id="<?= esc($row['uid']) ?>"
+                                            style="width:70px;" />
+                                    </div>
+                                </td>
+
+                                <td>
                                     <div class="form-check form-switch d-flex justify-content-center">
                                         <input class="form-check-input" type="checkbox" role="switch"
                                             id="productVerify_<?= $row['uid']; ?>"
@@ -78,7 +89,7 @@
                                             <label class="form-check-label" for="flexSwitchCheckChecked"></label>
                                         <?php } ?>
                                     </div>
-                                   
+
                                 </td>
                                 <td><?= $row['created_at'] ?></td>
                                 <td style="max-width: 120px;">
@@ -115,6 +126,52 @@
             </table>
         </div>
     </div>
+    <script>
+        /**
+         *  This Function Work For Product OrderIng  Only For Sponsored Product 
+         *  On Click 
+         */
+        document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('click', function(e) {
+                document.querySelectorAll('.sort-order-input').forEach(input => {
+                    if (input.contains(e.target)) return;
+                    let newValue = input.value;
+                    let productId = input.dataset.id;
+                    let lastValue = input.dataset.last || "";
+                    if (lastValue !== newValue) {
+                        input.dataset.last = newValue;
+                        fetch(BASE_URL + 'admin/api/product/ordering', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    uid: productId,
+                                    sort: newValue
+                                })
+                            })
+                            .then(r => r.json())
+                            .then(json => {
+                                if (!json.success) {
+                                    MessSuccess.fire({
+                                        icon: 'error',
+                                        title: json.message,
+                                    });
+                                    location.reload();
+                                    // alert(json.message || "Failed to update");
+                                }
+                            })
+                            .catch(() => alert("Network error"));
+                    }
+                });
+            });
+
+            // Initialize last value per input
+            document.querySelectorAll('.sort-order-input').forEach(input => {
+                input.dataset.last = input.value;
+            });
+        });
+    </script>
 
 
     <script>

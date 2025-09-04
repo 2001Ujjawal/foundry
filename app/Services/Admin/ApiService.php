@@ -359,7 +359,7 @@ class ApiService
             'email'      => 'required',
             'mobile'      => 'required',
             'country'      => 'required',
-            
+
         ];
         $validationResult = validateData($data, $validationRules);
         if (!$validationResult['success']) {
@@ -1125,5 +1125,91 @@ class ApiService
         } catch (\Throwable $e) {
             return [false, 500, 'Unexpected server error occurred', [$e->getMessage()]];
         }
+    }
+
+
+    public function productOrdering($data)
+    {
+        $validationRules = [
+            'uid'  => 'required',
+            'sort' => 'required|integer',
+        ];
+
+        $validationResult = validateData($data, $validationRules);
+        if (!$validationResult['success']) {
+            return [false, $validationResult['status'], $validationResult['message'], $validationResult['errors']];
+        }
+
+        $productUid   = $data['uid'];
+        $newSortOrder = (int) ($data['sort'] ?? 0);
+
+        try {
+
+            $exists = $this->db->table('product')
+                ->select('uid, name')
+                ->where('sort_order', $newSortOrder)
+                ->where('uid !=', $productUid)
+                ->get()
+                ->getRowArray();
+
+            if ($exists) {
+                return [
+                    false,
+                    409,
+                    "Sort number already assigned to product: {$exists['name']}",
+                    ['error' => 'Duplicate sort_order']
+                ];
+            }
+
+
+            $updateData = [
+                'sort_order' => $newSortOrder,
+                'updated_by' => $data['user_id'] ?? null,
+                'updated_at' => date('Y-m-d H:i:s')
+            ];
+
+            $success = $this->commonModel->UpdateData('product', ['uid' => $productUid], $updateData);
+
+            if (!$success) {
+                return [
+                    false,
+                    500,
+                    'Product update failed.',
+                    ['error' => 'Database update failed']
+                ];
+            }
+
+            return [
+                true,
+                200,
+                'Product sort order updated successfully.',
+                ['data' => $success]
+            ];
+        } catch (\Throwable $e) {
+            return [false, 500, 'Unexpected server error occurred', [$e->getMessage()]];
+        }
+    }
+
+
+    public function getExcelData()
+    {
+        $products = $this->apiModel->getAllProducstData();
+        $customers = $this->apiModel->getAllCustomersData();
+        $ratings   = $this->apiModel->getAllRatingsData();
+        $vendors = $this->apiModel->getAllVendorsData();
+
+        return [
+            true,
+            200,
+            'Excel Sheet Import Datas.',
+            [
+
+                'products' => $products,
+                'customers' => $customers,
+                'ratings' => $ratings,
+                'vendors' => $vendors,
+
+            ]
+        ];
     }
 }

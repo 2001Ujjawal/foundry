@@ -32,6 +32,7 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin'], function ($rou
 $routes->group('admin/api', ['namespace' => 'App\Controllers\Admin'], function ($routes) {
     $routes->post('login', 'ApiController::login');
     $routes->post('change-password', 'ApiController::changePassword');
+    $routes->get('get-excel-sheet-data', 'ApiController::getExcelData');
 
     /** Customer */
     $routes->group("customer", function ($routes) {
@@ -66,6 +67,7 @@ $routes->group('admin/api', ['namespace' => 'App\Controllers\Admin'], function (
         $routes->post('delete', 'ApiController::deleteProduct');
         $routes->post('verify', 'ApiController::verifyProduct');
         $routes->post('approval', 'ApiController::approvalProduct');
+        $routes->post('ordering', 'ApiController::productOrdering');
     });
     $routes->group("rating", function ($routes) {
         $routes->post('delete', 'ApiController::deleteRating');
