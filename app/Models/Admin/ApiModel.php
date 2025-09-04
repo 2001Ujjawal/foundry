@@ -157,4 +157,42 @@ class ApiModel extends Model
 
         return $finalResult;
     }
+
+
+    public function getAllCategoryData()
+    {
+        $builder = $this->db->table('category');
+        $builder
+            ->select(
+                'uid ,
+                 country, image, name,
+                 mobile, email, , 
+                 created_at, 
+                 status, is_verify,  
+                company, address, city, states, website, gst'
+            );
+        $vendors = $builder->get()->getResultArray();
+        $finalResult = array_map(function ($vendors) {
+            return [
+                'uid'        => $vendors['uid'] ?? "N/A",
+                'name'       => $vendors['name'] ?? "N/A",
+                'mobile'     => $vendors['mobile'] ?? "N/A",
+                'status'     => $vendors['status'] ?? "N/A",
+                'email'      => $vendors['email'] ?? "N/A",
+                'address'    => $vendors['address'] ?? "N/A",
+                'city'       => $vendors['city'] ?? "N/A",
+                'company'    => $vendors['company'] ?? "N/A",
+                'country'    => $vendors['country'] ?? "N/A",
+                'website'    => $vendors['website'] ?? "N/A",
+                'gst'              => $vendors['gst'] ?: "N/A",
+                'is_verify'        => ($vendors['gst'] == 1) ? "Verifed" :  "Not Verifed",
+                'createdAt'        => date('d M Y', strtotime($vendors['created_at'])) ?? "N/A",
+            ];
+        }, $vendors);
+
+        return $finalResult;
+    }
+
+
+    public function getAllRequestsData() {}
 }

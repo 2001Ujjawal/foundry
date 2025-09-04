@@ -39,7 +39,7 @@
                             <label for="country">Country<span class="text-danger">*</span></label>
                         </div>
                     </div>
-                    <div class="col-lg-6">
+                    <div style="display: none;" class="col-lg-6">
                         <div class="form-floating">
                             <input type="date" class="form-control" id="dob" name="dob" required value="<?= $resp['dob']?>">
                             <label for="dob">Dob<span class="text-danger">*</span></label>

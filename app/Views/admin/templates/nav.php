@@ -211,19 +211,25 @@ $first_name = explode(' ', $user_details->user_name)[0];
                 products,
                 customers,
                 ratings,
-                vendors
+                vendors,
+                requests,
+                category,
             } = json.data;
             const wb = XLSX.utils.book_new();
             const wsProducts = XLSX.utils.json_to_sheet(products || []);
             const wsCustomers = XLSX.utils.json_to_sheet(customers || []);
             const wsRatings = XLSX.utils.json_to_sheet(ratings || []);
             const wsVendors = XLSX.utils.json_to_sheet(vendors || []);
+            const wsRequests = XLSX.utils.json_to_sheet(requests || []);
+            const wscategory = XLSX.utils.json_to_sheet(category || []);
 
 
             XLSX.utils.book_append_sheet(wb, wsProducts, "Products");
             XLSX.utils.book_append_sheet(wb, wsCustomers, "Customers");
             XLSX.utils.book_append_sheet(wb, wsRatings, "Ratings");
             XLSX.utils.book_append_sheet(wb, wsVendors, "Vendors");
+            XLSX.utils.book_append_sheet(wb, wsRequests, "Requests");
+            XLSX.utils.book_append_sheet(wb, wscategory, "Category");
             const today = new Date();
             const formattedDate = today.toLocaleDateString("en-GB", {
                 day: "2-digit",
@@ -231,7 +237,7 @@ $first_name = explode(' ', $user_details->user_name)[0];
                 year: "numeric"
             }).replace(/\//g, "-");
 
-            XLSX.writeFile(wb, `exported-data-${formattedDate}.xlsx`);
+            XLSX.writeFile(wb, `foundry-biz-${formattedDate}.xlsx`);
         } catch (e) {
             console.error(e);
         }

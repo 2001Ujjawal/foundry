@@ -1197,6 +1197,8 @@ class ApiService
         $customers = $this->apiModel->getAllCustomersData();
         $ratings   = $this->apiModel->getAllRatingsData();
         $vendors = $this->apiModel->getAllVendorsData();
+        $category = $this->apiModel->getAllCategoryData();
+        $requests = $this->apiModel->getAllRequestsData();
 
         return [
             true,
@@ -1208,6 +1210,8 @@ class ApiService
                 'customers' => $customers,
                 'ratings' => $ratings,
                 'vendors' => $vendors,
+                'category' => $category,
+                'requests' => $requests
 
             ]
         ];
