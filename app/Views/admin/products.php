@@ -135,11 +135,14 @@
             document.addEventListener('click', function(e) {
                 document.querySelectorAll('.sort-order-input').forEach(input => {
                     if (input.contains(e.target)) return;
+
                     let newValue = input.value;
                     let productId = input.dataset.id;
                     let lastValue = input.dataset.last || "";
+
                     if (lastValue !== newValue) {
                         input.dataset.last = newValue;
+
                         fetch(BASE_URL + 'admin/api/product/ordering', {
                                 method: 'POST',
                                 headers: {
@@ -152,16 +155,25 @@
                             })
                             .then(r => r.json())
                             .then(json => {
-                                if (!json.success) {
+                                if (json.success) {
+                                    MessSuccess.fire({
+                                        icon: 'success',
+                                        title: json.message || "Product sorting updated successfully",
+                                    });
+                                 
+                                } else {
                                     MessSuccess.fire({
                                         icon: 'error',
-                                        title: json.message,
+                                        title: json.message || "Failed to update product sorting",
                                     });
-                                    location.reload();
-                                    // alert(json.message || "Failed to update");
                                 }
                             })
-                            .catch(() => alert("Network error"));
+                            .catch(() => {
+                                MessSuccess.fire({
+                                    icon: 'error',
+                                    title: "Network error",
+                                });
+                            });
                     }
                 });
             });
