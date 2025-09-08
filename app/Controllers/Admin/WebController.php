@@ -314,22 +314,22 @@ class WebController extends Common
         $email = \Config\Services::email();
 
         try {
-            
+
             $to      = $this->request->getPost('to') ?? 'nv543578@gmail.com';
             $subject = $this->request->getPost('subject') ?? 'Test Email';
             $message = $this->request->getPost('message') ?? 'Hi! This is a test email.';
+            echo "Request Email : <b>{$to}</b>";
 
-           
             $email->setFrom(EMAIL, 'FoundryBiz');
             $email->setTo($to);
             $email->setSubject($subject);
             $email->setMessage($message);
 
-   
+
             if ($email->send(false)) {
                 echo "✅ Email sent successfully to: <b>{$to}</b>";
             } else {
-               
+
                 $error = $email->printDebugger(['headers', 'subject', 'body']);
                 log_message('error', 'Email send failed: ' . print_r($error, true));
 
@@ -337,8 +337,8 @@ class WebController extends Common
                 echo "<pre>" . print_r($error, true) . "</pre>";
             }
         } catch (\Exception $e) {
-            
-            
+
+
             echo "⚠️ Email sending error: " . $e->getMessage();
         }
     }
