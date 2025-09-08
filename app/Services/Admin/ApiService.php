@@ -1197,8 +1197,6 @@ class ApiService
         $customers = $this->apiModel->getAllCustomersData();
         $ratings   = $this->apiModel->getAllRatingsData();
         $vendors = $this->apiModel->getAllVendorsData();
-        $category = $this->apiModel->getAllCategoryData();
-        $requests = $this->apiModel->getAllRequestsData();
 
         return [
             true,
@@ -1210,10 +1208,124 @@ class ApiService
                 'customers' => $customers,
                 'ratings' => $ratings,
                 'vendors' => $vendors,
-                'category' => $category,
-                'requests' => $requests
 
             ]
         ];
+    }
+
+    public function editProduct($data, $file)
+    {
+        $validationRules = [
+            'uid'        => 'required',
+        ];
+        $validationResult = validateData($data, $validationRules);
+        if (!$validationResult['success']) {
+            return [false, $validationResult['status'], $validationResult['message'], $validationResult['errors']];
+        }
+        $productUid = generateUid();
+        $timestamp = timestamp();
+        // Handle file upload
+        $image_paths = [];
+        if (isset($file['images']) && is_array($file['images'])) {
+            foreach ($file['images'] as $singleFile) {
+                if ($singleFile->isValid() && !$singleFile->hasMoved()) {
+                    $uploadResult = uploadFile($singleFile, 'products', generateUid());
+                    if (isset($uploadResult['error'])) {
+                        return [
+                            'status'     => 'failed',
+                            'statusCode' => 400,
+                            'message'    => 'One or more file uploads failed',
+                            'errors'     => ['products Image' => $uploadResult['error']],
+                        ];
+                    }
+                    $image_paths[] = $uploadResult['path'];
+                }
+            }
+        }
+        $product = $this->db->table('product')->select('vendor_id')->get()->getRow();
+        try {
+            $image_path = $image_paths[0] ?? '';
+            $addData = [
+                'name'              => $data['name'],
+                'description'       => $data['description'],
+                'price'             => $data['product_price'] ?? 1000,
+                'brand'             => $data['product_brand'] ?? null,
+                'html_description'  => $data['content'] ?? "",
+                'vendor_id'         => $product->vendor_id,
+                'category_id'       => $data['category'],
+                'subcategory_id'    => $data['subcategory'] ?? null,
+                'image'             => '',
+                'created_by'        => $data['user_id'] ?? NULL,
+                'is_admin_allow'    => 0,
+            ];
+            $success = $this->commonModel->UpdateData(PRODUCT_TABLE, ['uid' => $data['uid']], $addData);
+
+
+            if (!empty($image_paths)) {
+
+                foreach ($image_paths as $imgPath) {
+                    $mainImageValue = ($imgPath === $image_path) ? 1 : 0;
+                    $addImage = [
+                        'uid'         => generateUid(),
+                        'product_id'  => $data['uid'],
+                        'main_image'  => $mainImageValue,
+                        'image'       => $imgPath,
+                        'created_by'  => $data['user_id'] ?? NULL,
+                    ];
+                    $this->commonModel->insertData(PRODUCT_IMAGE_TABLE, $addImage);
+                }
+            }
+
+            if (!$success) {
+                return [
+                    false,
+                    500,
+                    'Product Data edit failed.',
+                    ['error' => 'Database edit failed']
+                ];
+            }
+            return [
+                true,
+                200,
+                'Product Data edit successfully.',
+                ['data' => $success]
+            ];
+        } catch (\Throwable $e) {
+            return [false, 500, 'Unexpected server error occurred', [$e->getMessage()]];
+        }
+    }
+
+    public function deleteProductImage($data)
+    {
+        $validationRules = [
+            'uid' => 'required',
+        ];
+        $validationResult = validateData($data, $validationRules);
+        if (!$validationResult['success']) {
+            return [false, $validationResult['status'], $validationResult['message'], $validationResult['errors']];
+        }
+        $imageUid = $data['uid'];
+
+        try {
+            $success = $this->commonModel->UpdateData(PRODUCT_IMAGE_TABLE, ['uid' => $imageUid], ['status' => DELETED_STATUS]);
+
+            if (!$success) {
+                return [
+                    false,
+                    500,
+                    'Product Image Delete failed.',
+                    ['error' => 'Database update failed']
+                ];
+            }
+
+            return [
+                true,
+                200,
+                'Product Image deleted successfully.',
+                ['data' => $success]
+            ];
+        } catch (\Throwable $e) {
+            return [false, 500, 'Unexpected server error occurred', [$e->getMessage()]];
+        }
     }
 }

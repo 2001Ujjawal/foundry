@@ -68,6 +68,8 @@ $routes->group('admin/api', ['namespace' => 'App\Controllers\Admin'], function (
         $routes->post('verify', 'ApiController::verifyProduct');
         $routes->post('approval', 'ApiController::approvalProduct');
         $routes->post('ordering', 'ApiController::productOrdering');
+        $routes->post('edit-product', 'ApiController::editProduct');
+        $routes->post('image-delete', 'ApiController::deleteProductImage');
     });
     $routes->group("rating", function ($routes) {
         $routes->post('delete', 'ApiController::deleteRating');

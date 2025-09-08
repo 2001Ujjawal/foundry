@@ -165,7 +165,7 @@
         });
 
         $.ajax({
-            url: BASE_URL + "/vendor/api/product/edit-product",
+            url: BASE_URL + "/admin/api/product/edit-product",
             type: "POST",
             data: formData,
             processData: false,
@@ -195,7 +195,7 @@
 
         if (confirm("Are you sure you want to delete this image?")) {
             $.ajax({
-                url: BASE_URL + "/vendor/api/product/image-delete",
+                url: BASE_URL + "/admin/api/product/image-delete",
                 type: "POST",
                 headers: {
                     'Content-Type': 'application/json'

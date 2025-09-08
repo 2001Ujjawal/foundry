@@ -15,7 +15,7 @@ class Email extends BaseConfig
 
     public string $SMTPHost   = 'smtp.gmail.com';
     public string $SMTPUser   = 'sales@foundrybiz.com';           // Workspace mailbox
-    public string $SMTPPass   = 'phsshgethxbdbmgu';                // App Password (NO spaces)
+    public string $SMTPPass   = 'rhaefstpbvnngeyb';                // App Password (NO spaces)
     public int    $SMTPPort   = 587;                               // TLS port
     public int    $SMTPTimeout= 60;
     public bool   $SMTPKeepAlive = false;
