@@ -472,8 +472,12 @@ class ApiController extends Common
             return redirect()->to(base_url('vendor/login'));
         }
         $productDetails = $this->request->getPost();
+       
+
+
         $files = $this->request->getFiles('images');
         $productDetails['user_id'] = $payload->user_id;
+
         $resp = $this->apiService->editProduct($productDetails, $files);
         if (!$resp[0]) {
             $this->apiError($resp[1], $resp[2], $resp[3]);

@@ -1242,7 +1242,7 @@ class ApiService
                 }
             }
         }
-        $product = $this->db->table('product')->select('vendor_id')->get()->getRow();
+        $product = $this->db->table('product')->select('vendor_id')->where('uid', $data['uid'])->get()->getRow();
         try {
             $image_path = $image_paths[0] ?? '';
             $addData = [

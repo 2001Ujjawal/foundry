@@ -77,7 +77,7 @@
                 </div>
                 <div class="col-md-12">
                     <label class="mb-1 d-block " for="description">Short Description</label>
-                    <textarea  rows="10" cols="90" class="form-control documentTextEditor" name="description" id="description"
+                    <textarea rows="10" cols="90" class="form-control documentTextEditor" name="description" id="description"
                         style="height: 120px;" readonly><?= esc($resp['description'] ?? '') ?></textarea>
                 </div>
                 <!-- <div class="col-md-12">
@@ -149,7 +149,7 @@
     // Submit logic
     document.getElementById('submitProductinputs').addEventListener('click', function() {
         const formData = new FormData();
-        console.log("formData:", formData);
+
 
         formData.append('uid', '<?= $resp['uid'] ?? "" ?>'); // ensure uid is sent
 
@@ -163,6 +163,10 @@
         selectedImages.forEach((file) => {
             formData.append('images[]', file);
         });
+        for (let [key, value] of formData.entries()) {
+            console.log(key + ":", value);
+        }
+    
 
         $.ajax({
             url: BASE_URL + "/admin/api/product/edit-product",
