@@ -113,5 +113,6 @@ define('USER_TYPE_CUSTOMER', 'customer');
 define('ADMIN_JWT_TOKEN', 'admin_jwt_token');
 define('VENDOR_JWT_TOKEN', 'vendor_jwt_token');
 define('CUSTOMER_JWT_TOKEN', 'customer_jwt_token');
-
-
+define('FOOTER_EMAIL', 'shankar@foundrybiz.in');
+define('FOOTER_PHONE', '+91 7821839934');
+define('COMMOUNUTY_URL_LINK', 'https://www.skool.com/foundry-club-9501/about');

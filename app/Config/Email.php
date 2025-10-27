@@ -5,7 +5,7 @@ use CodeIgniter\Config\BaseConfig;
 
 class Email extends BaseConfig
 {
-    public string $fromEmail  = 'sales@foundrybiz.com';
+    public string $fromEmail  = 'admin@foundrybiz.com';
     public string $fromName   = 'FoundryBiz Sales';
     public string $recipients = '';
 
@@ -14,8 +14,8 @@ class Email extends BaseConfig
     public string $mailPath   = '/usr/sbin/sendmail';
 
     public string $SMTPHost   = 'smtp.gmail.com';
-    public string $SMTPUser   = 'sales@foundrybiz.com';           // Workspace mailbox
-    public string $SMTPPass   = 'rhaefstpbvnngeyb';                // App Password (NO spaces)
+    public string $SMTPUser   = 'admin@foundrybiz.com';           // Workspace mailbox
+    public string $SMTPPass   = 'wdrvhfdhlmspwgeu';                // App Password (NO spaces)
     public int    $SMTPPort   = 587;                               // TLS port
     public int    $SMTPTimeout= 60;
     public bool   $SMTPKeepAlive = false;

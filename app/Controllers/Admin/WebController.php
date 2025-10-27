@@ -320,7 +320,7 @@ class WebController extends Common
             $message = $this->request->getPost('message') ?? 'Hi! This is a test email.';
             echo "Request Email : <b>{$to}</b>";
 
-            $email->setFrom('sales@foundrybiz.com', 'FoundryBiz');
+            $email->setFrom('admin@foundrybiz.com', 'FoundryBiz');
             $email->setTo($to);
             $email->setSubject($subject);
             $email->setMessage($message);

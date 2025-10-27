@@ -35,20 +35,22 @@
                         </a>
                     </div>
                 </div>
+                <!-- 
                 <div class="col-md-6 col-lg-3 fadeUp" style="transition-delay: 0.2s;">
                     <h5 class="mb-3 text-white fw-600">Categories</h5>
                     <ul class="footerMenu">
                         <li>
                             <a href="<?= base_url('product-list') ?>">Explore Catalog</a>
                         </li>
-                        <!-- <li>
+                        <li>
                             <a href="<?= base_url('category') ?>">Top Categories</a>
-                        </li> -->
-                        <!-- <li>
+                        </li>
+                        <li>
                             <a href="">Brands</a>
-                        </li> -->
+                        </li>
                     </ul>
                 </div>
+                 -->
                 <div class="col-md-6 col-lg-3 fadeUp" style="transition-delay: 0.4s;">
                     <h5 class="mb-3 text-white fw-600">Company</h5>
                     <ul class="footerMenu">
@@ -90,7 +92,7 @@
                             </i>
                             <div>
                                 <h6 class="text-white">Phone</h6>
-                                <div>+91 7821839934</div>
+                                <div><?= FOOTER_PHONE ?></div>
                             </div>
                         </a>
                         <a href="mailto:sales@foundrybiz.com" class="text-white d-flex align-items-center gap-3">
@@ -105,7 +107,7 @@
                             </i>
                             <div>
                                 <h6 class="text-white">Email</h6>
-                                <div>sales@foundrybiz.com</div>
+                                <div><?= FOOTER_EMAIL ?></div>
                             </div>
                         </a>
                     </div>
