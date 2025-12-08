@@ -239,8 +239,14 @@ class ApiService
         }
     }
 
-    private function sendVendorProductRequestEmail($vendor_name, $vendor_email, $customer_id, $customer_name, $customer_email, $product_name)
-    {
+    private function sendVendorProductRequestEmail(
+        $vendor_name,
+        $vendor_email,
+        $customer_id,
+        $customer_name,
+        $customer_email,
+        $product_name
+    ) {
         $emailService = \Config\Services::email();
         $emailService->setTo($vendor_email);
         $emailService->setFrom(EMAIL, EMAIL_APP_NAME);
