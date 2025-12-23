@@ -71,7 +71,6 @@ class ApiService
             return [false, $validationResult['status'], $validationResult['message'], $validationResult['errors']];
         }
         $vendorUid = generateUid();
-        // Handle file upload
         $uploadResult = null;
         $timestamp = timestamp();
         $image_path = '';
@@ -123,7 +122,6 @@ class ApiService
     }
     /** Register */
 
-    /** Request Section */
     public function createdRequest($data)
     {
         $validationRules = [
@@ -136,13 +134,17 @@ class ApiService
         $requestUid = generateUid();
 
         try {
+            $customer_id = $data['user_id'];
+            // $request_type = empty($customer_id) ? 'Veryfied' : 'Not Veryfied';
             $productDetails = $this->commonModel->getSingleData(PRODUCT_TABLE, ['uid' => $data['productId'], 'status' => ACTIVE_STATUS]);
             $addData = [
                 'uid'          => $requestUid,
                 'customer_id'  => $data['user_id'],
-                'message'      => $data['message'],
                 'product_id'   => $data['productId'],
                 'vendor_id'    => $productDetails['vendor_id'],
+                'message'      => $data['message'],
+                'status'       => $data['status'] ?? 'active'
+
             ];
             $success = $this->commonModel->insertData(REQUEST_LIST_TABLE, $addData);
             if (!$success) {
@@ -170,7 +172,7 @@ class ApiService
             return [false, 500, 'Unexpected server error occurred', [$e->getMessage()]];
         }
     }
-    /** Request Section */
+
 
     public function createdRating($data)
     {
@@ -221,7 +223,7 @@ class ApiService
         $emailService = \Config\Services::email();
         $emailService->setTo($email);
         $emailService->setFrom(EMAIL, EMAIL_APP_NAME);
-        $emailService->setSubject('Product Request Confirmation');
+        $emailService->setSubject('Thank you for your Inquiry');
 
         $message = "
             Dear $name,<br><br>
@@ -229,7 +231,7 @@ class ApiService
             We have received your request for: <b>$product_name</b>.<br><br>
             Our team will review your request and get back to you shortly.<br><br>
             Thank You,<br>
-            FoundryBiz Team
+            <b>FoundryBiz Team</b>
         ";
 
         $emailService->setMessage($message);
@@ -244,20 +246,32 @@ class ApiService
         $emailService = \Config\Services::email();
         $emailService->setTo($vendor_email);
         $emailService->setFrom(EMAIL, EMAIL_APP_NAME);
-        $emailService->setSubject('New Product Request from a Customer');
+        $emailService->setSubject('New Product Inquiry Received');
+        $vendor_login_url = base_url('vendor/login');
 
         $message = "
-            Dear $vendor_name,<br><br>
-            You have received a new product request.<br><br>
+               Dear $vendor_name,<br><br>
+        You have received a new product inquiry on FoundryBiz.<br><br>
 
-            <b>Product:</b> $product_name<br>
-            <b>Requested by:</b> $customer_name<br>
-            <b>Customer Email:</b> $customer_email<br><br>
+        <b>Product:</b> $product_name<br><br>
 
-            Please login to your dashboard to view the details.<br><br>
-            Regards,<br>
-            FoundryBiz Team
-        ";
+        Please log in to your vendor dashboard to review the inquiry.<br><br>
+
+        <a href='{$vendor_login_url}'
+        style='display:inline-block;
+                background:#007bff;
+                color:#ffffff;
+                padding:10px 18px;
+                text-decoration:none;
+                border-radius:5px;
+                font-weight:bold;'>
+        Click Here to Login
+        </a>
+        <br><br>
+
+        Thank you,<br>
+        <b>FoundryBiz Team</b>
+    ";
 
         $emailService->setMessage($message);
 
@@ -294,6 +308,7 @@ class ApiService
 
         $builder = $db->table(PRODUCT_TABLE . ' p');
         $builder->select('p.*, c.title as category_name, v.name as vendor_name, v.is_verify as vendor_is_verify , pi.image as product_main_image');
+        // $builder->select(' c.title as category_name,');
         $builder->join('category c', 'c.uid= p.category_id', 'left');
         $builder->join('vendor v', 'v.uid = p.vendor_id', 'left');
         $builder->join('product_image pi', 'pi.product_id = p.uid AND pi.main_image = 1', 'left');

@@ -1,12 +1,13 @@
-<?php 
+<?php
 
 namespace App\Models\Customer;
 
 use CodeIgniter\Model;
 
-class ApiModel extends Model {
+class ApiModel extends Model
+{
 
-    public function checkCustomerLogin($email)   
+    public function checkCustomerLogin($email)
     {
         $db = \Config\Database::connect();
         $builder = $db->table(CUSTOMER_TABLE);
@@ -18,6 +19,4 @@ class ApiModel extends Model {
             ->getRowArray();
         return $loginDetails;
     }
-
-    
 }

@@ -135,19 +135,20 @@
 
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label class="form-label">Title</label>
-                            <input type="text" class="form-control" name="name" id="name" placeholder="Enter Name">
+                            <label class="form-label">Category</label>
+                            <input type="text" class="form-control" name="name" id="name" placeholder="Enter Category Name">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Category</label>
+                            <label class="form-label">Parent Category</label>
                             <select class="form-control" name="category" id="category">
-                                <option value="">Select Category</option>
-                                <?php 
-                                    if(!empty($category)){
-                                    foreach($category as $key){
-                                    ?>
-                                    <option value="<?= $key['uid']; ?>"><?= $key['title']; ?></option>
-                                <?php }} ?>
+                                <option value="">Select Parent Category</option>
+                                <?php
+                                if (!empty($category)) {
+                                    foreach ($category as $key) {
+                                ?>
+                                        <option value="<?= $key['uid']; ?>"><?= $key['title']; ?></option>
+                                <?php }
+                                } ?>
                             </select>
                         </div>
                         <div class="mb-3">
@@ -180,19 +181,20 @@
                         <!-- Vendor ID (Hidden) -->
                         <input type="hidden" id="editCategoryUid" name="categoryUid">
                         <div class="mb-3">
-                            <label class="form-label">Name</label>
+                            <label class="form-label">Category</label>
                             <input type="text" id="editName" class="form-control" name="name" required>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Category</label>
+                            <label class="form-label">Parent Category</label>
                             <select class="form-control" name="path" id="editPath">
-                                <option value="">Select Category</option>
-                                <?php 
-                                    if(!empty($category)){
-                                    foreach($category as $key){
-                                    ?>
-                                    <option value="<?= $key['uid']; ?>"><?= $key['title']; ?></option>
-                                <?php }} ?>
+                                <option value="">Select Parent Category</option>
+                                <?php
+                                if (!empty($category)) {
+                                    foreach ($category as $key) {
+                                ?>
+                                        <option value="<?= $key['uid']; ?>"><?= $key['title']; ?></option>
+                                <?php }
+                                } ?>
                             </select>
                         </div>
                         <!-- Upload Image -->
@@ -217,113 +219,265 @@
     </div>
     <!-- Edit module -->
 
-<script>
-    /** Created */
-    $(document).ready(function () {
-        $('#categoryForm').on('submit', function (e) {
-            e.preventDefault();
+    <script>
 
-            $('.text-danger').remove();
-            let isValid = true;
-            let formData = new FormData(this);
-            
-            $('#categoryForm input, #categoryForm select').each(function () {
-                const input = $(this);
-                const name = input.attr('name');
-                const value = input.val().trim();
-                if (name !== 'category' && value === '') {
-                    isValid = false;
-                    input.after('<div class="text-danger mt-1">This field is required</div>');
-                }
+        $(document).ready(function() {
+            $('#categoryTable').DataTable({
+                columnDefs: [{
+                        //type: 'num',
+                        targets: 0
+                    } // if first column is numeric ID
+                ],
+                order: [
+                    [0, 'asc']
+                ]
             });
-            if (!isValid) {
-                return;
-            }
+        });
+
+
+
+
+        /** Created */
+        $(document).ready(function() {
+            $('#categoryForm').on('submit', function(e) {
+                e.preventDefault();
+
+                $('.text-danger').remove();
+                let isValid = true;
+                let formData = new FormData(this);
+
+                $('#categoryForm input, #categoryForm select').each(function() {
+                    const input = $(this);
+                    const name = input.attr('name');
+                    const value = input.val().trim();
+                    if (name !== 'category' && value === '') {
+                        isValid = false;
+                        input.after('<div class="text-danger mt-1">This field is required</div>');
+                    }
+                });
+                if (!isValid) {
+                    return;
+                }
 
                 const $button = $('#saveButton');
                 $button.prop('disabled', true).text('Loading...');
 
-            $.ajax({
-                url: BASE_URL +'/admin/api/category/created', 
-                method: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    MessSuccess.fire({
-                        icon: 'success',
-                        title: response.message || 'Category Add Successful',
-                    }); 
-                    location.reload();
-                },
-                error: function (xhr) {
-                    console.error('Error:', xhr.responseText);
-                    MessError.fire({
-                        icon: 'error',
-                        title: 'An error occurred. Please try again.',
-                    });
-                }
+                $.ajax({
+                    url: BASE_URL + '/admin/api/category/created',
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        MessSuccess.fire({
+                            icon: 'success',
+                            title: response.message || 'Category Add Successful',
+                        });
+                        location.reload();
+                    },
+                    error: function(xhr) {
+                        console.error('Error:', xhr.responseText);
+                        MessError.fire({
+                            icon: 'error',
+                            title: 'An error occurred. Please try again.',
+                        });
+                    }
+                });
             });
         });
-    });
-    /** Created */
+        /** Created */
 
         /** Update */
+        // function openEditModal(button) {
+        //     const btn = $(button);
+        //     $('#editCategoryUid').val(btn.data('uid'));
+        //     $('#editName').val(btn.data('name'));
+        //     $('#editPath').val(btn.data('path'));
+
+        //     const imageUrl = btn.data('image');
+
+        //     if (imageUrl) {
+        //         const fullImageUrl = BASE_URL + '/' + imageUrl;
+        //         $('#categoryOldImage').attr('src', fullImageUrl).show();
+        //         $('#oldImagePreview').show();
+        //     } else {
+        //         $('#categoryOldImage').hide();
+        //         $('#oldImagePreview').hide();
+        //     }
+        //     $('#editCategoryModal').modal('show');
+        // }
+
         function openEditModal(button) {
-            const btn = $(button);
-            $('#editCategoryUid').val(btn.data('uid'));
-            $('#editName').val(btn.data('name'));
-            $('#editPath').val(btn.data('path'));
+    const btn = $(button);
 
-            const imageUrl = btn.data('image');
+    const uid  = btn.data('uid');
+    const name = btn.data('name');
+    const path = btn.data('path'); // parent uid OR empty
 
-        if (imageUrl) {
-            const fullImageUrl = BASE_URL + '/' + imageUrl;
-            $('#categoryOldImage').attr('src', fullImageUrl).show();
-            $('#oldImagePreview').show();
-        } else {
-            $('#categoryOldImage').hide();
-            $('#oldImagePreview').hide();
-        }
-        $('#editCategoryModal').modal('show');
+    $('#editCategoryUid').val(uid);
+    $('#editName').val(name);
+    $('#editPath').val(path ?? '');
+
+    // 🔥 Store category type
+    if (path) {
+        $('#editCategoryModalForm').attr('data-type', 'child');
+    } else {
+        $('#editCategoryModalForm').attr('data-type', 'parent');
     }
-    $(document).ready(function () {
-        $('#editCategoryModalForm').on('submit', function (e) {
-            e.preventDefault();
 
-            $('.text-danger').remove();
-            let isValid = true;
-            let formData = new FormData(this);
-            
-            $('#editcategoryForm input, #editcategoryForm select').each(function () {
-                const input = $(this);
-                const name = input.attr('name');
-                const value = input.val().trim();
-                if (name !== 'category' && value === '') {
-                    isValid = false;
-                    input.after('<div class="text-danger mt-1">This field is required</div>');
+    // Image preview
+    const imageUrl = btn.data('image');
+    if (imageUrl) {
+        $('#categoryOldImage').attr('src', BASE_URL + '/' + imageUrl);
+        $('#oldImagePreview').show();
+    } else {
+        $('#oldImagePreview').hide();
+    }
+
+    $('#editCategoryModal').modal('show');
+}
+
+
+
+
+        $(document).ready(function() {
+            // $('#editCategoryModalForm').on('submit', function(e) {
+            //     e.preventDefault();
+
+            //     $('.text-danger').remove();
+            //     let isValid = true;
+            //     let formData = new FormData(this);
+
+            //     $('#editCategoryModalForm input, #editCategoryModalForm select').each(function() {
+            //         const input = $(this);
+            //         const name = input.attr('name');
+            //         const value = input.val().trim();
+            //         if (name !== 'category' && value === '') {
+            //             isValid = false;
+            //             input.after('<div class="text-danger mt-1">This field is required</div>');
+            //         }
+            //     });
+            //     if (!isValid) {
+            //         return;
+            //     }
+
+            //     const $button = $('#editBtn');
+            //     $button.prop('disabled', true).text('Loading...');
+            //     $.ajax({
+            //         url: BASE_URL + '/admin/api/category/update',
+            //         method: 'POST',
+            //         data: formData,
+            //         processData: false,
+            //         contentType: false,
+            //         success: function(response) {
+            //             MessSuccess.fire({
+            //                 icon: 'success',
+            //                 title: response.message || 'Update Successful',
+            //             });
+            //             location.reload();
+            //         },
+            //         error: function(xhr) {
+            //             console.error('Error:', xhr.responseText);
+            //             MessError.fire({
+            //                 icon: 'error',
+            //                 title: 'An error occurred. Please try again.',
+            //             });
+            //         }
+            //     });
+            // });
+
+            $('#editCategoryModalForm').on('submit', function (e) {
+    e.preventDefault();
+
+    $('.text-danger').remove();
+    let isValid = true;
+
+    const categoryType = $(this).attr('data-type'); // parent | child
+    const name = $('#editName').val().trim();
+    const path = $('#editPath').val().trim();
+
+    // Category name always required
+    if (name === '') {
+        isValid = false;
+        $('#editName').after('<div class="text-danger mt-1">Category name is required</div>');
+    }
+
+    // 🔥 Only child category requires sub-category
+    if (categoryType === 'child' && path === '') {
+        isValid = false;
+        $('#editPath').after('<div class="text-danger mt-1">Sub Category is required</div>');
+    }
+
+    if (!isValid) return;
+
+    const formData = new FormData(this);
+    $('#editBtn').prop('disabled', true).text('Loading...');
+
+    $.ajax({
+        url: BASE_URL + '/admin/api/category/update',
+        method: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (response) {
+            MessSuccess.fire({
+                icon: 'success',
+                title: response.message || 'Update Successful',
+            });
+            location.reload();
+        },
+        error: function () {
+            MessError.fire({
+                icon: 'error',
+                title: 'Something went wrong',
+            });
+            $('#editBtn').prop('disabled', false).text('Update');
+        }
+    });
+});
+
+
+
+
+
+        });
+        /** Update */
+
+        /** Deleted */
+        function deleteCategory(uid) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'Do you really want to delete this Category?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel',
+                reverseButtons: true,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    deleteCategoryDetails(uid);
                 }
             });
-            if (!isValid) {
-                return;
-            }
+        }
 
-            const $button = $('#editBtn');
-            $button.prop('disabled', true).text('Loading...');
+        function deleteCategoryDetails(uid) {
+            const formData = new FormData();
+            formData.append('uid', uid);
+
             $.ajax({
-                url: BASE_URL +'/admin/api/category/update', 
+                url: BASE_URL + '/admin/api/category/delete',
                 method: 'POST',
                 data: formData,
                 processData: false,
                 contentType: false,
-                success: function (response) {
+                success: function(response) {
                     MessSuccess.fire({
                         icon: 'success',
-                        title: response.message || 'Update Successful',
-                    }); 
+                        title: response.message || 'Vendor deleted successfully',
+                    });
                     location.reload();
                 },
-                error: function (xhr) {
+                error: function(xhr) {
                     console.error('Error:', xhr.responseText);
                     MessError.fire({
                         icon: 'error',
@@ -331,75 +485,30 @@
                     });
                 }
             });
-        });
-    });
-    /** Update */
+        }
+        /** Deleted */
 
-    /** Deleted */
-    function deleteCategory(uid) {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: 'Do you really want to delete this Category?',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'Cancel',
-            reverseButtons: true,
-        }).then((result) => {
-            if (result.isConfirmed) {
-                deleteCategoryDetails(uid);
-            }
-        });
-    }
-    function deleteCategoryDetails(uid) {
-        const formData = new FormData();
-        formData.append('uid', uid); 
+        /** Update Status */
+        function handleStatusChange(checkbox, uid) {
+            const status = checkbox.checked ? 'active' : 'inactive';
+            fetch(BASE_URL + '/admin/api/category/update-status', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        uid: uid,
+                        status: status
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
 
-        $.ajax({
-            url: BASE_URL + '/admin/api/category/delete',
-            method: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (response) {
-                MessSuccess.fire({
-                    icon: 'success',
-                    title: response.message || 'Vendor deleted successfully',
+                })
+                .catch(error => {
+                    console.error("Error updating status:", error);
+                    alert("Failed to update status");
                 });
-                location.reload();
-            },
-            error: function (xhr) {
-                console.error('Error:', xhr.responseText);
-                MessError.fire({
-                    icon: 'error',
-                    title: 'An error occurred. Please try again.',
-                });
-            }
-        });
-    }
-    /** Deleted */
-
-    /** Update Status */
-    function handleStatusChange(checkbox, uid) {
-        const status = checkbox.checked ? 'active' : 'inactive';
-        fetch(BASE_URL + '/admin/api/category/update-status', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                uid: uid,
-                status: status
-            }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            
-        })
-        .catch(error => {
-            console.error("Error updating status:", error);
-            alert("Failed to update status");
-        });
-    }
-    /** Update Status */
+        }
+        /** Update Status */
     </script>

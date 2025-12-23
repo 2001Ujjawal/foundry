@@ -84,7 +84,7 @@
                                     <div class="fw-600 h6 m-0">
                                         <div class="d-flex align-items-center">
                                             <div class="text-nowrap">
-                                                <strong><?= $row['customer_name']; ?></strong>
+                                                <strong><?= $row['customer_name'] ?? ''; ?></strong>
                                                 <br><small class="text-muted">Eml: <?= $row['customer_email']; ?></small>
                                                 <br><small class="text-muted">Mob: <?= $row['customer_mobile']; ?></small>
                                             </div>
@@ -137,7 +137,7 @@
         $(document).ready(function() {
             $('#tableRequest').DataTable({
                 columnDefs: [{
-                        type: 'num',
+                        //type: 'num',
                         targets: 0
                     } // if first column is numeric ID
                 ],

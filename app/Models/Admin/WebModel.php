@@ -61,11 +61,14 @@ class WebModel extends Model
             p.*, 
             v.name AS vendor_name, 
             v.email AS vendor_email, 
-            v.mobile AS vendor_mobile, 
+            v.mobile AS vendor_mobile,
+            v.company as company,
+            pi.image as image,
             c.title AS category_name
         ');
         $builder->join('vendor v', 'v.uid = p.vendor_id', 'left');
         $builder->join('category c', 'c.uid = p.category_id', 'left');
+        $builder->join('product_image pi', 'pi.product_id = p.uid', 'left');
         $builder->orderBy('p.id', 'DESC');
         $builder->where('p.status !=', DELETED_STATUS);
 
@@ -81,6 +84,7 @@ class WebModel extends Model
         $builder->select('
             p.*, 
             v.name AS vendor_name, 
+            v.company as company,
             c.title AS category_name
         ');
         $builder->join('vendor v', 'v.uid = p.vendor_id', 'left');

@@ -9,9 +9,9 @@
             <table id="tableCustomer" class=" display border">
                 <thead>
                     <tr>
-                        <th  class="text-nowrap text-start">Name</th>
+                        <th class="text-nowrap text-start">Name</th>
                         <th>Image</th>
-                  
+
                         <th>Company</th>
                         <th>Status</th>
                         <th>Actions</th>
@@ -20,7 +20,7 @@
                 <tbody>
                     <?php if (!empty($resp)) {
                         foreach ($resp as $row) {
-                            ?>
+                    ?>
                             <tr>
 
                                 <td>
@@ -45,7 +45,7 @@
                                     <?php } ?>
                                 </td>
 
-                               
+
                                 <td>
                                     <div class="fw-600 h6 m-0"><?= !empty($row['company']) ? $row['company'] : "---" ?></div>
 
@@ -100,7 +100,7 @@
                                 </td>
 
                             </tr>
-                        <?php }
+                    <?php }
                     } ?>
                 </tbody>
             </table>
@@ -165,18 +165,19 @@
     <!-- Edit module -->
 
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             $('#tableCustomer').DataTable({
                 columnDefs: [{
-                    type: 'num',
-                    targets: 0
-                } // if first column is numeric ID
+                        type: 'num',
+                        targets: 0
+                    } // if first column is numeric ID
                 ],
                 order: [
                     [0, 'asc']
                 ]
             });
         });
+
         function openEditModal(button) {
             const btn = $(button);
             $('#editCustomerUid').val(btn.data('uid'));
@@ -196,15 +197,15 @@
             $('#editCustomerModal').modal('show');
         }
 
-        $(document).ready(function () {
-            $('#editCustomerModalForm').on('submit', function (e) {
+        $(document).ready(function() {
+            $('#editCustomerModalForm').on('submit', function(e) {
                 e.preventDefault();
 
                 $('.text-danger').remove();
                 let isValid = true;
                 let formData = new FormData(this);
 
-                $('#editCustomerModalForm input').each(function () {
+                $('#editCustomerModalForm input').each(function() {
                     const input = $(this);
                     if (input.attr('type') === 'file') {
                         return;
@@ -232,14 +233,14 @@
                     data: formData,
                     processData: false,
                     contentType: false,
-                    success: function (response) {
+                    success: function(response) {
                         MessSuccess.fire({
                             icon: 'success',
                             title: response.message || 'Update Successful',
                         });
                         location.reload();
                     },
-                    error: function (xhr) {
+                    error: function(xhr) {
                         console.error('Error:', xhr.responseText);
                         MessError.fire({
                             icon: 'error',
@@ -266,6 +267,7 @@
                 }
             });
         }
+
         function deleteCustomerDetails(uid) {
             const formData = new FormData();
             formData.append('uid', uid);
@@ -276,14 +278,14 @@
                 data: formData,
                 processData: false,
                 contentType: false,
-                success: function (response) {
+                success: function(response) {
                     MessSuccess.fire({
                         icon: 'success',
                         title: response.message || 'Customer deleted successfully',
                     });
                     location.reload();
                 },
-                error: function (xhr) {
+                error: function(xhr) {
                     console.error('Error:', xhr.responseText);
                     MessError.fire({
                         icon: 'error',
@@ -298,15 +300,15 @@
         function handleStatusChange(checkbox, uid) {
             const status = checkbox.checked ? 'active' : 'inactive';
             fetch(BASE_URL + '/admin/api/customer/update-status', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    uid: uid,
-                    status: status
-                }),
-            })
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        uid: uid,
+                        status: status
+                    }),
+                })
                 .then(response => response.json())
                 .then(data => {
 

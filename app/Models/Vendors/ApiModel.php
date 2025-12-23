@@ -1,12 +1,13 @@
-<?php 
+<?php
 
 namespace App\Models\Vendors;
 
 use CodeIgniter\Model;
 
-class ApiModel extends Model {
+class ApiModel extends Model
+{
 
-    public function checkAdminLogin($email)    
+    public function checkAdminLogin($email)
     {
         $db = \Config\Database::connect();
         $builder = $db->table(VENDOR_TABLE);
@@ -22,9 +23,9 @@ class ApiModel extends Model {
     public function createdVendor($data)
     {
         $db = \Config\Database::connect();
-        $builder = $db->table(VENDOR_TABLE); 
+        $builder = $db->table(VENDOR_TABLE);
 
-        $success = $builder->insert($data); 
+        $success = $builder->insert($data);
 
         if ($success) {
             return $data;
@@ -33,7 +34,7 @@ class ApiModel extends Model {
         }
     }
 
-    public function checkForgotOtp($otpUid,$user_id)    
+    public function checkForgotOtp($otpUid, $user_id)
     {
         $db = \Config\Database::connect();
         $builder = $db->table(OTP_LIST_TABLE);

@@ -166,7 +166,7 @@
         for (let [key, value] of formData.entries()) {
             console.log(key + ":", value);
         }
-    
+
 
         $.ajax({
             url: BASE_URL + "/admin/api/product/edit-product",

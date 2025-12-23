@@ -3,4 +3,3 @@
         <i class="bi bi-check-circle-fill"></i> Sponsored
     </span>
 <?php endif; ?>
-

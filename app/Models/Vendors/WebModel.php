@@ -20,7 +20,7 @@ class WebModel extends Model
         $builder->join('vendor v', 'v.uid = p.vendor_id', 'left');
         $builder->join('category c', 'c.uid = p.category_id', 'left');
         $builder->join('category s', 's.uid = p.subcategory_id', 'left');
-        $builder->orderBy('p.created_at' , 'desc') ; 
+        $builder->orderBy('p.created_at', 'desc');
         $builder->where('p.status !=', DELETED_STATUS);
         $builder->where('p.vendor_id', $vendorId);
 
@@ -39,7 +39,7 @@ class WebModel extends Model
         ');
         $builder->join('vendor v', 'v.uid = p.vendor_id', 'left');
         $builder->join('category c', 'c.uid = p.category_id', 'left');
-        $builder->orderBy('p.created_at' , 'desc') ; 
+        $builder->orderBy('p.created_at', 'desc');
         $builder->where('p.status !=', DELETED_STATUS);
         $builder->where('p.vendor_id', $vendorId);
         $builder->where('p.uid', $productId);
@@ -51,34 +51,48 @@ class WebModel extends Model
     public function getRequestsDetails($vendorId, $customer = null, $product = null, $date = null)
     {
         $db = \Config\Database::connect();
-        $builder = $db->table('request r');
-        $builder->select('
-            r.*, 
-            c.name AS customer_name, 
-            c.mobile AS customer_mobile, 
-            c.email AS customer_email, 
-            p.name AS product_name,
-            v.name AS vendor_name
-        ');
-        $builder->join('customer c', 'c.uid = r.customer_id', 'left');
-        $builder->join('product p', 'p.uid = r.product_id', 'left');
-        $builder->join('vendor v', 'v.uid = r.vendor_id', 'left');
 
-        $builder->where('r.status', ACTIVE_STATUS);
+        $builder = $db->table('request r');
+
+        $builder->select('
+        r.*,
+        c.name AS customer_name,
+        c.mobile AS customer_mobile,
+        c.email AS customer_email,
+        p.name AS product_name,
+        v.name AS vendor_name,
+        pi.image AS product_image
+    ');
+
+        // CORRECT JOINS BASED ON YOUR SCREENSHOT
+        $builder->join('customer c', 'c.uid = r.customer_id', 'left');
+        $builder->join('product p',  'p.uid = r.product_id', 'left');
+        $builder->join('vendor v',   'v.uid = r.vendor_id', 'left');
+
+        // FIX PRODUCT IMAGE JOIN
+        $builder->join('product_image pi', 'pi.product_id = p.uid', 'left');
+
+        // FILTERS
         $builder->where('r.vendor_id', $vendorId);
-        if ($customer != null) {
+
+        if ($customer !== null) {
             $builder->where('r.customer_id', $customer);
         }
-        if ($product != null) {
+
+        if ($product !== null) {
             $builder->where('r.product_id', $product);
         }
-        if ($date != null) {
+
+        if ($date !== null) {
             $builder->where('DATE(r.created_at)', $date);
         }
-        $builder->orderBy('r.created_at' , 'desc') ; 
-        $result = $builder->get()->getResultArray();
-        return $result;
+
+        return $builder->get()->getResultArray();
     }
+
+
+
+
 
     public function getCustomerReview($vendorId = null, $customerId = null, $productId = null)
     {
@@ -104,7 +118,7 @@ class WebModel extends Model
         if ($vendorId != null) {
             $builder->where('p.vendor_id', $vendorId);
         }
-        $builder->orderBy('pr.created_at' ,  'desc') ; 
+        $builder->orderBy('pr.created_at',  'desc');
         $result = $builder->get()->getResultArray();
         return $result;
     }

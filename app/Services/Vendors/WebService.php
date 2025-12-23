@@ -21,27 +21,27 @@ class WebService
         $this->commonModel = new CommonModel();
     }
 
-    public function getProductsDetails($vendorId)   
+    public function getProductsDetails($vendorId)
     {
         $data = $this->webModel->getProductsDetails($vendorId);
         return $data;
     }
 
-    public function getProductsDetailsByProductId($vendorId,$productId)  
+    public function getProductsDetailsByProductId($vendorId, $productId)
     {
-        $data = $this->webModel->getProductsDetailsByProductId($vendorId,$productId);
+        $data = $this->webModel->getProductsDetailsByProductId($vendorId, $productId);
         return $data;
     }
 
-    public function getRequestsDetails($vendorId,$customer,$product,$date)   
+    public function getRequestsDetails($vendorId, $customer, $product, $date)
     {
-        $data = $this->webModel->getRequestsDetails($vendorId,$customer,$product,$date);
+        $data = $this->webModel->getRequestsDetails($vendorId, $customer, $product, $date);
         return $data;
     }
 
-    public function getCustomerReview($vendor_id,$customerId,$productId)  
+    public function getCustomerReview($vendor_id, $customerId, $productId)
     {
-        $data = $this->webModel->getCustomerReview($vendor_id,$customerId,$productId);
+        $data = $this->webModel->getCustomerReview($vendor_id, $customerId, $productId);
         return $data;
     }
 }

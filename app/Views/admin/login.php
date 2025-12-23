@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <title>Foundry | Admin Login</title>
-    <link rel="icon" href="<?php echo base_url('assets/admin/images/logo_ibm.png')?>">
+    <link rel="icon" href="<?php echo base_url('assets/admin/images/logo_ibm.png') ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link href="https://cdn.datatables.net/2.2.1/css/dataTables.dataTables.min.css" rel="stylesheet">
@@ -14,18 +14,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.datatables.net/2.2.1/js/dataTables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="<?php echo base_url('assets/admin/js/jquery.datetimepicker.full.min.js')?>"></script>
-    <script src="<?php echo base_url('assets/admin/js/custom.js')?>"></script>
+    <script src="<?php echo base_url('assets/admin/js/jquery.datetimepicker.full.min.js') ?>"></script>
+    <script src="<?php echo base_url('assets/admin/js/custom.js') ?>"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
+
 <body>
     <div class="vh-100 d-flex align-items-center">
         <div class="container">
             <div class="col-md-6 col-lg-4 p-0 mx-auto">
                 <div class="p-4 rounded-10 shadow-sm bg-white">
                     <div class="mb-2 text-center">
-                        <img src="<?php echo base_url('assets/admin/images/foundry_logo.webp')?>" alt="" width="75">
+                        <img src="<?php echo base_url('assets/admin/images/foundry_logo.webp') ?>" alt="" width="75">
                     </div>
                     <div class="mb-2 fw-bold text-center h4 ">Admin Portal</div>
                     <big class="d-block mb-4 text-center text-gray">Super Admin access</big>
@@ -126,15 +127,15 @@
 <script>
     const base_url = "<?= base_url(); ?>";
     document.getElementById("loginForm").addEventListener("submit", async function(event) {
-        event.preventDefault(); 
+        event.preventDefault();
         var email = document.getElementById("email").value;
         var password = document.getElementById("passwordInput").value;
         const loginData = {
-            email: email, 
-            password: password 
+            email: email,
+            password: password
         };
         try {
-            const response = await fetch(base_url + "admin/api/login", { 
+            const response = await fetch(base_url + "admin/api/login", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -144,7 +145,7 @@
 
             const data = await response.json();
             if (response.ok) {
-                window.location.href = base_url +'admin/dashboard';
+                window.location.href = base_url + 'admin/dashboard';
             } else {
                 MessError.fire({
                     icon: 'error',
@@ -200,7 +201,8 @@
             bsAlert.close();
         }
     }, 3000);
-</script> 
+</script>
 
 </body>
+
 </html>

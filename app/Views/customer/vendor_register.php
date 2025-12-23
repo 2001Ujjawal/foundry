@@ -2,7 +2,7 @@
      <div class="container">
          <div class="row justify-content-center">
              <div class="col-md-6">
-                 <form id="vendorForm" enctype="multipart/form-data" method="">
+                 <form id="vendorForm" enctype="multipart/form-data" method="post">
                      <div class="d-flex flex-column gap-3">
                          <div class="position-relative p-4 rounded-10 bg-light border overflow-hidden text-center">
                              <div class="d-inline-flex mb-1">

@@ -268,10 +268,11 @@ class ApiService
     public function createdVendor($data, $file)
     {
         $validationRules = [
-            'name'      => 'required',
-            'email'      => 'required',
-            'mobile'      => 'required',
-            'country'      => 'required',
+            'company'  => 'required',
+            'name'          => 'required',
+            'email'         => 'required',
+            'mobile'        => 'required',
+            'country'       => 'required',
             // 'dob'      => 'required'
         ];
         $validationResult = validateData($data, $validationRules);
@@ -302,23 +303,23 @@ class ApiService
             $hashedPassword = password_hash($plainPassword, PASSWORD_DEFAULT);
 
             $addData = [
-                'uid'        => $vendorUid,
-                'country'    => $data['country'],
-                'image'      => $image_path,
-                'name'       => $data['name'],
-                'mobile'     => $data['mobile'],
-                'email'      => $data['email'],
-                // 'password'   => $hashedPassword,
-                'dob'        => $data['dob'] ?? "",
-                'created_by' => $data['user_id'] ?? NULL,
-                'company' => $data['company'] ?? null,
-                'website' => $data['website'] ?? null,
-                'address' => $data['address'] ?? null,
-                'city' => $data['city'] ?? null,
-                'states' => $data['states'] ?? null,
-                'gst' => $data['gst'] ?? null,
-                'created_by' => "",
-                'status' => 'inactive',
+                'uid'         => $vendorUid,
+                'company'     => $data['company'],
+                'country'     => $data['country'],
+                'image'       => $image_path,
+                'name'        => $data['name'],
+                'mobile'      => $data['mobile'],
+                'email'       => $data['email'],
+                // 'password'    => $hashedPassword,
+                'dob'         => $data['dob'] ?? "",
+                'created_by'  => $data['user_id'] ?? NULL,
+                'website'     => $data['website'] ?? null,
+                'address'     => $data['address'] ?? null,
+                'city'        => $data['city'] ?? null,
+                'states'      => $data['states'] ?? null,
+                'gst'         => $data['gst'] ?? null,
+                'created_by'  => "",
+                'status'      => 'inactive',
             ];
 
             $success = $this->apiModel->createdVendor($addData);
@@ -356,9 +357,9 @@ class ApiService
     {
         $validationRules = [
             'name'      => 'required',
-            'email'      => 'required',
-            'mobile'      => 'required',
-            'country'      => 'required',
+            'email'     => 'required',
+            'mobile'    => 'required',
+            'country'   => 'required',
 
         ];
         $validationResult = validateData($data, $validationRules);

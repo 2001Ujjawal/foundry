@@ -98,6 +98,7 @@ class ApiController extends Common
         }
     }
 
+
     public function product_search_in_product_list()
     {
         $search = $this->request->getGet('product_search');

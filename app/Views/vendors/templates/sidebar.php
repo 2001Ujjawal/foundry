@@ -61,7 +61,7 @@ $lastSegment = $uri->getSegment($uri->getTotalSegments());
                                 <path d="M4.5 1V3.68421M13.5 1V3.68421" stroke="#6C757D" stroke-width="2" stroke-linecap="round" />
                             </svg>
                         </i>
-                        <span>Requests</span>
+                        <span>Leads</span>
                     </a>
                 </li>
                 <li>

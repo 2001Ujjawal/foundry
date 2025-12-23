@@ -20,10 +20,9 @@ $routes->group('customer/api', ['namespace' => 'App\Controllers\Customer'], func
     $routes->post('login', 'ApiController::login');
     $routes->post('ragister', 'ApiController::ragister');
     $routes->get('product-search', 'ApiController::product_search');
-    // $routes->get('category-search', 'ApiController::category_search'); //SR
     $routes->post('forget-password-email-check', 'ApiController::forget_password_email_otp_send');
     $routes->group("request", function ($routes) {
-    $routes->post('created', 'ApiController::createdRequest');
+        $routes->post('created', 'ApiController::createdRequest');
     });
 
     $routes->group("rating", function ($routes) {

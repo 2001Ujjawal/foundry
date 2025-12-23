@@ -20,37 +20,37 @@ class WebService
         //$this->commonModel = new Common_model_new();
     }
 
-    public function getCategoryData()  
+    public function getCategoryData()
     {
         $data = $this->webModel->getCategoryData();
         return $data;
     }
 
     /** Get All Product Details */
-    public function getProductsDetails()  
+    public function getProductsDetails()
     {
         $data = $this->webModel->getProductsDetails();
         return $data;
     }
-    /** Get Product Details */ 
-    
+    /** Get Product Details */
+
     /** Get Single Product Details */
-    public function getProductsDetailsByProductId($productId)  
+    public function getProductsDetailsByProductId($productId)
     {
         $data = $this->webModel->getProductsDetailsByProductId($productId);
         return $data;
     }
     /** Get Single Product Details */
 
-    public function getRequestsDetails($vendorId,$customer,$product,$date)   
+    public function getRequestsDetails($vendorId, $customer, $product, $date)
     {
-        $data = $this->webModel->getRequestsDetails($vendorId,$customer,$product,$date);
+        $data = $this->webModel->getRequestsDetails($vendorId, $customer, $product, $date);
         return $data;
     }
 
-    public function getCustomerReview($customerId,$productId)  
+    public function getCustomerReview($customerId, $productId)
     {
-        $data = $this->webModel->getCustomerReview($customerId,$productId);
+        $data = $this->webModel->getCustomerReview($customerId, $productId);
         return $data;
     }
 }

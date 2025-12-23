@@ -19,10 +19,10 @@
             <table id="vendorTable" class=" display border">
                 <thead>
                     <tr>
-                        <th class="text-nowrap text-start">Name</th>
                         <th>Image</th>
-                        <th>Country</th>
                         <th>Company</th>
+                        <th class="text-nowrap text-start">Name</th>
+                        <th>Country</th>
                         <th class="text-center">Verify</th>
                         <th class="text-center">Status</th>
                         <th>Actions</th>
@@ -30,17 +30,9 @@
                 </thead>
                 <tbody>
                     <?php if (!empty($resp)) {
-
                         foreach ($resp as $row) {
                     ?>
                             <tr>
-                                <td>
-                                    <div class="text-nowrap text-start">
-                                        <div><?= $row['name']; ?></div>
-                                        <small class="text-muted d-block">Email: <?= $row['email']; ?></small>
-                                        <small class="text-muted d-block">Mob: <?= $row['mobile']; ?></small>
-                                    </div>
-                                </td>
                                 <td>
                                     <?php if (!empty($row['image'])) { ?>
                                         <img src="<?= base_url($row['image']) ?>" alt="Vendor Image" style="width: 40px; height: 40px;">
@@ -49,12 +41,23 @@
                                     <?php } ?>
                                 </td>
                                 <td>
-                                    <div class="fw-600 h6 m-0"><?= $row['country']; ?></div>
-                                </td>
-                                <td>
                                     <!-- <div class="fw-600 h6 m-0"><?= date('jS F, Y', strtotime($row['dob'])); ?></div> -->
                                     <div class="fw-600 h6 m-0"><?= $row['company'] ?? '--'; ?></div>
                                 </td>
+
+                                <td>
+                                    <div class="text-nowrap text-start">
+                                        <div><?= $row['name']; ?></div>
+                                        <small class="text-muted d-block">Email: <?= $row['email']; ?></small>
+                                        <small class="text-muted d-block">Mob: <?= $row['mobile']; ?></small>
+                                    </div>
+                                </td>
+
+
+                                <td>
+                                    <div class="fw-600 h6 m-0"><?= $row['country']; ?></div>
+                                </td>
+
                                 <td>
                                     <div class="form-check form-switch d-flex justify-content-center">
                                         <?php if ($row['status'] != 'deleted') { ?>
@@ -91,6 +94,7 @@
                                         <button class="btnico"
                                             onclick="openEditModal(this)"
                                             data-uid="<?= $row['uid']; ?>"
+                                            data-company="<?= htmlspecialchars($row['company']); ?>"
                                             data-name="<?= htmlspecialchars($row['name']); ?>"
                                             data-email="<?= htmlspecialchars($row['email']); ?>"
                                             data-mobile="<?= htmlspecialchars($row['mobile']); ?>"
@@ -137,6 +141,10 @@
                     </div>
 
                     <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Company Name</label>
+                            <input type="text" class="form-control" name="company_name" id="company_name" placeholder="Enter Company Name">
+                        </div>
                         <div class="mb-3">
                             <label class="form-label">Name</label>
                             <input type="text" class="form-control" name="name" id="name" placeholder="Enter Name">
@@ -186,30 +194,41 @@
                         <!-- Vendor ID (Hidden) -->
                         <input type="hidden" id="editVendorUid" name="vendorUid">
                         <div class="mb-3">
+                            <label class="form-label">Company</label>
+                            <input type="text" class="form-control" name="company" id="editCompany" placeholder="Enter Company Name" required>
+                        </div>
+                        <div class="mb-3">
                             <label class="form-label">Name</label>
-                            <input type="text" id="editName" class="form-control" name="name" required>
+                            <input type="text" id="editName" class="form-control" name="name" placeholder="Enter Name" required>
                         </div>
+
                         <div class="mb-3">
-                            <label class="form-label">Email</label>
-                            <input type="email" id="editEmail" class="form-control" name="email" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Mobile</label>
-                            <input type="text" class="form-control" name="mobile" id="editMobile" placeholder="Enter Mobile">
+                            <label class="form-label">Upload Image</label>
+                            <input type="file" class="form-control" name="image" accept="image/*">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Country</label>
                             <input type="text" class="form-control" name="country" id="editCountry" placeholder="Enter Country">
                         </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" id="editEmail" class="form-control" name="email" placeholder="Enter Email" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Mobile</label>
+                            <input type="text" class="form-control" name="mobile" id="editMobile" placeholder="Enter Mobile">
+                        </div>
+
                         <!-- <div class="mb-3">
                             <label class="form-label">Dob</label>
                             <input type="date" class="form-control" name="dob" id="editDob" placeholder="Enter DOB">
                         </div> -->
                         <!-- Upload Image -->
-                        <div class="mb-3">
+                        <!-- <div class="mb-3">
                             <label class="form-label">Upload Image</label>
                             <input type="file" class="form-control" name="image" accept="image/*">
-                        </div>
+                        </div> -->
                         <!-- Show old image -->
                         <div class="mb-3" id="oldImagePreview" style="display: none;">
                             <label class="form-label">Old Image</label><br>
@@ -297,6 +316,7 @@
             const btn = $(button);
             $('#editVendorUid').val(btn.data('uid'));
             $('#editName').val(btn.data('name'));
+            $('#editCompany').val(btn.data('company'));
             $('#editEmail').val(btn.data('email'));
             $('#editMobile').val(btn.data('mobile'));
             $('#editCountry').val(btn.data('country'));

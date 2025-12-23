@@ -52,40 +52,68 @@
             </div>
         </div>
         <div class="px-3 pb-3">
-            <table  id="tableProduct" class=" display border">
+            <table id="tableProduct" class=" display border">
                 <thead>
                     <tr>
+                        <th>SL No</th>
                         <th>Customer Name</th>
+                        <th>Image</th>
                         <th>Product Name</th>
                         <th>Date</th>
                         <th>Message</th>
                         <th>Status</th>
                         <th>Actions</th>
+                        <th></th>
+
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if (!empty($resp)) {
-                        foreach ($resp as $row) {
+                    <?php
+                    $sl = 1;
+
+                    if (!empty($requests)) {
+                        foreach ($requests as $row) {
                     ?>
-                            <tr>
-                                <td>
-                                    <div class="fw-600 h6 m-0">
-                                        <div class="d-flex align-items-center">
-                                            <div class="text-nowrap">
-                                                <strong><?= $row['customer_name']; ?></strong>
-                                                <br><small class="text-muted">Eml: <?= $row['customer_email']; ?></small>
-                                                <br><small class="text-muted">Mob: <?= $row['customer_mobile']; ?></small>
-                                            </div>
-                                        </div>
+                            <tr data-request-id="<?= esc($row['uid']) ?>" data-amount="<?= esc($row['lead_price'] ?? '500.00') ?>">
+
+                                <td><?= $sl++; ?></td>
+
+                                <td class="lead-details">
+                                    <div class="masked <?= $row['is_paid'] ? 'd-none' : '' ?>">
+                                        <strong>************</strong><br>
+                                        <small class="text-muted">Eml: ************</small><br>
+                                        <small class="text-muted">Mob: ************</small>
+                                    </div>
+
+                                    <div class="real <?= $row['is_paid'] ? '' : 'd-none' ?>">
+                                        <strong><?= $row['customer_name'] ?? $row['name']; ?></strong><br>
+                                        <small class="text-muted">Eml: <?= $row['customer_email'] ?? $row['email']; ?></small><br>
+                                        <small class="text-muted">Mob: <?= $row['customer_mobile'] ?? $row['mobile']; ?></small>
                                     </div>
                                 </td>
+
+                                <td>
+                                    <img src="<?= base_url($row['product_image'] ?: 'assets/default-product.png') ?>"
+                                        width="60" height="60"
+                                        style="border-radius:6px; object-fit:cover;">
+
+                                </td>
+
                                 <td>
                                     <div><?= $row['product_name']; ?></div>
                                 </td>
+
                                 <td>
                                     <?= date('d M Y, h:i A', strtotime($row['created_at'])); ?>
                                 </td>
-                                <td><?= $row['message'] ?></td>
+
+                                <td class="lead-message">
+                                    <div class="msg-masked <?= $row['is_paid'] ? 'd-none' : '' ?>">************</div>
+                                    <div class="msg-real <?= $row['is_paid'] ? '' : 'd-none' ?>">
+                                        <?= $row['message']; ?>
+                                    </div>
+                                </td>
+
                                 <td>
                                     <?php
                                     $bgColor = ($row['status'] === 'Active') ? '#FFE4E3' : '#D1FAE5';
@@ -95,26 +123,27 @@
                                         <?= $row['status']; ?>
                                     </button>
                                 </td>
+
                                 <td style="max-width: 120px;">
-                                    <!--  <div class="d-flex align-items-center gap-3">
-                                        <a href="<?php echo base_url('vendor/view-product/' . $row['uid']) ?>" class="btnico">
-                                            <svg width="22" height="16" viewBox="0 0 22 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M22 8C22 7.52133 21.7567 7.208 21.27 6.57867C19.4889 4.28 15.5605 0 11 0C6.43945 0 2.51106 4.28 0.729989 6.57867C0.24333 7.208 0 7.52133 0 8C0 8.47867 0.24333 8.792 0.729989 9.42133C2.51106 11.72 6.43945 16 11 16C15.5605 16 19.4889 11.72 21.27 9.42133C21.7567 8.792 22 8.47867 22 8ZM11 12C11.998 12 12.9551 11.5786 13.6607 10.8284C14.3664 10.0783 14.7628 9.06087 14.7628 8C14.7628 6.93913 14.3664 5.92172 13.6607 5.17157C12.9551 4.42143 11.998 4 11 4C10.002 4 9.04495 4.42143 8.33928 5.17157C7.63361 5.92172 7.23717 6.93913 7.23717 8C7.23717 9.06087 7.63361 10.0783 8.33928 10.8284C9.04495 11.5786 10.002 12 11 12Z" fill="#0D9488" />
-                                            </svg>
-                                        </a>
-                                    </div>-->
                                     <button class="btnico" onclick="deleteRequest('<?= $row['uid'] ?>')">
-                                        <svg width="15" height="18" viewBox="0 0 15 18" fill="none"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <path
-                                                d="M10.0991 1.99469L10.3566 3.71154H13.8419C14.0167 3.71154 14.1843 3.7784 14.3079 3.89741C14.4315 4.01643 14.501 4.17784 14.501 4.34615C14.501 4.51446 14.4315 4.67588 14.3079 4.79489C14.1843 4.91391 14.0167 4.98077 13.8419 4.98077H13.1661L12.3989 13.5988C12.3523 14.1235 12.3146 14.555 12.2539 14.9036C12.1924 15.2666 12.0984 15.5915 11.9147 15.8928C11.6263 16.3659 11.1975 16.7451 10.6835 16.9818C10.3566 17.1315 10.0121 17.1933 9.63073 17.2221C9.26428 17.25 8.81522 17.25 8.26861 17.25H6.23334C5.68673 17.25 5.23767 17.25 4.87122 17.2221C4.48982 17.1933 4.14534 17.1315 3.81843 16.9818C3.30441 16.7451 2.87565 16.3659 2.58725 15.8928C2.4027 15.5915 2.31043 15.2666 2.24804 14.9036C2.1874 14.5542 2.14961 14.1235 2.10304 13.5988L1.33586 4.98077H0.660067C0.485266 4.98077 0.317623 4.91391 0.19402 4.79489C0.0704162 4.67588 0.000976562 4.51446 0.000976562 4.34615C0.000976562 4.17784 0.0704162 4.01643 0.19402 3.89741C0.317623 3.7784 0.485266 3.71154 0.660067 3.71154H4.14534L4.40282 1.99469L4.41249 1.94308C4.57243 1.27462 5.16825 0.75 5.91522 0.75H8.58673C9.3337 0.75 9.92952 1.27462 10.0895 1.94308L10.0991 1.99469ZM5.4767 3.71154H9.02437L8.7994 2.20877C8.75722 2.06746 8.65001 2.01923 8.58586 2.01923H5.9161C5.85195 2.01923 5.74473 2.06746 5.70255 2.20877L5.4767 3.71154ZM6.59189 7.73077C6.59189 7.56246 6.52245 7.40104 6.39884 7.28203C6.27524 7.16302 6.1076 7.09615 5.93279 7.09615C5.75799 7.09615 5.59035 7.16302 5.46675 7.28203C5.34314 7.40104 5.2737 7.56246 5.2737 7.73077V11.9615C5.2737 12.1298 5.34314 12.2913 5.46675 12.4103C5.59035 12.5293 5.75799 12.5962 5.93279 12.5962C6.1076 12.5962 6.27524 12.5293 6.39884 12.4103C6.52245 12.2913 6.59189 12.1298 6.59189 11.9615V7.73077ZM9.22825 7.73077C9.22825 7.56246 9.15881 7.40104 9.03521 7.28203C8.9116 7.16302 8.74396 7.09615 8.56916 7.09615C8.39436 7.09615 8.22671 7.16302 8.10311 7.28203C7.97951 7.40104 7.91007 7.56246 7.91007 7.73077V11.9615C7.91007 12.1298 7.97951 12.2913 8.10311 12.4103C8.22671 12.5293 8.39436 12.5962 8.56916 12.5962C8.74396 12.5962 8.9116 12.5293 9.03521 12.4103C9.15881 12.2913 9.22825 12.1298 9.22825 11.9615V7.73077Z"
-                                                fill="#AB3D3C" />
+                                        <svg width="15" height="18" viewBox="0 0 15 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M10.0991 1.99469L10.3566 3.71154H13.8419C14.0167 3.71154 14.1843 3.7784 14.3079 3.89741C14.4315 4.01643 14.501 4.17784 14.501 4.34615C14.501 4.51446 14.4315 4.67588 14.3079 4.79489C14.1843 4.91391 14.0167 4.98077 13.8419 4.98077H13.1661L12.3989 13.5988C12.3523 14.1235 12.3146 14.555 12.2539 14.9036C12.1924 15.2666 12.0984 15.5915 11.9147 15.8928C11.6263 16.3659 11.1975 16.7451 10.6835 16.9818C10.3566 17.1315 10.0121 17.1933 9.63073 17.2221C9.26428 17.25 8.81522 17.25 8.26861 17.25H6.23334C5.68673 17.25 5.23767 17.25 4.87122 17.2221C4.48982 17.1933 4.14534 17.1315 3.81843 16.9818C3.30441 16.7451 2.87565 16.3659 2.58725 15.8928C2.4027 15.5915 2.31043 15.2666 2.24804 14.9036C2.1874 14.5542 2.14961 14.1235 2.10304 13.5988L1.33586 4.98077H0.660067C0.485266 4.98077 0.317623 4.91391 0.19402 4.79489C0.0704162 4.67588 0.000976562 4.51446 0.000976562 4.34615C0.000976562 4.17784 0.0704162 4.01643 0.19402 3.89741C0.317623 3.7784 0.485266 3.71154 0.660067 3.71154H4.14534L4.40282 1.99469L4.41249 1.94308C4.57243 1.27462 5.16825 0.75 5.91522 0.75H8.58673C9.3337 0.75 9.92952 1.27462 10.0895 1.94308L10.0991 1.99469Z" fill="#AB3D3C" />
                                         </svg>
                                     </button>
                                 </td>
+
+                                <td>
+                                    <?php if (!$row['is_paid']) : ?>
+                                        <button class="btn btn-primary btn-sm buyLeadBtn">Buy Lead</button>
+                                    <?php else: ?>
+                                        <button class="btn btn-success btn-sm" disabled>Purchased</button>
+                                    <?php endif; ?>
+                                </td>
                             </tr>
-                    <?php }
-                    } ?>
+                    <?php
+                        }
+                    }
+                    ?>
                 </tbody>
             </table>
         </div>
@@ -124,10 +153,9 @@
         $(document).ready(function() {
             $('#tableProduct').DataTable({
                 columnDefs: [{
-                        type: 'num',
-                        targets: 0
-                    } // if first column is numeric ID
-                ],
+                    type: 'num',
+                    targets: 0
+                }],
                 order: [
                     [0, 'asc']
                 ]
@@ -135,7 +163,7 @@
         });
 
         function deleteRequest(uid) {
-            console.log('============', uid);
+            // console.log('============', uid);
             // return ; 
             Swal.fire({
                 title: 'Are you sure?',
@@ -179,7 +207,6 @@
             });
         }
         $(document).ready(function() {
-            // Common handler function
             function handleFilterChange() {
                 const customer = $('#search_customer').val();
                 const product = $('#search_product').val();
@@ -194,3 +221,218 @@
             $('#search_date').on('change', handleFilterChange); // for manual input or date picker
         });
     </script>
+
+    <!-- Payment -->
+    <script>
+        const BASE_URL = "<?= rtrim(base_url(), '/') ?>";
+        window.VENDOR_ID = "<?= esc($vendor_id ?? '') ?>";
+        console.log("Loaded Vendor ID =", window.VENDOR_ID);
+    </script>
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        
+        (() => {
+
+            const RAZORPAY_KEY = "<?= esc(getenv('RAZORPAY_KEY') ?: '') ?>";
+
+            // Toast shortcuts
+            function toast(msg, type = 'info') {
+                if (type === 'success' && window.MessSuccess)
+                    return MessSuccess.fire({
+                        icon: 'success',
+                        title: msg
+                    });
+
+                if (type === 'error' && window.MessError)
+                    return MessError.fire({
+                        icon: 'error',
+                        title: msg
+                    });
+
+                alert(msg);
+            }
+
+            // ===============================
+            // UI Helpers
+            // ===============================
+
+            function unmaskRow(row) {
+                row.querySelector(".masked")?.classList.add("d-none");
+                row.querySelector(".real")?.classList.remove("d-none");
+
+                row.querySelector(".msg-masked")?.classList.add("d-none");
+                row.querySelector(".msg-real")?.classList.remove("d-none");
+
+                const btn = row.querySelector(".buyLeadBtn");
+                if (btn) {
+                    btn.innerText = "Purchased";
+                    btn.classList.remove("btn-primary", "btn-warning");
+                    btn.classList.add("btn-success");
+                    btn.disabled = true;
+                }
+            }
+
+            function markPending(row) {
+                const btn = row.querySelector(".buyLeadBtn");
+                if (btn) {
+                    btn.innerText = "Processing...";
+                    btn.classList.remove("btn-primary");
+                    btn.classList.add("btn-warning");
+                    btn.disabled = true;
+                }
+            }
+
+            function revertRow(row) {
+                const btn = row.querySelector(".buyLeadBtn");
+                if (btn) {
+                    btn.innerText = "Buy Lead";
+                    btn.classList.remove("btn-warning", "btn-success");
+                    btn.classList.add("btn-primary");
+                    btn.disabled = false;
+                }
+            }
+
+            // ===============================
+            // API CALLS
+            // ===============================
+
+            async function createOrderOnServer(requestUid, amount, vendorId) {
+                const fd = new FormData();
+                fd.append("request_id", requestUid);
+                fd.append("vendor_id", vendorId);
+                fd.append("amount", amount);
+                fd.append("gateway", "razorpay");
+
+                const res = await fetch(`${BASE_URL}/vendor/payment/create-order`, {
+                    method: "POST",
+                    body: fd,
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest"
+                    }
+                });
+
+                if (!res.ok) throw new Error("Order creation failed: " + res.status);
+                return res.json();
+            }
+
+            async function verifyPaymentOnServer(paymentUid, orderId, paymentId, signature) {
+                const fd = new FormData();
+                fd.append("uid", paymentUid);
+                fd.append("razorpay_order_id", orderId);
+                fd.append("razorpay_payment_id", paymentId);
+                fd.append("razorpay_signature", signature);
+
+                const res = await fetch(`${BASE_URL}/vendor/payment/verify`, {
+                    method: "POST",
+                    body: fd,
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest"
+                    }
+                });
+
+                if (!res.ok) throw new Error("Verification failed: " + res.status);
+                return res.json();
+            }
+
+            async function fetchPaymentStatus(requestUid) {
+                const res = await fetch(`${BASE_URL}/vendor/payment/status/${encodeURIComponent(requestUid)}`);
+                if (!res.ok) return null;
+                return res.json();
+            }
+
+            // ===============================
+            // Initialize on page load
+            // ===============================
+
+            async function initRowsOnLoad() {
+                const rows = document.querySelectorAll("table#tableProduct tbody tr[data-request-id]");
+
+                for (const row of rows) {
+                    const reqId = row.dataset.requestId;
+                    const status = await fetchPaymentStatus(reqId);
+
+                    if (status?.status === "success") {
+                        unmaskRow(row);
+                    }
+                }
+            }
+
+            document.addEventListener("DOMContentLoaded", initRowsOnLoad);
+
+            // ===============================
+            // Payment Flow
+            // ===============================
+
+            document.addEventListener("click", async (e) => {
+                if (!e.target.classList.contains("buyLeadBtn")) return;
+
+                const btn = e.target;
+                const row = btn.closest("tr");
+
+                const requestUid = row.dataset.requestId;
+                const amount = Number(row.dataset.amount || 0);
+                const vendorId = window.VENDOR_ID; 
+
+                if (!vendorId) {
+                    toast("Vendor ID missing. Please login again.", "error");
+                    return;
+                }
+
+                markPending(row);
+
+                try {
+                    const order = await createOrderOnServer(requestUid, amount, vendorId);
+                    const paymentUid = order.payment.uid;
+                    const gatewayOrder = order.gateway_order;
+
+                    const rzp = new Razorpay({
+                        key: RAZORPAY_KEY,
+                        amount: gatewayOrder.amount,
+                        currency: "INR",
+                        order_id: gatewayOrder.id,
+                        handler: async function(response) {
+                            const verify = await verifyPaymentOnServer(
+                                paymentUid,
+                                response.razorpay_order_id,
+                                response.razorpay_payment_id,
+                                response.razorpay_signature
+                            );
+
+                            if (verify?.status === "success") {
+
+                                // Show transaction ID to user
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Payment Successful",
+                                    html: `Transaction ID:<br><b>${response.razorpay_payment_id}</b>`
+                                });
+
+                                unmaskRow(row);
+                            } else {
+                                revertRow(row);
+                                toast("Payment verification failed!", "error");
+                            }
+                        },
+
+                        modal: {
+                            ondismiss: () => revertRow(row)
+                        },
+
+                        theme: {
+                            color: "#0D9488"
+                        }
+                    });
+
+                    rzp.open();
+
+                } catch (err) {
+                    console.error("Payment error:", err);
+                    revertRow(row);
+                    toast(err.message, "error");
+                }
+            });
+
+        })();
+    </script>
+    <!-- Payment -->

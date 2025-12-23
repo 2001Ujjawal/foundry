@@ -21,6 +21,11 @@ $routes->group('vendor', ['namespace' => 'App\Controllers\Vendors'], function ($
     $routes->get('requests', 'WebController::requests');
     $routes->get('ratings', 'WebController::ratings');
     $routes->get('logout', 'WebController::logout');
+
+    // Bulk Upload 
+    $routes->get('bulk-upload', 'WebController::bulkUploadForm');
+    $routes->post('bulk-upload-submit', 'WebController::bulkUploadSubmit');
+
 });
 
 $routes->group('vendor/api', ['namespace' => 'App\Controllers\Vendors'], function ($routes) {
@@ -41,4 +46,13 @@ $routes->group('vendor/api', ['namespace' => 'App\Controllers\Vendors'], functio
     });
     /** Product */
 });
+/**Leads */
+$routes->group('vendor', ['namespace' => 'App\Controllers\Vendors'], function($routes) {
+    $routes->post('payment/create-order', 'PaymentController::createOrder');
+    $routes->post('payment/verify', 'PaymentController::verifyPayment');
+});
+
+
+
+/**Leads */
 /** Vendor */

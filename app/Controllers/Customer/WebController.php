@@ -7,6 +7,7 @@ use App\Services\Customer\WebService;
 use App\Models\CommonModel;
 use App\Models\Customer\WebModel;
 
+
 use CodeIgniter\API\ResponseTrait;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
@@ -17,14 +18,23 @@ class WebController extends Common
     protected $commonModel;
     protected $webmodel;
     protected $db;
+    protected $session;
+
     public function __construct()
     {
-        $this->session = session();
+        $this->session= session();
         $this->webService = new WebService();
         $this->commonModel = new CommonModel();
         $this->webmodel = new WebModel();
         $this->db =   \Config\Database::connect();
     }
+
+    public function isCustomerLoggedIn()
+    {
+        $payload = $this->validateJwtWebTokenCustomer();
+        return !empty($payload);
+    }
+
 
     /** Index */
     public function index()
@@ -32,7 +42,7 @@ class WebController extends Common
         $resp['category'] = $this->commonModel->getCategory();
         //$resp['product'] = $this->commonModel->getAllData(PRODUCT_TABLE,['status' => ACTIVE_STATUS]);
         $resp['product'] = $this->webService->getAllProductDetails();
-        $resp['review'] = $this->webService->getCustomerReview();
+        $this->webService->getCustomerReview();
         
         // $targetCount = 20;
         // while (count($resp['product']) < $targetCount) {
@@ -46,7 +56,9 @@ class WebController extends Common
         $metaTags = [
             'meta_title' => !empty($homePageMetaTags->title) ?  $homePageMetaTags->title  : 'Home',
             'meta_description' => !empty($homePageMetaTags->description) ?  $homePageMetaTags->description  : ''
+            
         ];
+        $resp['customerLoggedIn'] = $this->isCustomerLoggedIn();
 
         return
             view('customer/templates/header.php', $metaTags) .
@@ -90,11 +102,11 @@ class WebController extends Common
         $query = $builder->get();
         $categories = $query->getResultArray();
 
-        // Organize into parent → children structure
+        
         $categoryTree = [];
         foreach ($categories as $category) {
             if (empty($category['path'])) {
-                // This is a main category
+                
                 $categoryTree[$category['uid']] = $category;
                 $categoryTree[$category['uid']]['subcategories'] = [];
             }
@@ -124,6 +136,11 @@ class WebController extends Common
             'meta_title' => 'Product Filter',
             'meta_description' => 'Equip your project with the best. Foundry offers a full range of heavy-duty machines and commercial equipment built for performance and durability. Find the power you need, delivered straight to your site'
         ];
+        
+        $resp['vendorCountryList'] = $this->webmodel->getVendorCountryList();
+        $resp['customerLoggedIn'] = $this->isCustomerLoggedIn();
+        //  dd($resp['customerLoggedIn']);
+
 
         // echo'<pre>';
         // print_r($resp);
@@ -157,9 +174,12 @@ class WebController extends Common
 
         $db = \Config\Database::connect();
         $payload = $this->validateJwtWebTokenCustomer();
-
+        // echo '<pre>';
+        // print_r($payload);
+        // die;
         if (!empty($payload)) {
             $resp['customerDetails'] = [
+                'user_id' => $payload->user_id,
                 'name' => $payload->user_name,
                 'email' => $payload->user_email,
                 'phone' => $payload->user_mobile
@@ -168,7 +188,8 @@ class WebController extends Common
             $resp['customerDetails'] = [];
         }
         $getSingleProductUid = $db->table('product')->where('slug', $slug)->get()->getRow();
-
+            // print_r($getSingleProductUid);
+            // die;
         if (empty($getSingleProductUid) && $getSingleProductUid === null) {
             $getSingleProductUid = $db->table('product')->where('uid', $slug)->get()->getRow();
             $productId = $getSingleProductUid->uid;
@@ -198,7 +219,9 @@ class WebController extends Common
                 ['uid' => $vendorUid],
             );
         }
-
+        // echo '<pre>';
+        // print_r($resp);
+        // die;
         // $this->dd($resp) ; 
         return
             view('customer/templates/header.php', $metaTags) .
@@ -352,3 +375,4 @@ class WebController extends Common
         return $builder->get()->getResultArray();
     }
 }
+

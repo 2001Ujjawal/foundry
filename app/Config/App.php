@@ -20,7 +20,7 @@ class App extends BaseConfig
      * E.g., http://example.com/
      */
     //public string $baseURL = 'http://localhost/foundry';
-    public string $baseURL = 'https://www.foundrybiz.com';
+    public string $baseURL = 'https://www.foundrybiz.com/';
 
     /**
      * Allowed Hostnames in the Site URL other than the hostname in the baseURL.

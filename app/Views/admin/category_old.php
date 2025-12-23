@@ -1,4 +1,3 @@
-
 <div class="content-body p-3">
     <div class="mt-4 rounded-10 bg-white border">
         <div class="p-3">
@@ -36,23 +35,23 @@
                                     <div class="fw-600 h6 m-0"><?= $row['title']; ?></div>
                                 </td>
                                 <td>
-                                    <?php if(!empty($row['image'])) { ?>
+                                    <?php if (!empty($row['image'])) { ?>
                                         <img src="<?= base_url($row['image']) ?>" alt="Vendor Image" style="width: 40px; height: 40px;">
-                                    <?php }else{ ?>
-                                        
+                                    <?php } else { ?>
+
                                     <?php } ?>
                                 </td>
                                 <td>
-                                    <div class="fw-600 h6 m-0"><?= $row['path_name'] ?? "--" ; ?></div>
-                                </td>    
+                                    <div class="fw-600 h6 m-0"><?= $row['path_name'] ?? "--"; ?></div>
+                                </td>
                                 <td>
                                     <div class="form-check form-switch d-flex justify-content-center">
-                                        <?php if($row['status'] != 'deleted'){ ?>
-                                        <input class="form-check-input" type="checkbox" role="switch"
-                                            id="flexSwitchCheckChecked_<?= $row['id']; ?>"
-                                            onchange="handleStatusChange(this, '<?= $row['uid']; ?>')"
-                                            <?= ($row['status'] == ACTIVE_STATUS) ? 'checked' : ''; ?>>
-                                        <label class="form-check-label" for="flexSwitchCheckChecked"></label>
+                                        <?php if ($row['status'] != 'deleted') { ?>
+                                            <input class="form-check-input" type="checkbox" role="switch"
+                                                id="flexSwitchCheckChecked_<?= $row['id']; ?>"
+                                                onchange="handleStatusChange(this, '<?= $row['uid']; ?>')"
+                                                <?= ($row['status'] == ACTIVE_STATUS) ? 'checked' : ''; ?>>
+                                            <label class="form-check-label" for="flexSwitchCheckChecked"></label>
                                         <?php } ?>
                                     </div>
                                 </td>
@@ -65,13 +64,12 @@
                                             </svg>
                                         </button> -->
 
-                                        <button class="btnico" 
+                                        <button class="btnico"
                                             onclick="openEditModal(this)"
                                             data-uid="<?= $row['uid']; ?>"
                                             data-name="<?= htmlspecialchars($row['title']); ?>"
                                             data-path="<?= htmlspecialchars($row['path']);   ?>"
-                                            data-image="<?= htmlspecialchars($row['image']); ?>"
-                                        >
+                                            data-image="<?= htmlspecialchars($row['image']); ?>">
                                             <svg width="18" height="18" viewBox="0 0 18 18" fill="none"
                                                 xmlns="http://www.w3.org/2000/svg">
                                                 <path
@@ -120,12 +118,13 @@
                             <label class="form-label">Category</label>
                             <select class="form-control" name="category" id="category">
                                 <option value="">Select Category</option>
-                                <?php 
-                                    if(!empty($category)){
-                                    foreach($category as $key){
-                                    ?>
-                                    <option value="<?= $key['uid']; ?>"><?= $key['title']; ?></option>
-                                <?php }} ?>
+                                <?php
+                                if (!empty($category)) {
+                                    foreach ($category as $key) {
+                                ?>
+                                        <option value="<?= $key['uid']; ?>"><?= $key['title']; ?></option>
+                                <?php }
+                                } ?>
                             </select>
                         </div>
                         <div class="mb-3">
@@ -164,12 +163,13 @@
                             <label class="form-label">Category</label>
                             <select class="form-control" name="path" id="editPath">
                                 <option value="">Select Category</option>
-                                <?php 
-                                    if(!empty($category)){
-                                    foreach($category as $key){
-                                    ?>
-                                    <option value="<?= $key['uid']; ?>"><?= $key['title']; ?></option>
-                                <?php }} ?>
+                                <?php
+                                if (!empty($category)) {
+                                    foreach ($category as $key) {
+                                ?>
+                                        <option value="<?= $key['uid']; ?>"><?= $key['title']; ?></option>
+                                <?php }
+                                } ?>
                             </select>
                         </div>
                         <!-- Upload Image -->
@@ -194,113 +194,159 @@
     </div>
     <!-- Edit module -->
 
-<script>
-    /** Created */
-    $(document).ready(function () {
-        $('#categoryForm').on('submit', function (e) {
-            e.preventDefault();
+    <script>
+        /** Created */
+        $(document).ready(function() {
+            $('#categoryForm').on('submit', function(e) {
+                e.preventDefault();
 
-            $('.text-danger').remove();
-            let isValid = true;
-            let formData = new FormData(this);
-            
-            $('#categoryForm input, #categoryForm select').each(function () {
-                const input = $(this);
-                const name = input.attr('name');
-                const value = input.val().trim();
-                if (name !== 'category' && value === '') {
-                    isValid = false;
-                    input.after('<div class="text-danger mt-1">This field is required</div>');
+                $('.text-danger').remove();
+                let isValid = true;
+                let formData = new FormData(this);
+
+                $('#categoryForm input, #categoryForm select').each(function() {
+                    const input = $(this);
+                    const name = input.attr('name');
+                    const value = input.val().trim();
+                    if (name !== 'category' && value === '') {
+                        isValid = false;
+                        input.after('<div class="text-danger mt-1">This field is required</div>');
+                    }
+                });
+                if (!isValid) {
+                    return;
                 }
-            });
-            if (!isValid) {
-                return;
-            }
 
-            const $button = $('#saveButton');
-            $button.prop('disabled', true).text('Loading...');
+                const $button = $('#saveButton');
+                $button.prop('disabled', true).text('Loading...');
 
-            $.ajax({
-                url: BASE_URL +'/admin/api/category/created', 
-                method: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    MessSuccess.fire({
-                        icon: 'success',
-                        title: response.message || 'Category Add Successful',
-                    }); 
-                    location.reload();
-                },
-                error: function (xhr) {
-                    console.error('Error:', xhr.responseText);
-                    MessError.fire({
-                        icon: 'error',
-                        title: 'An error occurred. Please try again.',
-                    });
-                }
+                $.ajax({
+                    url: BASE_URL + '/admin/api/category/created',
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        MessSuccess.fire({
+                            icon: 'success',
+                            title: response.message || 'Category Add Successful',
+                        });
+                        location.reload();
+                    },
+                    error: function(xhr) {
+                        console.error('Error:', xhr.responseText);
+                        MessError.fire({
+                            icon: 'error',
+                            title: 'An error occurred. Please try again.',
+                        });
+                    }
+                });
             });
         });
-    });
-    /** Created */
+        /** Created */
 
-    /** Update */
-    function openEditModal(button) {
-        const btn = $(button);
-        $('#editCategoryUid').val(btn.data('uid'));
-        $('#editName').val(btn.data('name'));
-        $('#editPath').val(btn.data('path'));
+        /** Update */
+        function openEditModal(button) {
+            const btn = $(button);
+            $('#editCategoryUid').val(btn.data('uid'));
+            $('#editName').val(btn.data('name'));
+            $('#editPath').val(btn.data('path'));
 
-        const imageUrl = btn.data('image');
+            const imageUrl = btn.data('image');
 
-        if (imageUrl) {
-            const fullImageUrl = BASE_URL + '/' + imageUrl;
-            $('#categoryOldImage').attr('src', fullImageUrl).show();
-            $('#oldImagePreview').show();
-        } else {
-            $('#categoryOldImage').hide();
-            $('#oldImagePreview').hide();
+            if (imageUrl) {
+                const fullImageUrl = BASE_URL + '/' + imageUrl;
+                $('#categoryOldImage').attr('src', fullImageUrl).show();
+                $('#oldImagePreview').show();
+            } else {
+                $('#categoryOldImage').hide();
+                $('#oldImagePreview').hide();
+            }
+            $('#editCategoryModal').modal('show');
         }
-        $('#editCategoryModal').modal('show');
-    }
-    $(document).ready(function () {
-        $('#editCategoryModalForm').on('submit', function (e) {
-            e.preventDefault();
+        $(document).ready(function() {
+            $('#editCategoryModalForm').on('submit', function(e) {
+                e.preventDefault();
 
-            $('.text-danger').remove();
-            let isValid = true;
-            let formData = new FormData(this);
-            
-            $('#editcategoryForm input, #editcategoryForm select').each(function () {
-                const input = $(this);
-                const name = input.attr('name');
-                const value = input.val().trim();
-                if (name !== 'category' && value === '') {
-                    isValid = false;
-                    input.after('<div class="text-danger mt-1">This field is required</div>');
+                $('.text-danger').remove();
+                let isValid = true;
+                let formData = new FormData(this);
+
+                $('#editcategoryForm input, #editcategoryForm select').each(function() {
+                    const input = $(this);
+                    const name = input.attr('name');
+                    const value = input.val().trim();
+                    if (name !== 'category' && value === '') {
+                        isValid = false;
+                        input.after('<div class="text-danger mt-1">This field is required</div>');
+                    }
+                });
+                if (!isValid) {
+                    return;
+                }
+
+                const $button = $('#editBtn');
+                $button.prop('disabled', true).text('Loading...');
+                $.ajax({
+                    url: BASE_URL + '/admin/api/category/update',
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        MessSuccess.fire({
+                            icon: 'success',
+                            title: response.message || 'Update Successful',
+                        });
+                        location.reload();
+                    },
+                    error: function(xhr) {
+                        console.error('Error:', xhr.responseText);
+                        MessError.fire({
+                            icon: 'error',
+                            title: 'An error occurred. Please try again.',
+                        });
+                    }
+                });
+            });
+        });
+        /** Update */
+
+        /** Deleted */
+        function deleteCategory(uid) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'Do you really want to delete this Category?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel',
+                reverseButtons: true,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    deleteCategoryDetails(uid);
                 }
             });
-            if (!isValid) {
-                return;
-            }
+        }
 
-            const $button = $('#editBtn');
-            $button.prop('disabled', true).text('Loading...');
+        function deleteCategoryDetails(uid) {
+            const formData = new FormData();
+            formData.append('uid', uid);
+
             $.ajax({
-                url: BASE_URL +'/admin/api/category/update', 
+                url: BASE_URL + '/admin/api/category/delete',
                 method: 'POST',
                 data: formData,
                 processData: false,
                 contentType: false,
-                success: function (response) {
+                success: function(response) {
                     MessSuccess.fire({
                         icon: 'success',
-                        title: response.message || 'Update Successful',
-                    }); 
+                        title: response.message || 'Vendor deleted successfully',
+                    });
                     location.reload();
                 },
-                error: function (xhr) {
+                error: function(xhr) {
                     console.error('Error:', xhr.responseText);
                     MessError.fire({
                         icon: 'error',
@@ -308,78 +354,33 @@
                     });
                 }
             });
-        });
-    });
-    /** Update */
+        }
+        /** Deleted */
 
-    /** Deleted */
-    function deleteCategory(uid) {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: 'Do you really want to delete this Category?',
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'Cancel',
-            reverseButtons: true,
-        }).then((result) => {
-            if (result.isConfirmed) {
-                deleteCategoryDetails(uid);
-            }
-        });
-    }
-    function deleteCategoryDetails(uid) {
-        const formData = new FormData();
-        formData.append('uid', uid); 
+        /** Update Status */
+        function handleStatusChange(checkbox, uid) {
+            const status = checkbox.checked ? 'active' : 'inactive';
+            fetch(BASE_URL + '/admin/api/category/update-status', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        uid: uid,
+                        status: status
+                    }),
+                })
+                .then(response => response.json())
+                .then(data => {
 
-        $.ajax({
-            url: BASE_URL + '/admin/api/category/delete',
-            method: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function (response) {
-                MessSuccess.fire({
-                    icon: 'success',
-                    title: response.message || 'Vendor deleted successfully',
+                })
+                .catch(error => {
+                    console.error("Error updating status:", error);
+                    alert("Failed to update status");
                 });
-                location.reload();
-            },
-            error: function (xhr) {
-                console.error('Error:', xhr.responseText);
-                MessError.fire({
-                    icon: 'error',
-                    title: 'An error occurred. Please try again.',
-                });
-            }
-        });
-    }
-    /** Deleted */
-
-    /** Update Status */
-    function handleStatusChange(checkbox, uid) {
-        const status = checkbox.checked ? 'active' : 'inactive';
-        fetch(BASE_URL + '/admin/api/category/update-status', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                uid: uid,
-                status: status
-            }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            
-        })
-        .catch(error => {
-            console.error("Error updating status:", error);
-            alert("Failed to update status");
-        });
-    }
-    /** Update Status */
+        }
+        /** Update Status */
     </script>
-apps-fileview.texmex_20250814.00_p1
-category.php
-Displaying category.php.
+    apps-fileview.texmex_20250814.00_p1
+    category.php
+    Displaying category.php.

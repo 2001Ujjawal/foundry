@@ -136,7 +136,7 @@
 
 
 
-
+<!-- 
     <script>
         const imageInput = document.getElementById('imageInput');
         const previewContainer = document.getElementById('previewContainer');
@@ -242,4 +242,158 @@
                 });
             });
         });
-    </script>
+    </script> -->
+
+    <script>
+    const imageInput = document.getElementById('imageInput');
+    const previewContainer = document.getElementById('previewContainer');
+    let selectedImages = [];
+
+    previewContainer.addEventListener('dragover', e => {
+        e.preventDefault();
+        previewContainer.classList.add('border-primary');
+    });
+
+    previewContainer.addEventListener('dragleave', () => {
+        previewContainer.classList.remove('border-primary');
+    });
+
+    previewContainer.addEventListener('drop', e => {
+        e.preventDefault();
+        previewContainer.classList.remove('border-primary');
+        handleFiles(Array.from(e.dataTransfer.files));
+    });
+
+    imageInput.addEventListener('change', (event) => {
+        handleFiles(Array.from(event.target.files));
+        imageInput.value = '';
+    });
+
+  
+    function handleFiles(files) {
+        files.forEach(file => {
+            if (!file.type.startsWith('image/')) return;
+
+            const reader = new FileReader();
+            reader.onload = e => compressImage(e.target.result, file.name);
+            reader.readAsDataURL(file);
+        });
+    }
+
+    function compressImage(src, filename) {
+        const img = new Image();
+        img.src = src;
+
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+
+            canvas.width = 1200;
+            canvas.height = 800;
+
+            ctx.fillStyle = '#fff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(img, 0, 0, 1200, 800);
+
+            let quality = 0.8;
+            let blob;
+
+            do {
+                blob = dataURLtoBlob(canvas.toDataURL('image/jpeg', quality));
+                quality -= 0.02;
+            } while (blob.size > 150 * 1024 && quality >= 0.75);
+
+            const compressedFile = new File(
+                [blob],
+                filename.replace(/\.(png|webp)$/i, '.jpg'),
+                { type: 'image/jpeg' }
+            );
+
+            selectedImages.push(compressedFile);
+            renderPreview(URL.createObjectURL(blob), compressedFile);
+        };
+    }
+
+    function renderPreview(imageUrl, file) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'position-relative';
+        wrapper.style.width = '100px';
+        wrapper.style.height = '100px';
+
+        const img = document.createElement('img');
+        img.src = imageUrl;
+        img.className = 'img-thumbnail';
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.objectFit = 'cover';
+
+        const removeBtn = document.createElement('button');
+        removeBtn.type = 'button';
+        removeBtn.className = 'btn btn-danger btn-sm position-absolute top-0 end-0';
+        removeBtn.innerHTML = '&times;';
+        removeBtn.onclick = () => {
+            previewContainer.removeChild(wrapper);
+            selectedImages = selectedImages.filter(i => i !== file);
+        };
+
+        wrapper.appendChild(img);
+        wrapper.appendChild(removeBtn);
+        previewContainer.appendChild(wrapper);
+    }
+
+    function dataURLtoBlob(dataURL) {
+        const arr = dataURL.split(',');
+        const mime = arr[0].match(/:(.*?);/)[1];
+        const bstr = atob(arr[1]);
+        let n = bstr.length;
+        const u8arr = new Uint8Array(n);
+        while (n--) u8arr[n] = bstr.charCodeAt(n);
+        return new Blob([u8arr], { type: mime });
+    }
+
+    
+    $(document).ready(function () {
+        $('#productForm').on('submit', function (e) {
+            e.preventDefault();
+
+            $('.text-danger').remove();
+            let isValid = true;
+
+            $('#productForm').find('input, textarea, select').each(function () {
+                const input = $(this);
+                if (input.attr('required') && !input.val().trim()) {
+                    isValid = false;
+                    input.after('<div class="text-danger mt-1">This field is required</div>');
+                }
+            });
+
+            if (!isValid) return;
+
+            const formData = new FormData(this);
+            selectedImages.forEach(file => {
+                formData.append('images[]', file);
+            });
+
+            const $button = $('#saveButton');
+            $button.prop('disabled', true).text('Loading...');
+
+            $.ajax({
+                url: BASE_URL + '/vendor/api/product/created',
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: () => {
+                    window.location.href = BASE_URL + 'vendor/products';
+                },
+                error: xhr => {
+                    console.error(xhr.responseText);
+                    MessError.fire({ icon: 'error', title: 'Upload failed. Try again.' });
+                },
+                complete: () => {
+                    $button.prop('disabled', false).text('SUBMIT');
+                }
+            });
+        });
+    });
+</script>

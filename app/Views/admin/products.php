@@ -6,14 +6,14 @@
                 <div class="m-0 h5 fw-600">List of Products</div>
             </div>
         </div>
-
         <div class="px-3 pb-3">
             <table id="tableProduct" class="display border">
                 <thead>
                     <tr>
-                        <th class="text-start">Vendor Details</th>
+                        <th>SL No.</th>
+                        <th>Image</th>
                         <th>Product Name</th>
-                        <!-- <th>Image</th> -->
+                        <th>Company Name</th>
                         <th>Category</th>
                         <th>Sort No</th>
                         <th>Approval</th>
@@ -25,26 +25,33 @@
                 </thead>
                 <tbody>
                     <?php if (!empty($resp)) {
-                        foreach ($resp as $row) {
+                        foreach ($resp as $key => $row) {
+                            // foreach ($resp as $row) {
+
+
                     ?>
+
                             <tr>
+                                <td><?= $key + 1 ?></td>
                                 <td>
-                                    <div class="text-nowrap text-start">
-                                        <div><?= $row['vendor_name']; ?></div>
-                                        <small class="text-muted d-block">Email: <?= $row['vendor_email']; ?></small>
-                                        <small class="text-muted d-block">Mob: <?= $row['vendor_mobile']; ?></small>
-                                    </div>
-                                </td>
-                                <td>
-                                    <div><?= $row['name']; ?></div>
-                                </td>
-                                <!-- <td>
                                     <?php if (!empty($row['image'])) { ?>
                                         <img src="<?= base_url($row['image']) ?>" alt="Vendor Image" style="width: 40px; height: 40px;">
                                     <?php } else { ?>
 
                                     <?php } ?>
-                                </td> -->
+                                </td>
+                                <td>
+                                    <div><?= $row['name']; ?></div>
+                                </td>
+                                <td>
+                                    <div class="text-nowrap text-start">
+                                        <!-- <div><?= $row['vendor_name']; ?></div> -->
+                                        <div><?= $row['company'] ?? '--'; ?></div>
+                                        <!-- <small class="text-muted d-block">Email: <?= $row['vendor_email']; ?></small> -->
+                                        <small class="text-muted d-block">vendor: <?= $row['vendor_name']; ?></small>
+                                        <small class="text-muted d-block">Mob: <?= $row['vendor_mobile']; ?></small>
+                                    </div>
+                                </td>
                                 <td>
                                     <div><?= $row['category_name']; ?></div>
                                 </td>
@@ -72,12 +79,13 @@
                                 <td>
                                     <div class="form-check form-switch d-flex justify-content-center">
                                         <input class="form-check-input" type="checkbox" role="switch"
-                                            id="productVerify_<?= $row['uid']; ?>"
+                                            id="productSponsored_<?= $row['uid']; ?>"
+                                            value="1"
                                             onchange="productVerify(this, '<?= $row['uid']; ?>')"
                                             <?= $row['is_verify'] == 1 ? 'checked' : '' ?>>
-                                        <label class="form-check-label" for="productVerify_<?= $row['uid']; ?>"></label>
+                                        <span class="d-none"><?= $row['is_verify'] == 1 ? 'off' : 'on' ?></span>
+                                        <label class="form-check-label" for="productSponsored_<?= $row['uid']; ?>"></label>
                                     </div>
-
                                 </td>
                                 <td>
                                     <div class="form-check form-switch d-flex justify-content-center">
@@ -124,8 +132,44 @@
                     } ?>
                 </tbody>
             </table>
+
+            <script>
+                // $(document).ready(function() {
+                //     $('#tableProduct').DataTable({
+                //     responsive: true,
+                //         columnDefs: [{
+                //                 type: 'num',
+                //                 targets: 0
+                //             } 
+                //         ],
+                //         order: [
+                //             [0, 'asc']
+                //         ]
+                //     });
+                // });
+                $(document).ready(function() {
+
+                    var table = $('#tableProduct').DataTable();
+
+                    // Sponsored filter logic
+                    $('#sponsoredFilter').on('change', function() {
+                        let filterValue = this.value;
+
+                        if (filterValue === "") {
+                            table.column(7).search("").draw(); // default
+                        } else if (filterValue === "1") {
+                            table.column(7).search("^on$", true, false).draw();
+                        } else if (filterValue === "0") {
+                            table.column(7).search("^off$", true, false).draw();
+                        }
+                    });
+
+                });
+            </script>
         </div>
     </div>
+
+
     <script>
         /**
          *  This Function Work For Product OrderIng  Only For Sponsored Product 
@@ -160,7 +204,7 @@
                                         icon: 'success',
                                         title: json.message || "Product sorting updated successfully",
                                     });
-                                 
+
                                 } else {
                                     MessSuccess.fire({
                                         icon: 'error',
@@ -247,24 +291,8 @@
                 });
         }
     </script>
+
     <script>
-
-    </script>
-    <script>
-        $(document).ready(function() {
-            $('#tableProduct').DataTable({
-                columnDefs: [{
-                        type: 'num',
-                        targets: 0
-                    } // if first column is numeric ID
-                ],
-                order: [
-                    [0, 'asc']
-                ]
-            });
-        });
-
-
         function productVerify(checkbox, uid) {
 
             let willBeVerified = checkbox.checked;
