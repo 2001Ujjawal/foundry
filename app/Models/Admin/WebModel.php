@@ -53,28 +53,97 @@ class WebModel extends Model
     /** Get Category Details */
 
     /** Get Product Details */
+    //     public function getProductsDetails()
+    //     {
+    //         $db = \Config\Database::connect();
+    //         $builder = $db->table('product p');
+    //         $builder->select('
+    //             p.*, 
+    //             v.name AS vendor_name, 
+    //             v.email AS vendor_email, 
+    //             v.mobile AS vendor_mobile,
+    //             v.company as company,
+    //             pi.image as image,
+    //             c.title AS category_name
+    //         ');
+    //         $builder->join('vendor v', 'v.uid = p.vendor_id', 'left');
+    //         $builder->join('category c', 'c.uid = p.category_id', 'left');
+    //         // $builder->join('product_image pi','pi.product_id = p.uid AND pi.main_image = 1','left');
+    //         // $builder->join('product_image pi','pi.product_id = p.uid AND pi.main_image = 1 AND pi.status = "active"','left');
+    //         $builder->join(
+    //     '(SELECT pi1.*
+    //       FROM product_image pi1
+    //       INNER JOIN (
+    //           SELECT 
+    //               product_id,
+    //               MAX(created_at) AS latest_created
+    //           FROM product_image
+    //           WHERE status = "active"
+    //           GROUP BY product_id
+    //       ) pi2
+    //       ON pi1.product_id = pi2.product_id
+    //      AND pi1.created_at = pi2.latest_created
+    //       WHERE pi1.main_image = 1
+    //          OR pi1.main_image = 0
+    //       ORDER BY 
+    //           pi1.main_image DESC,
+    //           pi1.status = "active" DESC
+    //     ) pi',
+    //     'pi.product_id = p.uid',
+    //     'left',
+    //     false
+    // );
+
+
+    //         $builder->orderBy('p.id', 'DESC');
+    //         $builder->where('p.status !=', DELETED_STATUS);
+
+    //         $result = $builder->get()->getResultArray();
+    //         return $result;
+    //     }
+
+
+
     public function getProductsDetails()
     {
         $db = \Config\Database::connect();
         $builder = $db->table('product p');
+
         $builder->select('
-            p.*, 
-            v.name AS vendor_name, 
-            v.email AS vendor_email, 
-            v.mobile AS vendor_mobile,
-            v.company as company,
-            pi.image as image,
-            c.title AS category_name
-        ');
+        p.*,
+        v.name AS vendor_name,
+        v.email AS vendor_email,
+        v.mobile AS vendor_mobile,
+        v.company AS company,
+        pi.image AS image,
+        c.title AS category_name
+    ');
+
         $builder->join('vendor v', 'v.uid = p.vendor_id', 'left');
         $builder->join('category c', 'c.uid = p.category_id', 'left');
-        $builder->join('product_image pi', 'pi.product_id = p.uid', 'left');
-        $builder->orderBy('p.id', 'DESC');
+        $builder->join(
+            '(SELECT pi1.*
+          FROM product_image pi1
+          INNER JOIN (
+              SELECT product_id, MAX(created_at) AS latest_created
+              FROM product_image
+              WHERE status = "active"
+              GROUP BY product_id
+          ) pi2
+          ON pi1.product_id = pi2.product_id
+         AND pi1.created_at = pi2.latest_created
+         AND pi1.status = "active"
+        ) pi',
+            'pi.product_id = p.uid',
+            'left',
+            false
+        );
         $builder->where('p.status !=', DELETED_STATUS);
-
-        $result = $builder->get()->getResultArray();
-        return $result;
+        $builder->groupBy('p.uid');
+        $builder->orderBy('p.id', 'DESC');
+        return $builder->get()->getResultArray();
     }
+
     /** Get Product Details */
 
     public function getProductsDetailsByProductId($productId)

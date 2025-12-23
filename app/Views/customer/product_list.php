@@ -212,12 +212,21 @@
                         </div>
                     </div>
                     <div>
-                        <div class="mb-3">
+                        <!-- <div class="mb-3">
                             <img id="selectedCategoryImage"
                                 src=""
                                 style="display:none;height:200px;border-radius: 10px;object-fit: cover;" class="w-100">
-                        </div>
+                        </div> -->
 
+                        <div class="mb-3">
+                            <img
+                                id="selectedCategoryImage"
+                                src=""
+                                class="img-fluid w-100"
+                                style="display: none;max-height: 200px;border-radius: 10px;object-fit: contain;"
+                                alt="Category Preview" 
+                            >
+                        </div>
 
                         <div id="productContainer" class="row g-3">
                             <!-- proudct list  form js  -->
@@ -228,7 +237,7 @@
                             <ul class="pagination justify-content-center">
                                 <li class="page-item">
                                     <a href="#" class="page-link">
-                                        << </a>
+                                    << </a>
                                 </li>
                                 <li class="page-item"><a class="page-link" href="#">1</a></li>
                                 <li class="page-item active">
