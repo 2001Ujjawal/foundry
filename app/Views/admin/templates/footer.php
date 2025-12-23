@@ -167,6 +167,8 @@ $lastSegment = end($urlSegments); // Get the last segment
 
     const BASE_URL = "<?= base_url(); ?>";
 </script>
+<!-- SR -->
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
 
 </body>
 
