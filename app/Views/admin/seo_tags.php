@@ -212,7 +212,7 @@
     <script>
         $(document).ready(function() {
 
-           
+
             $("#editCategoryModalForm").on("submit", function(e) {
                 e.preventDefault();
 
