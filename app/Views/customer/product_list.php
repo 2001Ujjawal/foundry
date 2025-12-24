@@ -224,8 +224,7 @@
                                 src=""
                                 class="img-fluid w-100"
                                 style="display: none;max-height: 200px;border-radius: 10px;object-fit: contain;"
-                                alt="Category Preview" 
-                            >
+                                alt="Category Preview">
                         </div>
 
                         <div id="productContainer" class="row g-3">
@@ -237,7 +236,7 @@
                             <ul class="pagination justify-content-center">
                                 <li class="page-item">
                                     <a href="#" class="page-link">
-                                    << </a>
+                                        << </a>
                                 </li>
                                 <li class="page-item"><a class="page-link" href="#">1</a></li>
                                 <li class="page-item active">
@@ -315,26 +314,26 @@
     function renderPagination(totalItems, currentPage) {
         const totalPages = Math.ceil(totalItems / itemsPerPage);
         let paginationHTML = '';
-    
+
         if (totalPages <= 1) {
             document.querySelector('.pagination').innerHTML = '';
             return;
         }
-    
+
         // -------- Prev --------
         paginationHTML += `
             <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
                 <a href="#" class="page-link" data-page="${currentPage - 1}">&laquo;</a>
             </li>`;
-    
+
         let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
         let endPage = startPage + maxVisiblePages - 1;
-    
+
         if (endPage > totalPages) {
             endPage = totalPages;
             startPage = Math.max(1, endPage - maxVisiblePages + 1);
         }
-    
+
         // -------- First page + dots --------
         if (startPage > 1) {
             paginationHTML += `
@@ -348,7 +347,7 @@
                     </li>`;
             }
         }
-    
+
         // -------- Page numbers --------
         for (let i = startPage; i <= endPage; i++) {
             paginationHTML += `
@@ -356,7 +355,7 @@
                     <a href="#" class="page-link" data-page="${i}">${i}</a>
                 </li>`;
         }
-    
+
         // -------- Last page + dots --------
         if (endPage < totalPages) {
             if (endPage < totalPages - 1) {
@@ -370,18 +369,18 @@
                     <a href="#" class="page-link" data-page="${totalPages}">${totalPages}</a>
                 </li>`;
         }
-    
+
         // -------- Next --------
         paginationHTML += `
             <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
                 <a href="#" class="page-link" data-page="${currentPage + 1}">&raquo;</a>
             </li>`;
-    
+
         document.querySelector('.pagination').innerHTML = paginationHTML;
-    
+
         // -------- Click events --------
         document.querySelectorAll('.page-link[data-page]').forEach(el => {
-            el.addEventListener('click', function (e) {
+            el.addEventListener('click', function(e) {
                 e.preventDefault();
                 const page = parseInt(this.dataset.page);
                 if (!isNaN(page) && page >= 1 && page <= totalPages) {
@@ -497,7 +496,7 @@
                         </div>
                     </a>
                     <div class="fw-600 text-dark text-center" id="vendorCompany${row.uid}">
-                        ${checkLoginAndShow(row.vendor_company, row.uid)}
+                        ${checkLoginAndShow(row.vendor_company, row.uid, row.is_verify)}
                     </div>
                 </div>
                 
@@ -713,7 +712,11 @@
     const isLoggedIn = <?= !empty($customerLoggedIn) ? 'true' : 'false'; ?>;
     console.log("HHHHHHHHHHHH", isLoggedIn);
 
-    function checkLoginAndShow(companyName, uid) {
+    function checkLoginAndShow(companyName, uid, isSponsored) {
+
+        if (isSponsored == 1) {
+            return `<span class="fw-600">${companyName}</span>`;
+        }
 
         if (isLoggedIn) {
             return `<span>${companyName}</span>`;
@@ -728,7 +731,7 @@
     function showVendorCompany(companyName, uid) {
 
         if (!isLoggedIn) {
-           
+
             document.querySelector('#globalLoginBtn').click();
             return;
         }
@@ -736,7 +739,7 @@
         const div = document.getElementById("vendorCompany" + uid);
         div.innerHTML = `<div class="fw-600 text-dark text-center">
             ${companyName}
-        </div>`; 
+        </div>`;
     }
 </script>
 <button id="globalLoginBtn"
