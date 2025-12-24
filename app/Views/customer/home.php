@@ -242,100 +242,80 @@
                         }
 
                         ?>
-                        <div class="h-100 rounded-10 border bg-white overflow-hidden">
-                            <a href="<?= base_url('product/' . $slug) ?>" class=" d-block">
-                                <?php if (!empty($row['is_vendor_verify']) && $row['is_vendor_verify'] == 1): ?>
-                                    <small class="verified-top-right d-flex align-items-center gap-1">
-                                        <span class="fw-600">Verified</span>
-                                        <i style="line-height: 0;">
-                                            <svg width="13" height="14" viewBox="0 0 13 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M9.69883 1.04935C9.56974 0.843073 9.37955 0.682175 9.15473 0.589057C8.92992 0.495939 8.68167 0.475233 8.44454 0.529821L6.76156 0.916427C6.58908 0.956072 6.40986 0.956072 6.23739 0.916427L4.5544 0.529821C4.31727 0.475233 4.06902 0.495939 3.84421 0.589057C3.6194 0.682175 3.42921 0.843073 3.30012 1.04935L2.38281 2.5134C2.28921 2.66317 2.16284 2.78955 2.01308 2.88409L0.549128 3.80146C0.343218 3.93044 0.182567 4.12034 0.0894753 4.34478C-0.00361686 4.56922 -0.0245326 4.81708 0.0296313 5.05395L0.416212 6.73891C0.455711 6.9111 0.455711 7.09 0.416212 7.26219L0.0296313 8.94621C-0.0247431 9.18322 -0.00393263 9.43128 0.0891696 9.65592C0.182272 9.88055 0.34304 10.0706 0.549128 10.1996L2.01308 11.117C2.16284 11.2106 2.28921 11.337 2.38375 11.4868L3.30106 12.9508C3.56502 13.373 4.0686 13.5817 4.5544 13.4703L6.23739 13.0837C6.40986 13.0441 6.58908 13.0441 6.76156 13.0837L8.44548 13.4703C8.68247 13.5247 8.93052 13.5039 9.15514 13.4108C9.37976 13.3177 9.56979 13.1569 9.69883 12.9508L10.6161 11.4868C10.7097 11.337 10.8361 11.2106 10.9859 11.117L12.4508 10.1996C12.6569 10.0704 12.8175 9.88015 12.9105 9.65534C13.0034 9.43052 13.024 9.18233 12.9693 8.94528L12.5837 7.26219C12.544 7.0897 12.544 6.91046 12.5837 6.73798L12.9703 5.05395C13.0247 4.81704 13.004 4.56905 12.9111 4.34442C12.8182 4.1198 12.6576 3.9297 12.4517 3.80052L10.9868 2.88315C10.8372 2.78937 10.7108 2.66296 10.6171 2.5134L9.69883 1.04935ZM9.228 4.9126C9.2859 4.80613 9.30024 4.68136 9.26802 4.56453C9.23579 4.44771 9.15951 4.34793 9.05523 4.28621C8.95094 4.22448 8.82678 4.20561 8.70887 4.23358C8.59096 4.26154 8.48849 4.33415 8.42302 4.43613L5.9753 8.57927L4.4973 7.1639C4.45346 7.11887 4.40099 7.08314 4.34304 7.05883C4.28508 7.03452 4.22283 7.02214 4.15998 7.02241C4.09714 7.02269 4.03499 7.03562 3.97725 7.06043C3.91951 7.08524 3.86736 7.12143 3.82391 7.16683C3.78045 7.21224 3.74659 7.26593 3.72434 7.32471C3.70208 7.38348 3.69189 7.44614 3.69437 7.50894C3.69686 7.57174 3.71196 7.6334 3.73878 7.69023C3.76561 7.74707 3.80361 7.79792 3.85051 7.83976L5.75439 9.6642C5.80535 9.71292 5.86665 9.74951 5.93373 9.77122C6.00081 9.79292 6.07192 9.7992 6.14176 9.78957C6.21161 9.77994 6.27837 9.75465 6.33707 9.7156C6.39577 9.67655 6.44488 9.62473 6.48075 9.56403L9.228 4.9126Z" fill="#3A9F6C"></path>
-                                            </svg>
-                                        </i>
-                                    </small>
-                                <?php endif; ?>
-                                <?php
-                                $image = "";
-                                $proudctImage = $row['image'];
-                                if (empty($proudctImage)) {
-                                    $image  = (string)$row['main_image'];
-                                } else {
-                                    $image = $proudctImage;
-                                }
-                                ?>
-                                <img src="<?= base_url($image) ?>" alt="<?= $slug ?>" class="w-100 object-fit-cover" style="height:250px;">
-                                <div class="p-lg-3 p-2">
-                                    <h5 class="mb-1" style="height:50px;">
-                                        <?= substr(strip_tags($row['name']), 0, 40) ?><?= strlen(strip_tags($row['name'])) > 40 ? '...' : '' ?>
-                                    </h5>
+                        <a href="<?= base_url('product/' . $slug) ?>" class="h-100 rounded-10 border bg-white overflow-hidden d-block">
+                            <?php
+                            $image = "";
+                            $proudctImage = $row['image'];
+                            if (empty($proudctImage)) {
+                                $image  = (string)$row['main_image'];
+                            } else {
+                                $image = $proudctImage;
+                            }
+                            ?>
+                            <img src="<?= base_url($image) ?>" alt="<?= $slug ?>" class="w-100 object-fit-cover" style="height:250px;">
+                            <div class="p-lg-3 p-2">
+                                <h5 class="mb-1" style="height:50px;">
+                                    <?= substr(strip_tags($row['name']), 0, 40) ?><?= strlen(strip_tags($row['name'])) > 40 ? '...' : '' ?>
+                                </h5>
 
 
 
-                                    <!--  verify components -->
-                                    <?= view('components/verify_badge', ['is_verify' => $row['is_verify']]) ?>
+                                <!--  verify components -->
+                                <?= view('components/verify_badge', ['is_verify' => $row['is_verify']]) ?>
 
-                                    <!-- <small class="d-flex align-items-center gap-1">
+                                <!-- <small class="d-flex align-items-center gap-1">
                                     <span class="fw-600">Supplier Name: <?= $row['vendor_name']; ?></span>
                                 </small> -->
 
-                                    <div class="d-flex align-items-center justify-content-between">
-                                        <?php
-                                        $rating = $row['total_rating_percent'];
-                                        $fullStars = floor($rating);
-                                        $halfStar = ($rating - $fullStars) >= 0.5;
-                                        $emptyStars = 5 - $fullStars - ($halfStar ? 1 : 0);
+                                <div class="d-flex align-items-center justify-content-between">
+                                    <?php
+                                    $rating = $row['total_rating_percent'];
+                                    $fullStars = floor($rating);
+                                    $halfStar = ($rating - $fullStars) >= 0.5;
+                                    $emptyStars = 5 - $fullStars - ($halfStar ? 1 : 0);
 
-                                        $starSvg = function ($fill) {
-                                            $color = match ($fill) {
-                                                'full' => '#F6AB27',
-                                                'half' => 'url(#halfGradient)',
-                                                'empty' => '#E0E0E0',
-                                            };
-                                            return <<<SVG
+                                    $starSvg = function ($fill) {
+                                        $color = match ($fill) {
+                                            'full' => '#F6AB27',
+                                            'half' => 'url(#halfGradient)',
+                                            'empty' => '#E0E0E0',
+                                        };
+                                        return <<<SVG
                                 <svg width="16" height="16" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
                                 <defs> <linearGradient id="halfGradient"> <stop offset="50%" stop-color="#F6AB27"/> <stop offset="50%" stop-color="#E0E0E0"/> </linearGradient></defs>
                                 <path d="M50 5L61 35H95L67 57L78 90L50 70L22 90L33 57L5 35H39L50 5Z" fill="$color"/>
                                 </svg>
                                 SVG;
-                                        };
+                                    };
+                                    ?>
+                                    <i style="display: flex; gap: 2px; line-height: 0;">
+                                        <?php
+                                        for ($i = 0; $i < $fullStars; $i++) echo $starSvg('full');
+                                        if ($halfStar) echo $starSvg('half');
+                                        for ($i = 0; $i < $emptyStars; $i++) echo $starSvg('empty');
                                         ?>
-                                        <i style="display: flex; gap: 2px; line-height: 0;">
-                                            <?php
-                                            for ($i = 0; $i < $fullStars; $i++) echo $starSvg('full');
-                                            if ($halfStar) echo $starSvg('half');
-                                            for ($i = 0; $i < $emptyStars; $i++) echo $starSvg('empty');
-                                            ?>
-                                        </i>
-                                        <small style="color: #666;"><?= $row['total_rating_percent'] ?> (<?= $row['total_customer_review'] ?> reviews)</small>
-                                    </div>
-                                    <!-- <div class="my-1" style="color: #666;">
+                                    </i>
+                                    <small style="color: #666;"><?= $row['total_rating_percent'] ?> (<?= $row['total_customer_review'] ?> reviews)</small>
+                                </div>
+                                <!-- <div class="my-1" style="color: #666;">
                                     <?= substr(strip_tags($row['description']), 0, 95) ?><?= strlen(strip_tags($row['description'])) > 95 ? '...' : '' ?>
                                 </div> -->
-
-                                    <div>
-
-
-                                    </div>
+                                <div class="text-dark fw-600 d-flex gap-2 justify-content-between align-items-center">
+                                    <span><?= $row['vendor_company'] ?></span>
+                                    <?php if (!empty($row['is_vendor_verify']) && $row['is_vendor_verify'] == 1): ?>
+                                        <small class="d-flex align-items-center gap-1">
+                                            <span class="fw-600">Verified</span>
+                                            <i style="line-height: 0;">
+                                                <svg width="13" height="14" viewBox="0 0 13 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M9.69883 1.04935C9.56974 0.843073 9.37955 0.682175 9.15473 0.589057C8.92992 0.495939 8.68167 0.475233 8.44454 0.529821L6.76156 0.916427C6.58908 0.956072 6.40986 0.956072 6.23739 0.916427L4.5544 0.529821C4.31727 0.475233 4.06902 0.495939 3.84421 0.589057C3.6194 0.682175 3.42921 0.843073 3.30012 1.04935L2.38281 2.5134C2.28921 2.66317 2.16284 2.78955 2.01308 2.88409L0.549128 3.80146C0.343218 3.93044 0.182567 4.12034 0.0894753 4.34478C-0.00361686 4.56922 -0.0245326 4.81708 0.0296313 5.05395L0.416212 6.73891C0.455711 6.9111 0.455711 7.09 0.416212 7.26219L0.0296313 8.94621C-0.0247431 9.18322 -0.00393263 9.43128 0.0891696 9.65592C0.182272 9.88055 0.34304 10.0706 0.549128 10.1996L2.01308 11.117C2.16284 11.2106 2.28921 11.337 2.38375 11.4868L3.30106 12.9508C3.56502 13.373 4.0686 13.5817 4.5544 13.4703L6.23739 13.0837C6.40986 13.0441 6.58908 13.0441 6.76156 13.0837L8.44548 13.4703C8.68247 13.5247 8.93052 13.5039 9.15514 13.4108C9.37976 13.3177 9.56979 13.1569 9.69883 12.9508L10.6161 11.4868C10.7097 11.337 10.8361 11.2106 10.9859 11.117L12.4508 10.1996C12.6569 10.0704 12.8175 9.88015 12.9105 9.65534C13.0034 9.43052 13.024 9.18233 12.9693 8.94528L12.5837 7.26219C12.544 7.0897 12.544 6.91046 12.5837 6.73798L12.9703 5.05395C13.0247 4.81704 13.004 4.56905 12.9111 4.34442C12.8182 4.1198 12.6576 3.9297 12.4517 3.80052L10.9868 2.88315C10.8372 2.78937 10.7108 2.66296 10.6171 2.5134L9.69883 1.04935ZM9.228 4.9126C9.2859 4.80613 9.30024 4.68136 9.26802 4.56453C9.23579 4.44771 9.15951 4.34793 9.05523 4.28621C8.95094 4.22448 8.82678 4.20561 8.70887 4.23358C8.59096 4.26154 8.48849 4.33415 8.42302 4.43613L5.9753 8.57927L4.4973 7.1639C4.45346 7.11887 4.40099 7.08314 4.34304 7.05883C4.28508 7.03452 4.22283 7.02214 4.15998 7.02241C4.09714 7.02269 4.03499 7.03562 3.97725 7.06043C3.91951 7.08524 3.86736 7.12143 3.82391 7.16683C3.78045 7.21224 3.74659 7.26593 3.72434 7.32471C3.70208 7.38348 3.69189 7.44614 3.69437 7.50894C3.69686 7.57174 3.71196 7.6334 3.73878 7.69023C3.76561 7.74707 3.80361 7.79792 3.85051 7.83976L5.75439 9.6642C5.80535 9.71292 5.86665 9.74951 5.93373 9.77122C6.00081 9.79292 6.07192 9.7992 6.14176 9.78957C6.21161 9.77994 6.27837 9.75465 6.33707 9.7156C6.39577 9.67655 6.44488 9.62473 6.48075 9.56403L9.228 4.9126Z" fill="#3A9F6C"></path>
+                                                </svg>
+                                            </i>
+                                        </small>
+                                    <?php endif; ?>
                                 </div>
-                            </a>
-                            <!-- <button class="image-btn w-100">
-                               Login To View Seller Details
-                            </button> -->
-                            <div class="">
-                                <?php if ($customerLoggedIn): ?>
-                                    <div class="fw-600 text-dark text-center">
-                                        <?= esc($row['vendor_company']) ?>
-                                    </div>
-                                <?php else: ?>
-                                    <button type="button"
-                                            class="image-btn w-100"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#loginRegisterModal">
-                                        Login To View Seller Details
-                                    </button>
-                                <?php endif; ?>
+
                             </div>
-                        </div>
+                        </a>
                     </div>
             <?php }
             } ?>
