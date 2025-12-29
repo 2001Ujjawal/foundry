@@ -520,10 +520,31 @@
         return text.length > limit ? text.slice(0, limit) + "..." : text;
     }
 
-    function filterProducts(searchTerm) {
-        const lowerSearch = searchTerm.toLowerCase().trim();
+    // function filterProducts(searchTerm) {
+    //     const lowerSearch = searchTerm.toLowerCase().trim();
 
-        if (lowerSearch === "") {
+    //     if (lowerSearch === "") {
+    //         isSearching = false;
+    //         filteredProducts = [];
+    //         renderProductsPaginated(1);
+    //         return;
+    //     }
+
+    //     isSearching = true;
+
+    //     filteredProducts = productsData.filter(p =>
+    //         (p.name && p.name.toLowerCase().includes(lowerSearch)) ||
+    //         (p.description && p.description.toLowerCase().includes(lowerSearch))
+    //     );
+
+    //     renderSearchPaginated(1);
+    // }
+
+    function filterProducts(searchTerm) {
+
+        const input = searchTerm.toLowerCase().trim();
+
+        if (input === "") {
             isSearching = false;
             filteredProducts = [];
             renderProductsPaginated(1);
@@ -532,13 +553,29 @@
 
         isSearching = true;
 
-        filteredProducts = productsData.filter(p =>
-            (p.name && p.name.toLowerCase().includes(lowerSearch)) ||
-            (p.description && p.description.toLowerCase().includes(lowerSearch))
-        );
+        const inputNormalized = input.replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
+        const inputWords = input.split(' ');
+
+        filteredProducts = productsData.filter(p => {
+
+            const name = (p.name || "").toLowerCase();
+            const desc = (p.description || "").toLowerCase();
+
+            const nameNorm = name.replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
+            const descNorm = desc.replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
+            if (name.includes(input) || desc.includes(input)) return true;
+            if (nameNorm.includes(inputNormalized) || descNorm.includes(inputNormalized)) return true;
+            let matchedWords = 0;
+            inputWords.forEach(w => {
+                if (w.length > 1 && name.includes(w)) matchedWords++;
+            });
+            if (matchedWords >= Math.ceil(inputWords.length / 2)) return true;
+            return nameNorm.includes(inputNormalized.slice(0, 4));
+        });
 
         renderSearchPaginated(1);
     }
+
 
     document.getElementById('searchInput').addEventListener('keyup', function() {
         filterProducts(this.value);
