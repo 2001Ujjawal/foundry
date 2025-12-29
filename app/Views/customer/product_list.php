@@ -520,26 +520,6 @@
         return text.length > limit ? text.slice(0, limit) + "..." : text;
     }
 
-    // function filterProducts(searchTerm) {
-    //     const lowerSearch = searchTerm.toLowerCase().trim();
-
-    //     if (lowerSearch === "") {
-    //         isSearching = false;
-    //         filteredProducts = [];
-    //         renderProductsPaginated(1);
-    //         return;
-    //     }
-
-    //     isSearching = true;
-
-    //     filteredProducts = productsData.filter(p =>
-    //         (p.name && p.name.toLowerCase().includes(lowerSearch)) ||
-    //         (p.description && p.description.toLowerCase().includes(lowerSearch))
-    //     );
-
-    //     renderSearchPaginated(1);
-    // }
-
     function filterProducts(searchTerm) {
 
         const input = searchTerm.toLowerCase().trim();
