@@ -535,12 +535,19 @@
 
         const inputNormalized = input.replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
         const inputWords = input.split(' ');
+        const exactMatches = productsData.filter(p =>
+            p.name && p.name.toLowerCase().trim() === input
+        );
+        if (exactMatches.length > 0) {
+            filteredProducts = exactMatches;
+            renderSearchPaginated(1);
+            return;
+        }
 
         filteredProducts = productsData.filter(p => {
 
             const name = (p.name || "").toLowerCase();
             const desc = (p.description || "").toLowerCase();
-
             const nameNorm = name.replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
             const descNorm = desc.replace(/\s+/g, '').replace(/[^a-z0-9]/g, '');
             if (name.includes(input) || desc.includes(input)) return true;
@@ -555,6 +562,7 @@
 
         renderSearchPaginated(1);
     }
+
 
 
     document.getElementById('searchInput').addEventListener('keyup', function() {
