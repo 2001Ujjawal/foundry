@@ -14,10 +14,6 @@
                     <div class="accordion-collapse collapse show" id="productFilter">
                         <div class="d-flex flex-column gap-4 p-3">
                             <div class="">
-                                <!-- <h6 class="mb-2">Filter by Price</h6>
-                                <div class="price-filter">
-                                    <input type="text" id="priceRange" name="priceRange" />
-                                </div> -->
                                 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/ion-rangeslider@2.3.1/css/ion.rangeSlider.min.css" />
                                 <script src="https://cdn.jsdelivr.net/npm/ion-rangeslider@2.3.1/js/ion.rangeSlider.min.js"></script>
                                 <script>
@@ -212,12 +208,6 @@
                         </div>
                     </div>
                     <div>
-                        <!-- <div class="mb-3">
-                            <img id="selectedCategoryImage"
-                                src=""
-                                style="display:none;height:200px;border-radius: 10px;object-fit: cover;" class="w-100">
-                        </div> -->
-
                         <div class="mb-3">
                             <img
                                 id="selectedCategoryImage"
@@ -254,7 +244,6 @@
 </section>
 <script>
     function handleCategoryChange(checkbox) {
-        // uncheck all other seller-type checkboxes
         document.querySelectorAll('.seller-type-checkbox').forEach(cb => {
             if (cb !== checkbox) {
                 cb.checked = false;
@@ -284,7 +273,7 @@
                 to: priceRange.to
             },
             countries: selectedCountries,
-            vendorStatus: selectedSellerType // now it's single value, not array
+            vendorStatus: selectedSellerType
         };
 
 
@@ -301,6 +290,10 @@
 
     const itemsPerPage = 15;
     const maxVisiblePages = 5;
+    let isSearching = false;
+    let filteredProducts = [];
+
+
 
     function renderProductsPaginated(page = 1) {
         currentPage = page;
@@ -310,6 +303,17 @@
         renderProducts(paginatedItems);
         renderPagination(productsData.length, page);
     }
+
+    function renderSearchPaginated(page = 1) {
+        currentPage = page;
+        const start = (page - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+
+        const paginatedItems = filteredProducts.slice(start, end);
+        renderProducts(paginatedItems);
+        renderPagination(filteredProducts.length, page);
+    }
+
 
     function renderPagination(totalItems, currentPage) {
         const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -383,9 +387,13 @@
             el.addEventListener('click', function(e) {
                 e.preventDefault();
                 const page = parseInt(this.dataset.page);
-                if (!isNaN(page) && page >= 1 && page <= totalPages) {
+                if (isSearching) {
+                    renderSearchPaginated(page);
+                } else {
                     renderProductsPaginated(page);
                 }
+
+
             });
         });
     }
@@ -395,8 +403,7 @@
 
     function renderProducts(list) {
         const container = document.getElementById('productContainer');
-        container.innerHTML = ''; // clear old content
-
+        container.innerHTML = '';
         if (list.length === 0) {
             container.innerHTML = '<div class="col-12 text-center py-4"><h5 class="text-muted">No products found </h5></div>';
             return;
@@ -431,19 +438,15 @@
                 `;
             };
 
-            // just decide which type of star
+
             let starsHtml = '';
             if (rating >= 0.75) {
-                starsHtml = starSvg('full'); // full star if 0.75+
+                starsHtml = starSvg('full');
             } else if (rating >= 0.25) {
-                starsHtml = starSvg('half'); // half star if between 0.25–0.74
+                starsHtml = starSvg('half');
             } else {
-                starsHtml = starSvg('empty'); // empty star if < 0.25
+                starsHtml = starSvg('empty');
             }
-            // let starsHtml = '';
-            // for (let i = 0; i < fullStars; i++) starsHtml += starSvg('full');
-            // if (halfStar) starsHtml += starSvg('half');
-            // for (let i = 0; i < emptyStars; i++) starsHtml += starSvg('empty');
 
             let slug = "";
             if (row.slug === null) {
@@ -507,18 +510,8 @@
         });
 
     }
-    /**  <
-    small class = "d-flex align-items-center gap-1" >
-    <
-    span class = "fw-600" > Supplier Name: $ {
-            row.vendor_name
-        } < /span> <
-        /small> */
-
-    // Local search filter
 
     function formatDescription(html, limit = 95) {
-        // Strip all HTML tags
         let div = document.createElement("div");
         div.innerHTML = html;
         let text = div.textContent || div.innerText || "";
@@ -527,25 +520,29 @@
         return text.length > limit ? text.slice(0, limit) + "..." : text;
     }
 
-
-
-
-
     function filterProducts(searchTerm) {
-        const lowerSearch = searchTerm.toLowerCase();
-        const filtered = productsData.filter(p =>
+        const lowerSearch = searchTerm.toLowerCase().trim();
+
+        if (lowerSearch === "") {
+            isSearching = false;
+            filteredProducts = [];
+            renderProductsPaginated(1);
+            return;
+        }
+
+        isSearching = true;
+
+        filteredProducts = productsData.filter(p =>
             (p.name && p.name.toLowerCase().includes(lowerSearch)) ||
             (p.description && p.description.toLowerCase().includes(lowerSearch))
         );
-        console.log("Filtered Products:", filtered);
 
-        renderProducts(filtered);
+        renderSearchPaginated(1);
     }
 
-    // Event listener for search
     document.getElementById('searchInput').addEventListener('keyup', function() {
         filterProducts(this.value);
-        console.log("Search Input Value:", this.value);
+        // console.log("Search Input Value:", this.value);
 
     });
 
@@ -554,7 +551,7 @@
             let selected = $(this).val();
             let filtered = [...productsData]; // clone original array
 
-            console.log("Before Sort:", filtered);
+            // console.log("Before Sort:", filtered);
 
             if (selected === "High to Low (Rating)") {
 
@@ -574,7 +571,6 @@
 
 <script>
     function handleCategoryChange(checkbox = null) {
-        // 1) Only one SELLER TYPE at a time (but don't clear on category/country click)
         if (checkbox && checkbox.classList.contains('seller-type-checkbox') && checkbox.checked) {
             document.querySelectorAll('.seller-type-checkbox').forEach(cb => {
                 if (cb !== checkbox) {
@@ -582,8 +578,6 @@
                 }
             });
         }
-
-        // 2) Only one CATEGORY at a time (radio-like)
         if (checkbox && checkbox.classList.contains('category-checkbox')) {
             if (checkbox.checked) {
                 document.querySelectorAll('.category-checkbox').forEach(cb => {
@@ -592,23 +586,20 @@
                     }
                 });
             }
-            // Update image + title as soon as category changes
             updateSelectedCategoryUI();
         }
 
-        // 3) Collect selected categories (max 1 now)
         const selected = [];
         document.querySelectorAll('.category-checkbox:checked').forEach(cb => {
             selected.push(cb.value);
         });
 
-        // 4) Collect selected countries
         let selectedCountries = [];
         document.querySelectorAll('.country-checkbox:checked').forEach(cb => {
             selectedCountries.push(cb.value);
         });
 
-        // 5) Single seller type value
+
         let selectedSellerType = null;
         const checkedSeller = document.querySelector('.seller-type-checkbox:checked');
         if (checkedSeller) {
@@ -625,7 +616,7 @@
             vendorStatus: selectedSellerType
         };
 
-        console.log("FILTER DATA ===>", filterData);
+        // console.log("FILTER DATA ===>", filterData);
 
         const jsonStr = JSON.stringify(filterData);
         const base64 = btoa(jsonStr);
@@ -634,19 +625,19 @@
         window.location.href = url;
     }
 
-    // Update page title + image based on selected category
+
     function updateSelectedCategoryUI() {
         const checkedCategory = document.querySelector('.category-checkbox:checked');
         const imgEl = document.getElementById('selectedCategoryImage');
         const titleEl = document.getElementById('pageTitle');
 
         if (!checkedCategory) {
-            // No category selected
+
             if (titleEl) {
                 titleEl.textContent = "All Products";
             }
             if (imgEl) {
-                // Either hide, or show a default image
+
                 imgEl.style.display = "none";
                 // OR: imgEl.src = "<?= base_url('assets/uploads/category/default.jpg') ?>";
             }
@@ -669,9 +660,8 @@
             }
         }
     }
-    // On page load: enforce "only one category" and set initial image/title
     document.addEventListener("DOMContentLoaded", function() {
-        // If backend marked multiple categories as checked, keep only the first
+
         const checkedCats = document.querySelectorAll('.category-checkbox:checked');
         if (checkedCats.length > 1) {
             checkedCats.forEach((cb, index) => {
@@ -681,7 +671,6 @@
             });
         }
 
-        // Initial UI for title + image
         updateSelectedCategoryUI();
     });
 
@@ -703,14 +692,12 @@
         if (imgUrl) {
             img.src = imgUrl;
             img.style.display = 'block';
-            console.log("iiijjjjcdfklflkuklculylkiykliy", img.src);
+            // console.log("iiijjjjcdfklflkuklculylkiykliy", img.src);
         }
     }
 
-
-    // PHP passes login status
     const isLoggedIn = <?= !empty($customerLoggedIn) ? 'true' : 'false'; ?>;
-    console.log("HHHHHHHHHHHH", isLoggedIn);
+    // console.log("HHHHHHHHHHHH", isLoggedIn);
 
     function checkLoginAndShow(companyName, uid, isSponsored) {
 

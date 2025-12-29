@@ -443,125 +443,6 @@
 
     </div>
 </section>
-<!-- <script>
-    const baseUrl = " <?= base_url(); ?>"
-    console.log(baseUrl);
-    const BASE_URL = baseUrl + "customer/api/product-search?search=";
-    console.log(BASE_URL);
-    const searchInput = document.getElementById("searchInput");
-    const searchResults = document.getElementById("searchResults");
-    let categoryID = '';
-
-    function fetchSearchResults(query) {
-
-        if (!query.trim()) {
-            searchResults.style.display = "none";
-            searchResults.innerHTML = "";
-            return;
-        }
-        var verifyLogo = '';
-
-
-        fetch(BASE_URL + encodeURIComponent(query))
-            .then(res => res.json())
-            .then(data => {
-                if (data.success && data.data.products.length > 0) {
-                    let html = `
-                <div class="d-flex flex-column overflow-hidden bg-white list-group">
-            `;
-                    data.data.products.forEach(product => {
-
-
-                        categoryID = data.data.products[0].category_id;
-
-
-                        if (product.vendor_is_verify === "1") {
-                            verifyLogo = '✅';
-                        }
-
-                        html += `
-               <a onclick="redirectProductListPage('` + product.uid + `')"  href="#" 
-   class="d-flex gap-2 list-group-item text-dark">
-
-    
-    <div >
-        <span>${product.category_name}</span>
-    </div>
-
-</a>
-                `;
-                    });
-
-                    html += `</div>`;
-                    searchResults.innerHTML = html;
-                    searchResults.style.display = "block";
-
-                } else {
-                    searchResults.innerHTML = "<p style='text-align:center;'>Keep typing to search</p>";
-                    searchResults.style.display = "block";
-                }
-
-                // close when clicking outside
-                document.addEventListener("click", function handleClickOutside(event) {
-                    if (!searchResults.contains(event.target) && event.target.id !== "searchInput") {
-                        searchResults.style.display = "none";
-                        searchResults.innerHTML = "";
-                        document.removeEventListener("click", handleClickOutside);
-                    }
-                });
-            })
-            .catch(err => {
-                console.error("Search API Error:", err);
-                searchResults.innerHTML = "<p>Error fetching results</p>";
-                searchResults.style.display = "block";
-            });
-
-
-    }
-
-    // Run search on typing (debounced)
-    let debounceTimer;
-    searchInput.addEventListener("input", () => {
-        clearTimeout(debounceTimer);
-        debounceTimer = setTimeout(() => {
-            fetchSearchResults(searchInput.value);
-        }, 500);
-    });
-
-
-
-
-    function redirectProductListPage(productUid) {
-        window.location.href = baseUrl + `/product/${productUid}`;
-    }
-
-
-
-    function serachBtnforProductList() {
-        if (!categoryID) {
-            console.log();
-            ("No category ID found");
-            return;
-        }
-
-        const filterData = {
-            categories: [categoryID],
-            price: {
-                from: 100,
-                to: 50000
-            }
-        };
-
-        const jsonStr = JSON.stringify(filterData);
-        const base64 = btoa(jsonStr);
-        const url = "<?= base_url('product-list?filter=') ?>" + encodeURIComponent(base64);
-
-        // now redirect
-        window.location.href = url;
-    }
-</script> -->
-
-
 <script>
     const baseUrl = "<?= base_url(); ?>";
     const BASE_URL = baseUrl + "customer/api/product-search?search=";
@@ -580,39 +461,35 @@
         fetch(BASE_URL + encodeURIComponent(query))
             .then(res => res.json())
             .then(data => {
-
-                if (
-                    !data.success ||
-                    !data.data ||
-                    !data.data.products ||
-                    data.data.products.length === 0
-                ) {
-                    searchResults.innerHTML =
-                        "<p class='text-center p-2'>No category found</p>";
-                    searchResults.style.display = "block";
-                    return;
+                if (!data.success || !data.data) {
+                    throw new Error('API failed');
                 }
 
-                // 🔑 Extract unique categories from products
-                const categories = {};
-
-                data.data.products.forEach(product => {
-                    if (product.category_id && product.category_name) {
-                        categories[product.category_id] = product.category_name;
-                    }
-                });
+                const products = data.data.products || [];
 
                 let html = `<div class="list-group bg-white">`;
 
-                Object.keys(categories).forEach(categoryId => {
+                if (products.length > 0) {
+                    products.forEach(item => {
+                        html += `
+        <a href="javascript:void(0)"
+           class="list-group-item list-group-item-action"
+           onclick="redirectToCategory('${item.category_id}')">
+            <strong>${item.name}</strong><br>
+            <small>
+                ${item.vendor_name ?? ''} • ${item.category_name ?? ''}
+            </small>
+        </a>
+    `;
+                    });
+
+                } else {
                     html += `
-                        <a href="javascript:void(0)"
-                           class="list-group-item list-group-item-action"
-                           onclick="redirectToCategory('${categoryId}')">
-                            ${categories[categoryId]}
-                        </a>
-                    `;
-                });
+            <div class="list-group-item text-center text-muted">
+                No results found
+            </div>
+        `;
+                }
 
                 html += `</div>`;
 
@@ -626,8 +503,8 @@
                         document.removeEventListener("click", handleClickOutside);
                     }
                 });
-
             })
+
             .catch(err => {
                 console.error("Search API Error:", err);
                 searchResults.innerHTML =
@@ -662,10 +539,6 @@
     }
 </script>
 
-
-
-
-
 <script>
     function handleCategoryClick(element) {
         const uid = element.getAttribute('data-uid');
@@ -687,21 +560,19 @@
     }
 </script>
 
-
-
 <script>
-const token = <?= !empty($customerLoggedIn) ? 'true' : 'false'; ?>;
-console.log("HHHHHHHHHHHH", isLoggedIn);
+    const token = <?= !empty($customerLoggedIn) ? 'true' : 'false'; ?>;
+    console.log("HHHHHHHHHHHH", isLoggedIn);
 
-if (token) {
-    document.getElementById('loginBtn').classList.add('d-none');
-    document.getElementById('vendorName').classList.remove('d-none');
-} else {
-    document.getElementById('loginBtn').addEventListener('click', () => {
-        const modal = new bootstrap.Modal(
-            document.getElementById('loginRegisterModal')
-        );
-        modal.show();
-    });
-}
+    if (token) {
+        document.getElementById('loginBtn').classList.add('d-none');
+        document.getElementById('vendorName').classList.remove('d-none');
+    } else {
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            const modal = new bootstrap.Modal(
+                document.getElementById('loginRegisterModal')
+            );
+            modal.show();
+        });
+    }
 </script>

@@ -305,28 +305,46 @@ class ApiService
             log_message('error', 'Failed to send password email to ' . $email);
         }
     }
-
-
     public function productSearch($search)
     {
-        $search = trim($search);
+        $search = strtolower(trim($search));
+        $search = preg_replace('/\s+/', ' ', $search); 
+
+        if ($search === '') {
+            return [false, 400, 'Search keyword required', []];
+        }
+
+        $keywords = explode(' ', $search);
+
         $db = \Config\Database::connect();
 
         $builder = $db->table(PRODUCT_TABLE . ' p');
-        $builder->select('p.*, c.title as category_name, v.name as vendor_name, v.is_verify as vendor_is_verify , pi.image as product_main_image');
-        // $builder->select(' c.title as category_name,');
-        $builder->join('category c', 'c.uid= p.category_id', 'left');
+        $builder->select('
+        p.*,
+        c.title AS category_name,
+        v.name AS vendor_name,
+        v.is_verify AS vendor_is_verify,
+        pi.image AS product_main_image
+    ');
+
+        $builder->join('category c', 'c.uid = p.category_id', 'left');
         $builder->join('vendor v', 'v.uid = p.vendor_id', 'left');
-        $builder->join('product_image pi', 'pi.product_id = p.uid AND pi.main_image = 1', 'left');
+        $builder->join(
+            'product_image pi',
+            'pi.product_id = p.uid AND pi.main_image = 1',
+            'left'
+        );
+
         $builder->where('p.status', ACTIVE_STATUS);
 
-        // grouping conditions for search
-        $builder->groupStart()
-            ->like('p.name', $search)
-            ->orLike('p.description', $search)
-            ->orLike('c.title', $search)
-            ->orLike('v.name', $search)
-            ->groupEnd();
+        foreach ($keywords as $word) {
+            $builder->groupStart()
+                ->like('LOWER(p.name)', $word)
+                ->orLike('LOWER(p.description)', $word)
+                ->orLike('LOWER(c.title)', $word)
+                ->orLike('LOWER(v.name)', $word)
+                ->groupEnd();
+        }
 
         $products = $builder->get()->getResultArray();
 
@@ -336,9 +354,6 @@ class ApiService
 
         return [true, 200, 'Products found', ['products' => $products]];
     }
-
-
-
     public function productSearchInProductList($search)
     {
         $search = trim($search);
