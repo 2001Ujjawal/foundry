@@ -387,6 +387,7 @@ class ApiService
 
         try {
             $updateData = [
+                'company'    => $data['company'],
                 'country'    => $data['country'],
                 'name'       => $data['name'],
                 'mobile'     => $data['mobile'],
