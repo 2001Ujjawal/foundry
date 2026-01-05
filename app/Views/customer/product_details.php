@@ -5,13 +5,23 @@
                 <div class="zoom-wrapper-container">
                     <div style="--swiper-navigation-color: #000; --swiper-pagination-color: #000;"
                         class="swiper product-main-slider">
+                        <?php
+                        $productImages = $resp['images'] ?? [];
+
+                        if (!empty($productImages)) {
+                            usort($productImages, function ($a, $b) {
+                                return ($b['main_image'] ?? 0) <=> ($a['main_image'] ?? 0);
+                            });
+                        }
+                        ?>
+
                         <div class="swiper-wrapper">
                             <?php
 
                             use Config\View;
 
+                            foreach ($productImages as $row) {
 
-                            foreach ($resp['images'] as $row) {
                             ?>
                                 <div class="swiper-slide">
                                     <img class="drift-img" src="<?= base_url($row['image']) ?>"
@@ -29,7 +39,8 @@
                 <div class="swiper thumb-slider mt-3">
                     <div class="swiper-wrapper">
                         <?php
-                        foreach ($resp['images'] as $row) {
+                        foreach ($productImages as $row) {
+
                         ?>
                             <div class="swiper-slide"><img src="<?= base_url($row['image']) ?>" width="100" height="100" />
                             </div>
@@ -367,19 +378,17 @@
                                                 <?php if (!empty($customerDetails) && !empty($vendor)): ?>
 
                                                     <?php
-                                                        // Handle vendor array safely
-                                                        $vendorData = is_array($vendor) && isset($vendor[0]) ? $vendor[0] : $vendor;
+                                                    $vendorData = is_array($vendor) && isset($vendor[0]) ? $vendor[0] : $vendor;
 
-                                                        // Vendor image fallback
-                                                        $vendorImage = !empty($vendorData['vendor_image'])
-                                                            ? base_url($vendorData['vendor_image'])
-                                                            : base_url('assets/customer/images/default_vendor.png');
+                                                    $vendorImage = !empty($vendorData['vendor_image'])
+                                                        ? base_url($vendorData['vendor_image'])
+                                                        : base_url('assets/customer/images/default_vendor.png');
 
-                                                        $vendorName     = $vendorData['vendor_name'] ?? '';
-                                                        $vendorVerified = $vendorData['is_vendor_verify'] ?? 0;
+                                                    $vendorName     = $vendorData['vendor_name'] ?? '';
+                                                    $vendorVerified = $vendorData['is_vendor_verify'] ?? 0;
                                                     ?>
 
-                                                        <div
+                                                    <div
                                                         class="text-dark fw-600 d-flex gap-2 justify-content-between align-items-center">
                                                         <span><?= $row['vendor_name'] ?></span>
                                                         <?php if (!empty($row['is_vendor_verify']) && $row['is_vendor_verify'] == 1): ?>
@@ -395,7 +404,7 @@
                                                                 </i>
                                                             </small>
                                                         <?php endif; ?>
-                                                    </div> 
+                                                    </div>
 
                                                 <?php endif; ?>
                                             </div>

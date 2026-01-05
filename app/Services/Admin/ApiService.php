@@ -47,7 +47,7 @@ class ApiService
                 return [false, 401, 'Invalid Password', ['invalid_credentials']];
             }
 
-            return [true, 200, "Login successfully", ["data" => $success]];
+            return [true, 200, "Login successfully", ["data" => $success ]];
         } catch (\Throwable $e) {
             return [false, 500, 'Unexpected server error occurred', [$e->getMessage()]];
         }
@@ -1145,24 +1145,6 @@ class ApiService
         $newSortOrder = (int) ($data['sort'] ?? 0);
 
         try {
-
-            // $exists = $this->db->table('product')
-            //     ->select('uid, name')
-            //     ->where('sort_order', $newSortOrder)
-            //     ->where('uid !=', $productUid)
-            //     ->get()
-            //     ->getRowArray();
-
-            // if ($exists) {
-            //     return [
-            //         false,
-            //         409,
-            //         "Sort number already assigned to product: {$exists['name']}",
-            //         ['error' => 'Duplicate sort_order']
-            //     ];
-            // }
-
-
             $updateData = [
                 'sort_order' => $newSortOrder,
                 'updated_by' => $data['user_id'] ?? null,
@@ -1225,7 +1207,6 @@ class ApiService
         }
         $productUid = generateUid();
         $timestamp = timestamp();
-        // Handle file upload
         $image_paths = [];
         if (isset($file['images']) && is_array($file['images'])) {
             foreach ($file['images'] as $singleFile) {
@@ -1263,6 +1244,11 @@ class ApiService
 
 
             if (!empty($image_paths)) {
+
+                $this->db->table(PRODUCT_IMAGE_TABLE)
+                    ->where('product_id', $data['uid'])
+                    ->set('main_image', 0)
+                    ->update();
 
                 foreach ($image_paths as $imgPath) {
                     $mainImageValue = ($imgPath === $image_path) ? 1 : 0;
@@ -1305,27 +1291,39 @@ class ApiService
         if (!$validationResult['success']) {
             return [false, $validationResult['status'], $validationResult['message'], $validationResult['errors']];
         }
+
         $imageUid = $data['uid'];
 
         try {
-            $success = $this->commonModel->UpdateData(PRODUCT_IMAGE_TABLE, ['uid' => $imageUid], ['status' => DELETED_STATUS]);
+            $image = $this->db->table(PRODUCT_IMAGE_TABLE)
+                ->where('uid', $imageUid)
+                ->get()
+                ->getRowArray();
+
+            if (!$image) {
+                return [false, 404, 'Image not found', ['image_not_found']];
+            }
+            $success = $this->commonModel->UpdateData(
+                PRODUCT_IMAGE_TABLE,
+                ['uid' => $imageUid],
+                ['status' => DELETED_STATUS]
+            );
 
             if (!$success) {
-                return [
-                    false,
-                    500,
-                    'Product Image Delete failed.',
-                    ['error' => 'Database update failed']
-                ];
+                return [false, 500, 'Product Image Delete failed.', ['db_error']];
             }
 
-            return [
-                true,
-                200,
-                'Product Image deleted successfully.',
-                ['data' => $success]
-            ];
+            if ((int)$image['main_image'] === 1) {
+                $this->commonModel->UpdateData(
+                    PRODUCT_IMAGE_TABLE,
+                    ['uid' => $imageUid],
+                    ['main_image' => 0]
+                );
+            }
+
+            return [true, 200, 'Product Image deleted successfully.', []];
         } catch (\Throwable $e) {
+            log_message('error', 'Image delete error: ' . $e->getMessage());
             return [false, 500, 'Unexpected server error occurred', [$e->getMessage()]];
         }
     }

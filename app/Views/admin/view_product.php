@@ -19,6 +19,13 @@
             }
         }
         ?>
+        <?php
+        if (!empty($allImages)) {
+            usort($allImages, function ($a, $b) {
+                return ($b['mainImage'] === true) <=> ($a['mainImage'] === true);
+            });
+        }
+        ?>
         <div class="row g-3 mb-3">
             <?php foreach ($allImages as $index => $imgData) : ?>
 
