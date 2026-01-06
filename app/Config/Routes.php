@@ -130,6 +130,8 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin'], function ($rou
     $routes->get('meta-content', 'WebController::metaContent');
     $routes->get('categories', 'WebController::getCategories');
     $routes->post('send-email', 'WebController::send_email');
+    $routes->post('categories/get-subcategories', 'WebController::getSubCategories');
+
 });
 
 $routes->group('admin/api', ['namespace' => 'App\Controllers\Admin'], function ($routes) {
