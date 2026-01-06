@@ -69,3 +69,37 @@ class ProductImageModel extends Model
 
     protected $useTimestamps = false;
 }
+
+class ProductSeoModel extends Model
+{
+    protected $table            = 'product_seo';
+    protected $primaryKey       = 'id';
+    protected $useAutoIncrement = true;
+    protected $returnType       = 'array';
+    protected $useSoftDeletes   = false;
+    protected $allowedFields = [
+        'uid',
+        'product_uid',
+        'meta_title',
+        'meta_description',
+        'meta_keywords',
+        'tags',
+        'status'
+    ];
+    protected $useTimestamps = true;
+    protected $createdField  = 'created_at';
+    protected $updatedField  = 'updated_at';
+    protected $deletedField  = '';
+    public function getByProductUid(string $productUid): ?array
+    {
+        return $this->where('product_uid', $productUid)
+            ->where('status !=', 'deleted')
+            ->first();
+    }
+    public function softDeleteByProductUid(string $productUid): bool
+    {
+        return (bool) $this->where('product_uid', $productUid)
+            ->set(['status' => 'deleted'])
+            ->update();
+    }
+}

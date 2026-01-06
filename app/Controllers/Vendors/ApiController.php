@@ -50,16 +50,17 @@ class ApiController extends Common
         $payload = $this->validateJwtApiTokenVendor();
         $productDetails = $this->request->getPost();
         $files = $this->request->getFiles('images');
-
-        $productDetails['user_id'] = $payload->user_id;
+        $productDetails['user_id']   = $payload->user_id;
         $productDetails['user_type'] = $payload->user_type;
         $resp = $this->apiService->createdProduct($productDetails, $files);
+
         if (!$resp[0]) {
-            $this->apiError($resp[1], $resp[2], $resp[3]);
-        } else {
-            $this->apiSuccess($resp[1], $resp[2], $resp[3]);
+            return $this->apiError($resp[1], $resp[2], $resp[3]);
         }
+
+        return $this->apiSuccess($resp[1], $resp[2], $resp[2]);
     }
+
     public function updateProduct()
     {
         $payload = $this->validateJwtApiTokenVendor();

@@ -8,21 +8,16 @@
             <form id="productForm" method="post" enctype="multipart/form-data">
                 <div class="row g-3">
 
-                    <!-- Basic Vendor Details -->
-                    <div class="col-lg-12">
-                        <h4 class="mb-3"></h4>
-                    </div>
-
-                    <div class="col-md-6 col-lg-4">
+                    <!-- Product Name & Category -->
+                    <div class="col-md-6 col-lg-6">
                         <div class="form-floating">
-                            <input type="text" class="form-control" name="name" id="name" placeholder="Enter Name" value="" require_once>
+                            <input type="text" class="form-control" name="name" id="name"
+                                placeholder="Enter Name" required>
                             <label for="name">Product Name <span class="text-danger">*</span></label>
                         </div>
                     </div>
 
-
-
-                    <div class="col-md-6 col-lg-4">
+                    <div class="col-md-6 col-lg-6">
                         <div class="form-floating">
                             <select class="form-control" name="category" id="category" required>
                                 <option value="">Select category</option>
@@ -32,62 +27,92 @@
                                 <?php }
                                 } ?>
                             </select>
-                            <label for="category">Category<span class="text-danger">*</span></label>
+                            <label for="category">Category <span class="text-danger">*</span></label>
                         </div>
                     </div>
 
-                    <div class="col-md-12 col-lg-4">
+                    <!-- Sub Category & Meta Title -->
+                    <div class="col-md-6 col-lg-6">
                         <div class="form-floating">
-                            <select class="form-control" name="subcategory" id="subcategory_id">
+                            <select class="form-control" name="subcategory" id="subcategory_id" required>
                                 <option value="">Select Sub category</option>
                             </select>
-                            <label for="subcategory">Sub Category<span class="text-danger">*</span></label>
+                            <label for="subcategory_id">Sub Category <span class="text-danger">*</span></label>
                         </div>
                     </div>
 
-
-
-
-
-                    <div style="display: none;" class="col-lg-6">
+                    <div class="col-md-6 col-lg-6">
                         <div class="form-floating">
-                            <input type="number" class="form-control" name="product_price" id="product_price" placeholder="Enter Product Price" value="">
-                            <label for="product_price">Product Price <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="meta_title" id="meta_title"
+                                placeholder="Enter Meta Title">
+                            <label for="meta_title">Meta Title</label>
                         </div>
                     </div>
 
-                    <div style="display: none;" class="col-lg-6">
+                    <!-- Meta Description & Meta Keywords -->
+                    <div class="col-md-6 col-lg-6">
                         <div class="form-floating">
-                            <input type="text" class="form-control" name="product_brand" id="product_brand" placeholder="Enter Product Brand" value="">
-                            <label for="Brand">Brand<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" name="meta_description" id="meta_description"
+                                placeholder="Enter Meta Description">
+                            <label for="meta_description">Meta Description</label>
                         </div>
                     </div>
 
+                    <div class="col-md-6 col-lg-6">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" name="meta_keywords" id="meta_keywords"
+                                placeholder="Enter Meta Keywords">
+                            <label for="meta_keywords">Meta Keywords</label>
+                        </div>
+                    </div>
+
+                    <!-- Meta Tags & (Hidden Price) -->
+                    <div class="col-md-12 col-lg-12">
+                        <div class="form-floating">
+                            <input type="text" class="form-control" name="meta_tags" id="meta_tags"
+                                placeholder="Enter Meta Tags">
+                            <label for="meta_tags">Meta Tags</label>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6 col-lg-6 d-none">
+                        <div class="form-floating">
+                            <input type="number" class="form-control" name="product_price" id="product_price"
+                                placeholder="Enter Product Price">
+                            <label for="product_price">Product Price</label>
+                        </div>
+                    </div>
+
+                    <!-- Description (Full Width) -->
                     <div class="col-lg-12">
                         <div class="form-floating">
-                            <textarea class="form-control documentTextEditor" name="description" id="description" placeholder="Short  Description" style="height: 100px;"></textarea>
-                            <label for="company_description">Description</label>
+                            <textarea class="form-control documentTextEditor"
+                                name="description" id="description"
+                                placeholder="Description" style="height: 120px;"></textarea>
+                            <label for="description">Description</label>
                         </div>
                     </div>
 
-                    <textarea style="display:none;" name="content" id="content" rows="10" cols="90" class="form-control documentTextEditor">
+                    <!-- Hidden Content -->
+                    <textarea name="content" id="content" class="d-none"></textarea>
 
-                    </textarea>
-
+                    <!-- Images (Full Width) -->
                     <div class="col-lg-12">
-                        <label for="company_logo">Upload Product Image (Single or Multiple)</label>
-                        <input type="file" name="images[]" id="imageInput" class="form-control" accept="image/*" multiple>
+                        <label>Upload Product Image (Single or Multiple)</label>
+                        <input type="file" name="images[]" id="imageInput"
+                            class="form-control" accept="image/*" multiple>
                     </div>
+
                     <div id="previewContainer" class="d-flex flex-wrap gap-2"></div>
 
-                    <!-- Submit Buttons -->
+                    <!-- Buttons -->
                     <div class="col-lg-12 d-flex justify-content-end gap-2">
                         <button type="reset" class="btn btn-warning">RESET</button>
-                        <button type="submit" id="saveButton" class="btn btn-primary">SUBMIT</button>
-                        <!-- <a href="<?= base_url('companies') ?>" class="btn btn-danger">CANCEL</a> -->
+                        <button type="submit" class="btn btn-primary">SUBMIT</button>
                     </div>
 
                 </div>
+
             </form>
         </div>
     </div>
@@ -136,7 +161,7 @@
 
 
 
-<!-- 
+    <!-- 
     <script>
         const imageInput = document.getElementById('imageInput');
         const previewContainer = document.getElementById('previewContainer');
@@ -245,155 +270,161 @@
     </script> -->
 
     <script>
-    const imageInput = document.getElementById('imageInput');
-    const previewContainer = document.getElementById('previewContainer');
-    let selectedImages = [];
+        const imageInput = document.getElementById('imageInput');
+        const previewContainer = document.getElementById('previewContainer');
+        let selectedImages = [];
 
-    previewContainer.addEventListener('dragover', e => {
-        e.preventDefault();
-        previewContainer.classList.add('border-primary');
-    });
-
-    previewContainer.addEventListener('dragleave', () => {
-        previewContainer.classList.remove('border-primary');
-    });
-
-    previewContainer.addEventListener('drop', e => {
-        e.preventDefault();
-        previewContainer.classList.remove('border-primary');
-        handleFiles(Array.from(e.dataTransfer.files));
-    });
-
-    imageInput.addEventListener('change', (event) => {
-        handleFiles(Array.from(event.target.files));
-        imageInput.value = '';
-    });
-
-  
-    function handleFiles(files) {
-        files.forEach(file => {
-            if (!file.type.startsWith('image/')) return;
-
-            const reader = new FileReader();
-            reader.onload = e => compressImage(e.target.result, file.name);
-            reader.readAsDataURL(file);
-        });
-    }
-
-    function compressImage(src, filename) {
-        const img = new Image();
-        img.src = src;
-
-        img.onload = () => {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-
-            canvas.width = 1200;
-            canvas.height = 800;
-
-            ctx.fillStyle = '#fff';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            ctx.drawImage(img, 0, 0, 1200, 800);
-
-            let quality = 0.8;
-            let blob;
-
-            do {
-                blob = dataURLtoBlob(canvas.toDataURL('image/jpeg', quality));
-                quality -= 0.02;
-            } while (blob.size > 150 * 1024 && quality >= 0.75);
-
-            const compressedFile = new File(
-                [blob],
-                filename.replace(/\.(png|webp)$/i, '.jpg'),
-                { type: 'image/jpeg' }
-            );
-
-            selectedImages.push(compressedFile);
-            renderPreview(URL.createObjectURL(blob), compressedFile);
-        };
-    }
-
-    function renderPreview(imageUrl, file) {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'position-relative';
-        wrapper.style.width = '100px';
-        wrapper.style.height = '100px';
-
-        const img = document.createElement('img');
-        img.src = imageUrl;
-        img.className = 'img-thumbnail';
-        img.style.width = '100%';
-        img.style.height = '100%';
-        img.style.objectFit = 'cover';
-
-        const removeBtn = document.createElement('button');
-        removeBtn.type = 'button';
-        removeBtn.className = 'btn btn-danger btn-sm position-absolute top-0 end-0';
-        removeBtn.innerHTML = '&times;';
-        removeBtn.onclick = () => {
-            previewContainer.removeChild(wrapper);
-            selectedImages = selectedImages.filter(i => i !== file);
-        };
-
-        wrapper.appendChild(img);
-        wrapper.appendChild(removeBtn);
-        previewContainer.appendChild(wrapper);
-    }
-
-    function dataURLtoBlob(dataURL) {
-        const arr = dataURL.split(',');
-        const mime = arr[0].match(/:(.*?);/)[1];
-        const bstr = atob(arr[1]);
-        let n = bstr.length;
-        const u8arr = new Uint8Array(n);
-        while (n--) u8arr[n] = bstr.charCodeAt(n);
-        return new Blob([u8arr], { type: mime });
-    }
-
-    
-    $(document).ready(function () {
-        $('#productForm').on('submit', function (e) {
+        previewContainer.addEventListener('dragover', e => {
             e.preventDefault();
+            previewContainer.classList.add('border-primary');
+        });
 
-            $('.text-danger').remove();
-            let isValid = true;
+        previewContainer.addEventListener('dragleave', () => {
+            previewContainer.classList.remove('border-primary');
+        });
 
-            $('#productForm').find('input, textarea, select').each(function () {
-                const input = $(this);
-                if (input.attr('required') && !input.val().trim()) {
-                    isValid = false;
-                    input.after('<div class="text-danger mt-1">This field is required</div>');
-                }
+        previewContainer.addEventListener('drop', e => {
+            e.preventDefault();
+            previewContainer.classList.remove('border-primary');
+            handleFiles(Array.from(e.dataTransfer.files));
+        });
+
+        imageInput.addEventListener('change', (event) => {
+            handleFiles(Array.from(event.target.files));
+            imageInput.value = '';
+        });
+
+
+        function handleFiles(files) {
+            files.forEach(file => {
+                if (!file.type.startsWith('image/')) return;
+
+                const reader = new FileReader();
+                reader.onload = e => compressImage(e.target.result, file.name);
+                reader.readAsDataURL(file);
             });
+        }
 
-            if (!isValid) return;
+        function compressImage(src, filename) {
+            const img = new Image();
+            img.src = src;
 
-            const formData = new FormData(this);
-            selectedImages.forEach(file => {
-                formData.append('images[]', file);
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+
+                canvas.width = 1200;
+                canvas.height = 800;
+
+                ctx.fillStyle = '#fff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0, 1200, 800);
+
+                let quality = 0.8;
+                let blob;
+
+                do {
+                    blob = dataURLtoBlob(canvas.toDataURL('image/jpeg', quality));
+                    quality -= 0.02;
+                } while (blob.size > 150 * 1024 && quality >= 0.75);
+
+                const compressedFile = new File(
+                    [blob],
+                    filename.replace(/\.(png|webp)$/i, '.jpg'), {
+                        type: 'image/jpeg'
+                    }
+                );
+
+                selectedImages.push(compressedFile);
+                renderPreview(URL.createObjectURL(blob), compressedFile);
+            };
+        }
+
+        function renderPreview(imageUrl, file) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'position-relative';
+            wrapper.style.width = '100px';
+            wrapper.style.height = '100px';
+
+            const img = document.createElement('img');
+            img.src = imageUrl;
+            img.className = 'img-thumbnail';
+            img.style.width = '100%';
+            img.style.height = '100%';
+            img.style.objectFit = 'cover';
+
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button';
+            removeBtn.className = 'btn btn-danger btn-sm position-absolute top-0 end-0';
+            removeBtn.innerHTML = '&times;';
+            removeBtn.onclick = () => {
+                previewContainer.removeChild(wrapper);
+                selectedImages = selectedImages.filter(i => i !== file);
+            };
+
+            wrapper.appendChild(img);
+            wrapper.appendChild(removeBtn);
+            previewContainer.appendChild(wrapper);
+        }
+
+        function dataURLtoBlob(dataURL) {
+            const arr = dataURL.split(',');
+            const mime = arr[0].match(/:(.*?);/)[1];
+            const bstr = atob(arr[1]);
+            let n = bstr.length;
+            const u8arr = new Uint8Array(n);
+            while (n--) u8arr[n] = bstr.charCodeAt(n);
+            return new Blob([u8arr], {
+                type: mime
             });
+        }
 
-            const $button = $('#saveButton');
-            $button.prop('disabled', true).text('Loading...');
 
-            $.ajax({
-                url: BASE_URL + '/vendor/api/product/created',
-                method: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: () => {
-                    window.location.href = BASE_URL + 'vendor/products';
-                },
-                error: xhr => {
-                    console.error(xhr.responseText);
-                    MessError.fire({ icon: 'error', title: 'Upload failed. Try again.' });
-                },
-                complete: () => {
-                    $button.prop('disabled', false).text('SUBMIT');
-                }
+        $(document).ready(function() {
+            $('#productForm').on('submit', function(e) {
+                e.preventDefault();
+
+                $('.text-danger').remove();
+                let isValid = true;
+
+                $('#productForm').find('input, textarea, select').each(function() {
+                    const input = $(this);
+                    if (input.attr('required') && !input.val().trim()) {
+                        isValid = false;
+                        input.after('<div class="text-danger mt-1">This field is required</div>');
+                    }
+                });
+
+                if (!isValid) return;
+
+                const formData = new FormData(this);
+                selectedImages.forEach(file => {
+                    formData.append('images[]', file);
+                });
+
+                const $button = $('#saveButton');
+                $button.prop('disabled', true).text('Loading...');
+
+                $.ajax({
+                    url: BASE_URL + '/vendor/api/product/created',
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: () => {
+                        window.location.href = BASE_URL + 'vendor/products';
+                    },
+                    error: xhr => {
+                        console.error(xhr.responseText);
+                        MessError.fire({
+                            icon: 'error',
+                            title: 'Upload failed. Try again.'
+                        });
+                    },
+                    complete: () => {
+                        $button.prop('disabled', false).text('SUBMIT');
+                    }
+                });
             });
         });
-    });
-</script>
+    </script>

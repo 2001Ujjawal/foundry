@@ -98,7 +98,7 @@ class ApiService
                 'slug'              => $slug,
                 'description'       => $data['description'],
                 'price'             => $data['product_price'] ?? 1000,
-                'brand'             => $data['product_brand'],
+                'brand'             => $data['product_brand'] ?? null,
                 'html_description'  => $data['content'],
                 'vendor_id'         => $data['user_id'],
                 'category_id'       => $data['category'],
@@ -106,10 +106,28 @@ class ApiService
                 'image'             => '',
                 'created_by'        => $data['user_id'] ?? NULL,
             ];
-
-
-
             $success = $this->commonModel->insertData(PRODUCT_TABLE, $addData);
+            $seoData = [
+                'uid'              => generateUid(),
+                'product_uid'      => $productUid,
+                'meta_title'       => $data['meta_title'] ?? null,
+                'meta_description' => $data['meta_description'] ?? null,
+                'meta_keywords'    => $data['meta_keywords'] ?? null,
+                'tags'             => $data['tags'] ?? null,
+                'status'           => 'active',
+                'created_at'       => $timestamp,
+                'updated_at'       => $timestamp
+            ];
+
+            if (
+                !empty($seoData['meta_title']) ||
+                !empty($seoData['meta_description']) ||
+                !empty($seoData['meta_keywords']) ||
+                !empty($seoData['tags'])
+            ) {
+                $this->commonModel->insertData('product_seo', $seoData);
+            }
+
             if (!empty($image_paths)) {
                 foreach ($image_paths as $imgPath) {
                     $mainImageValue = ($imgPath === $image_path) ? 1 : 0;
@@ -173,22 +191,6 @@ class ApiService
 
         return $slug;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public function updateProduct($data, $file)
     {
         $validationRules = [
@@ -616,7 +618,6 @@ class ApiService
         }
         $productUid = generateUid();
         $timestamp = timestamp();
-        // Handle file upload
         $image_paths = [];
         if (isset($file['images']) && is_array($file['images'])) {
             foreach ($file['images'] as $singleFile) {
