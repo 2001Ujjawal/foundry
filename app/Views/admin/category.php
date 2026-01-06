@@ -220,7 +220,6 @@
     <!-- Edit module -->
 
     <script>
-
         $(document).ready(function() {
             $('#categoryTable').DataTable({
                 columnDefs: [{
@@ -288,158 +287,84 @@
         /** Created */
 
         /** Update */
-        // function openEditModal(button) {
-        //     const btn = $(button);
-        //     $('#editCategoryUid').val(btn.data('uid'));
-        //     $('#editName').val(btn.data('name'));
-        //     $('#editPath').val(btn.data('path'));
-
-        //     const imageUrl = btn.data('image');
-
-        //     if (imageUrl) {
-        //         const fullImageUrl = BASE_URL + '/' + imageUrl;
-        //         $('#categoryOldImage').attr('src', fullImageUrl).show();
-        //         $('#oldImagePreview').show();
-        //     } else {
-        //         $('#categoryOldImage').hide();
-        //         $('#oldImagePreview').hide();
-        //     }
-        //     $('#editCategoryModal').modal('show');
-        // }
-
         function openEditModal(button) {
-    const btn = $(button);
+            const btn = $(button);
 
-    const uid  = btn.data('uid');
-    const name = btn.data('name');
-    const path = btn.data('path'); // parent uid OR empty
+            const uid = btn.data('uid');
+            const name = btn.data('name');
+            const path = btn.data('path'); 
 
-    $('#editCategoryUid').val(uid);
-    $('#editName').val(name);
-    $('#editPath').val(path ?? '');
+            $('#editCategoryUid').val(uid);
+            $('#editName').val(name);
+            $('#editPath').val(path ?? '');
 
-    // 🔥 Store category type
-    if (path) {
-        $('#editCategoryModalForm').attr('data-type', 'child');
-    } else {
-        $('#editCategoryModalForm').attr('data-type', 'parent');
-    }
+            if (path) {
+                $('#editCategoryModalForm').attr('data-type', 'child');
+            } else {
+                $('#editCategoryModalForm').attr('data-type', 'parent');
+            }
 
-    // Image preview
-    const imageUrl = btn.data('image');
-    if (imageUrl) {
-        $('#categoryOldImage').attr('src', BASE_URL + '/' + imageUrl);
-        $('#oldImagePreview').show();
-    } else {
-        $('#oldImagePreview').hide();
-    }
+            const imageUrl = btn.data('image');
+            if (imageUrl) {
+                $('#categoryOldImage').attr('src', BASE_URL + '/' + imageUrl);
+                $('#oldImagePreview').show();
+            } else {
+                $('#oldImagePreview').hide();
+            }
 
-    $('#editCategoryModal').modal('show');
-}
-
-
-
+            $('#editCategoryModal').modal('show');
+        }
 
         $(document).ready(function() {
-            // $('#editCategoryModalForm').on('submit', function(e) {
-            //     e.preventDefault();
+            $('#editCategoryModalForm').on('submit', function(e) {
+                e.preventDefault();
 
-            //     $('.text-danger').remove();
-            //     let isValid = true;
-            //     let formData = new FormData(this);
+                $('.text-danger').remove();
+                let isValid = true;
 
-            //     $('#editCategoryModalForm input, #editCategoryModalForm select').each(function() {
-            //         const input = $(this);
-            //         const name = input.attr('name');
-            //         const value = input.val().trim();
-            //         if (name !== 'category' && value === '') {
-            //             isValid = false;
-            //             input.after('<div class="text-danger mt-1">This field is required</div>');
-            //         }
-            //     });
-            //     if (!isValid) {
-            //         return;
-            //     }
+                const categoryType = $(this).attr('data-type');
+                const name = $('#editName').val().trim();
+                const path = $('#editPath').val().trim();
 
-            //     const $button = $('#editBtn');
-            //     $button.prop('disabled', true).text('Loading...');
-            //     $.ajax({
-            //         url: BASE_URL + '/admin/api/category/update',
-            //         method: 'POST',
-            //         data: formData,
-            //         processData: false,
-            //         contentType: false,
-            //         success: function(response) {
-            //             MessSuccess.fire({
-            //                 icon: 'success',
-            //                 title: response.message || 'Update Successful',
-            //             });
-            //             location.reload();
-            //         },
-            //         error: function(xhr) {
-            //             console.error('Error:', xhr.responseText);
-            //             MessError.fire({
-            //                 icon: 'error',
-            //                 title: 'An error occurred. Please try again.',
-            //             });
-            //         }
-            //     });
-            // });
+                // Category name always required
+                if (name === '') {
+                    isValid = false;
+                    $('#editName').after('<div class="text-danger mt-1">Category name is required</div>');
+                }
 
-            $('#editCategoryModalForm').on('submit', function (e) {
-    e.preventDefault();
+                // Only child category requires sub-category
+                // if (categoryType === 'child' && path === '') {
+                //     isValid = true;
+                //     $('#editPath').after('<div class="text-danger mt-1">Perent Category is required</div>');
+                // }
 
-    $('.text-danger').remove();
-    let isValid = true;
+                if (!isValid) return;
 
-    const categoryType = $(this).attr('data-type'); // parent | child
-    const name = $('#editName').val().trim();
-    const path = $('#editPath').val().trim();
+                const formData = new FormData(this);
+                $('#editBtn').prop('disabled', true).text('Loading...');
 
-    // Category name always required
-    if (name === '') {
-        isValid = false;
-        $('#editName').after('<div class="text-danger mt-1">Category name is required</div>');
-    }
-
-    // 🔥 Only child category requires sub-category
-    if (categoryType === 'child' && path === '') {
-        isValid = false;
-        $('#editPath').after('<div class="text-danger mt-1">Sub Category is required</div>');
-    }
-
-    if (!isValid) return;
-
-    const formData = new FormData(this);
-    $('#editBtn').prop('disabled', true).text('Loading...');
-
-    $.ajax({
-        url: BASE_URL + '/admin/api/category/update',
-        method: 'POST',
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function (response) {
-            MessSuccess.fire({
-                icon: 'success',
-                title: response.message || 'Update Successful',
+                $.ajax({
+                    url: BASE_URL + '/admin/api/category/update',
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        MessSuccess.fire({
+                            icon: 'success',
+                            title: response.message || 'Update Successful',
+                        });
+                        location.reload();
+                    },
+                    error: function() {
+                        MessError.fire({
+                            icon: 'error',
+                            title: 'Something went wrong',
+                        });
+                        $('#editBtn').prop('disabled', false).text('Update');
+                    }
+                });
             });
-            location.reload();
-        },
-        error: function () {
-            MessError.fire({
-                icon: 'error',
-                title: 'Something went wrong',
-            });
-            $('#editBtn').prop('disabled', false).text('Update');
-        }
-    });
-});
-
-
-
-
-
         });
         /** Update */
 

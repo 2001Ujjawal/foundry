@@ -150,7 +150,7 @@
             reader.readAsDataURL(file);
         });
 
-        imageInput.value = ''; // reset to allow re-selecting same file
+        imageInput.value = ''; 
     });
 
     // Submit logic
@@ -158,12 +158,11 @@
         const formData = new FormData();
 
 
-        formData.append('uid', '<?= $resp['uid'] ?? "" ?>'); // ensure uid is sent
+        formData.append('uid', '<?= $resp['uid'] ?? "" ?>'); 
 
 
         formData.append('name', document.getElementById('name').value);
         formData.append('description', document.getElementById('description').value);
-        // formData.append('content', document.getElementById('content').value);
         formData.append('category', document.getElementById('category').value);
         formData.append('subcategory', document.getElementById('subcategory_id').value);
 
@@ -257,54 +256,55 @@
     console.log(" === ", preselectedSubcategory);
 
     $(document).ready(function() {
-        // trigger subcategory load if category is already selected (edit case)
-        if ($("#category").val()) {
-            $("#category").trigger("change");
-        }
 
         $('#category').on('change', function() {
             let categoryId = $(this).val();
 
             if (categoryId) {
                 $.ajax({
-                    url: BASE_URL + "/vendor/api/get-subcategories",
-                    type: "GET",
+                    url: BASE_URL + "/admin/categories/get-subcategories",
+                    type: "POST",
                     data: {
-                        categoryId: categoryId
+                        parent_uid: categoryId
                     },
                     dataType: "json",
                     success: function(res) {
-                        $('#subcategory_id').empty().append(
-                            '<option value="">Select Sub category</option>');
 
-                        if (res.success && res.data && res.data.data.length > 0) {
-                            res.data.data.forEach(function(subcat) {
-                                let selected = (String(subcat.uid).trim() ===
-                                        String(preselectedSubcategory).trim()) ?
-                                    "selected" : "";
+                        $('#subcategory_id')
+                            .empty()
+                            .append('<option value="">Select Sub category</option>');
+
+                        if (res.success && Array.isArray(res.data) && res.data.length > 0) {
+
+                            $('#subcategory_id').closest('.col-md-6').show();
+
+                            res.data.forEach(function(subcat) {
+
+                                let selected =
+                                    String(subcat.uid).trim() ===
+                                    String(preselectedSubcategory).trim() ?
+                                    "selected" :
+                                    "";
 
                                 $('#subcategory_id').append(
                                     `<option value="${subcat.uid}" ${selected}>${subcat.title}</option>`
                                 );
                             });
 
-                            // force-set the selected value in dropdown
                             if (preselectedSubcategory) {
                                 $('#subcategory_id').val(preselectedSubcategory);
                             }
 
                         } else {
-                            $('#subcategory_id').append(
-                                '<option value="">No subcategories found</option>');
+                            $('#subcategory_id').closest('.col-md-6').hide();
                         }
-                    },
-                    error: function() {
-                        alert("Error loading subcategories.");
                     }
                 });
-            } else {
-                $('#subcategory_id').empty().append('<option value="">Select Sub category</option>');
             }
         });
+
+        if ($("#category").val()) {
+            $("#category").trigger("change");
+        }
     });
 </script>

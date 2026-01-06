@@ -140,22 +140,6 @@ class WebController extends Common
             view('admin/templates/footer.php');
     }
 
-    /** View Product Details */
-    // public function view_product()
-    // {
-    //     $payload = $this->validateJwtWebToken();
-    //     if (!$payload) {
-    //         return redirect()->to(base_url('admin/login'));
-    //     }
-    //     $productId = $this->request->getGet('productId');
-    //     $resp['resp'] = $this->webService->getProductsDetailsByProductId($productId);
-    //     return
-    //         view('admin/templates/header.php') .
-    //         view('admin/view_product.php', $resp) .
-    //         view('admin/templates/footer.php');
-    // }
-
-    /** View vendor Details */
     public function view_vendor_details()
     {
         $payload = $this->validateJwtWebToken();
@@ -238,22 +222,6 @@ class WebController extends Common
             ->setCookie($auth_cookie);
     }
 
-    // public function view_product($productId)
-    // {
-    //     $payload = $this->validateJwtWebTokenVendor();
-    //     if (!$payload) {
-    //         return redirect()->to(base_url('vendor/login'));
-    //     }
-    //     $resp['resp'] = $this->webService->getProductsDetailsByProductId($payload->user_id, $productId);
-    //     $resp['images'] = $this->vendorWebModel->getProductImage($productId);
-    //     $resp['category'] = $this->commonModel->getCategory();
-    //     return
-    //         view('vendors/templates/header.php') .
-    //         view('vendors/view_product.php', $resp) .
-    //         view('vendors/templates/footer.php');
-    // }
-
-
     public function view_product($productId)
     {
 
@@ -272,6 +240,30 @@ class WebController extends Common
             view('admin/templates/header.php') .
             view('admin/view_product.php', $resp) .
             view('admin/templates/footer.php');
+    }
+
+    public function getSubCategories()
+    {
+        $parentUid = $this->request->getPost('parent_uid');
+
+        if (empty($parentUid)) {
+            return $this->response->setJSON([
+                'success' => false,
+                'data' => []
+            ]);
+        }
+
+        $subCategories = $this->db->table('category')
+            ->select('uid, title')
+            ->where('path', $parentUid)
+            ->where('status', 'active')
+            ->get()
+            ->getResultArray();
+
+        return $this->response->setJSON([
+            'success' => true,
+            'data' => $subCategories
+        ]);
     }
 
 
