@@ -38,8 +38,14 @@
                 <ul style="line-height: 1.8;">
                     <li><strong>Product Name</strong> — required</li>
                     <li><strong>Category Name</strong> — required</li>
-                    <li><strong>Sub Category</strong> — optional</li>
+                    <!-- <li><strong>Sub Category</strong> — optional</li> -->
                     <li><strong>Description</strong> — required</li>
+                    <li><strong>Meta Description</strong></li>
+                    <li><strong>Meta Keywords</strong></li>
+                    <li><strong>Meta Title</strong></li>
+                    <li><strong>Meta Tags</strong></li>
+                    
+                    
                 </ul>
 
                 <!-- <a class="btn btn-sm btn-light my-2" 

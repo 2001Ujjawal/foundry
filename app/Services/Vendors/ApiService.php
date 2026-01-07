@@ -94,7 +94,7 @@ class ApiService
             $image_path = $image_paths[0] ?? '';
             $addData = [
                 'uid'               => $productUid,
-                'name'              =>   $name,
+                'name'              => $name,
                 'slug'              => $slug,
                 'description'       => $data['description'],
                 'price'             => $data['product_price'] ?? 1000,

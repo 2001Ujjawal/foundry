@@ -64,7 +64,7 @@ class ProductImageModel extends Model
         'status',
         'created_at',
         'created_by',
-        'update_at'
+        'updated_at'
     ];
 
     protected $useTimestamps = false;

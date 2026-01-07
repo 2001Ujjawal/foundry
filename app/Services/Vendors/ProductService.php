@@ -6,14 +6,15 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use App\Models\Vendors\ProductModel;
 use App\Models\CommonModel;
 use App\Models\Vendors\ProductImageModel;
+use App\Models\Vendors\ProductSeoModel;
 
 class ProductService
 {
     protected $productModel;
     protected $commonModel;
     protected $productImageModel;
+    protected $productSeoModel;
 
-    // Path inside /public
     protected $defaultImagePath = 'assets/vendors/images/Default_Product_Image.png';
 
     public function __construct()
@@ -21,14 +22,12 @@ class ProductService
         $this->productModel      = new ProductModel();
         $this->commonModel       = new CommonModel();
         $this->productImageModel = new ProductImageModel();
+        $this->productSeoModel   = new ProductSeoModel();
     }
 
-    /**
-     * Bulk Excel Upload
-     */
     public function bulkUploadFromExcel($uploadedFile, $vendorId)
     {
-        if (!$uploadedFile->isValid()) {
+        if (!$uploadedFile || !$uploadedFile->isValid()) {
             return [
                 'success' => false,
                 'message' => 'Invalid Excel file uploaded.'
@@ -36,7 +35,6 @@ class ProductService
         }
 
         try {
-            /** Load Excel **/
             $tmpPath     = $uploadedFile->getTempName();
             $reader      = IOFactory::createReaderForFile($tmpPath);
             $spreadsheet = $reader->load($tmpPath);
@@ -44,26 +42,30 @@ class ProductService
             $rows        = $sheet->toArray(null, true, true, true);
 
             if (empty($rows)) {
-                return ['success' => false, 'message' => 'Excel file is empty.'];
+                return [
+                    'success' => false,
+                    'message' => 'Excel file is empty.'
+                ];
             }
-
-            /** Read Header **/
+            
             $header = array_shift($rows);
             $colMap = [];
 
             foreach ($header as $col => $title) {
-                $t = strtolower(trim($title));
+                $t = strtolower(trim((string) $title));
 
-                if ($t === 'product name')                                 $colMap['name'] = $col;
-                if ($t === 'category name')                                $colMap['category'] = $col;
+                if ($t === 'product name')        $colMap['name'] = $col;
+                if ($t === 'category name')       $colMap['category'] = $col;
                 if (in_array($t, ['sub category', 'subcategory', 'sub-category']))
-                                                                            $colMap['subcategory'] = $col;
-                if ($t === 'description')                                  $colMap['description'] = $col;
+                                                $colMap['subcategory'] = $col;
+                if ($t === 'description')         $colMap['description'] = $col;
+                if ($t === 'meta title')          $colMap['meta_title'] = $col;
+                if ($t === 'meta description')    $colMap['meta_description'] = $col;
+                if ($t === 'meta keywords')       $colMap['meta_keywords'] = $col;
+                if ($t === 'meta tags')           $colMap['meta_tags'] = $col;
             }
 
-            /** Validate Required Headers **/
-            $required = ['name', 'category', 'description'];
-            foreach ($required as $req) {
+            foreach (['name', 'category', 'description'] as $req) {
                 if (!isset($colMap[$req])) {
                     return [
                         'success' => false,
@@ -72,18 +74,43 @@ class ProductService
                 }
             }
 
-            $errors     = [];
-            $rowNumber  = 2; // Because row 1 is header
+            $errors    = [];
+            $rowNumber = 2;
 
-            /** PROCESS ALL ROWS **/
             foreach ($rows as $row) {
+
+                if (
+                    empty(trim($row[$colMap['name']] ?? '')) &&
+                    empty(trim($row[$colMap['category']] ?? '')) &&
+                    empty(trim($row[$colMap['description']] ?? ''))
+                ) {
+                    $rowNumber++;
+                    continue;
+                }
 
                 $name            = trim($row[$colMap['name']] ?? '');
                 $categoryName    = trim($row[$colMap['category']] ?? '');
-                $subcategoryName = trim($row[$colMap['subcategory']] ?? '');
+                $subcategoryName = isset($colMap['subcategory'])
+                    ? trim($row[$colMap['subcategory']] ?? '')
+                    : '';
                 $description     = trim($row[$colMap['description']] ?? '');
 
-                /** Validate Required Fields **/
+                $metaTitle = isset($colMap['meta_title'])
+                    ? trim($row[$colMap['meta_title']] ?? '')
+                    : '';
+
+                $metaDescription = isset($colMap['meta_description'])
+                    ? trim($row[$colMap['meta_description']] ?? '')
+                    : '';
+
+                $metaKeywords = isset($colMap['meta_keywords'])
+                    ? trim($row[$colMap['meta_keywords']] ?? '')
+                    : '';
+
+                $metaTags = isset($colMap['meta_tags'])
+                    ? trim($row[$colMap['meta_tags']] ?? '')
+                    : '';
+
                 if ($name === '' || $categoryName === '' || $description === '') {
                     $errors[] = "Row {$rowNumber}: Missing required fields.";
                     $rowNumber++;
@@ -104,7 +131,6 @@ class ProductService
 
                 $categoryId = $category['uid'];
 
-                /** Get Subcategory (Optional) **/
                 $subcategoryId = '';
 
                 if ($subcategoryName !== '') {
@@ -119,10 +145,9 @@ class ProductService
                     }
                 }
 
-                /** Prepare Product Data **/
                 $productUid = $this->generateUid();
 
-                $data = [
+                $this->productModel->insert([
                     'uid'            => $productUid,
                     'vendor_id'      => $vendorId,
                     'category_id'    => $categoryId,
@@ -130,16 +155,12 @@ class ProductService
                     'name'           => $name,
                     'description'    => $description,
                     'image'          => $this->defaultImagePath,
-                    'status'         => 'Active',
+                    'status'         => 'active',
                     'is_admin_allow' => 1,
                     'created_at'     => date('Y-m-d H:i:s'),
-                ];
+                ]);
 
-                /** Insert Product **/
-                $this->productModel->insert($data);
-
-                /** Insert Product Image **/
-                $imageRow = [
+                $this->productImageModel->insert([
                     'uid'        => $this->generateUid(),
                     'product_id' => $productUid,
                     'image'      => $this->defaultImagePath,
@@ -147,14 +168,29 @@ class ProductService
                     'status'     => 'active',
                     'created_by' => $vendorId,
                     'created_at' => date('Y-m-d H:i:s'),
-                ];
+                ]);
 
-                $this->productImageModel->insert($imageRow);
+                $this->productSeoModel->insert([
+                    'uid'              => $this->generateUid(),
+                    'product_uid'      => $productUid,
+                    'meta_title'       => $metaTitle !== '' ? $metaTitle : $name,
+                    'meta_description' => $metaDescription !== ''
+                        ? $metaDescription
+                        : substr(strip_tags($description), 0, 160),
+                    'meta_keywords'    => $metaKeywords !== ''
+                        ? strtolower($metaKeywords)
+                        : strtolower($name . ', ' . $categoryName),
+                    'meta_tags'             => $metaTags !== ''
+                        ? strtolower($metaTags )
+                        : strtolower($categoryName . ($subcategoryName ? ', ' . $subcategoryName : '')),
+                    'status'           => 'active',
+                    'created_at'       => date('Y-m-d H:i:s'),
+                    'updated_at'       => date('Y-m-d H:i:s'),
+                ]);
 
                 $rowNumber++;
             }
 
-            /** If Errors Exist → Fail Upload **/
             if (!empty($errors)) {
                 return [
                     'success' => false,
@@ -169,20 +205,14 @@ class ProductService
             ];
 
         } catch (\Throwable $e) {
-
             return [
                 'success' => false,
                 'message' => 'Error processing file: ' . $e->getMessage()
             ];
         }
     }
-
-    /**
-     * Generate UID
-     */
     protected function generateUid()
     {
         return strtoupper(bin2hex(random_bytes(8)));
     }
 }
-
