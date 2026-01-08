@@ -22,7 +22,7 @@ class WebModel extends Model
         return $result;
     }
 
-    public function getCategoryData()
+    public function getCategoryData_old()
     {
         $db = \Config\Database::connect();
 
@@ -33,8 +33,10 @@ class WebModel extends Model
         //$builder->orderBy('c.uid', 'desc');
 
         $result = $builder->get()->getResultArray();
+        echo '<pre>';
+        print_r($result);
+        die;
 
-        // If you want subcategories grouped under parent
         $categories = [];
         foreach ($result as $row) {
             if (empty($row['path'])) {
@@ -44,6 +46,40 @@ class WebModel extends Model
             } else {
                 // Subcategory: push into its parent's array
                 $categories[$row['path']]['subcategories'][] = $row;
+            }
+        }
+             
+        return array_values($categories);
+    }
+
+    public function getCategoryData()
+    {
+        $db = \Config\Database::connect();
+
+        $builder = $db->table('category c');
+        $builder->select(
+            'c.id, c.uid, c.title, c.path, c.image, c.status, c.created_at, c.updated_at,
+            cp.title AS path_name'
+        );
+        $builder->join('category cp', 'cp.uid = c.path', 'left');
+        $builder->where('c.status !=', DELETED_STATUS);
+        $builder->orderBy('c.created_at', 'ASC');
+
+        $rows = $builder->get()->getResultArray();
+
+        $categories = [];
+
+        /** ----- First pass: create all categories ----- */
+        foreach ($rows as $row) {
+            $row['subcategories'] = [];
+            $categories[$row['uid']] = $row;
+        }
+
+        /** ----- Second pass: attach subcategories to parents ----- */
+        foreach ($categories as $uid => $category) {
+            if (!empty($category['path']) && isset($categories[$category['path']])) {
+                $categories[$category['path']]['subcategories'][] = $category;
+                unset($categories[$uid]); // remove from root level
             }
         }
 
