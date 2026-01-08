@@ -143,7 +143,7 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <label class="form-label">Company Name</label>
-                            <input type="text" class="form-control" name="company_name" id="company_name" placeholder="Enter Company Name">
+                            <input type="text" class="form-control" name="company" id="company_name" placeholder="Enter Company Name">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Name</label>
@@ -267,7 +267,9 @@
                 $('.text-danger').remove();
                 let isValid = true;
                 let formData = new FormData(this);
-
+                // for (let pair of formData.entries()) {
+                //     console.log(pair[0] + ':', pair[1]);
+                // }
                 $('#vendorForm input').each(function() {
                     const input = $(this);
                     if (input.attr('type') === 'file') {

@@ -267,8 +267,11 @@ class ApiService
     /** Vendor Section */
     public function createdVendor($data, $file)
     {
+        // echo '<pre>';
+        // print_r($data);
+        // exit;
         $validationRules = [
-            'company'  => 'required',
+            'company'       => 'required',
             'name'          => 'required',
             'email'         => 'required',
             'mobile'        => 'required',
@@ -319,7 +322,7 @@ class ApiService
                 'states'      => $data['states'] ?? null,
                 'gst'         => $data['gst'] ?? null,
                 'created_by'  => "",
-                'status'      => 'inactive',
+                'status'      => 'inactive'
             ];
 
             $success = $this->apiModel->createdVendor($addData);
