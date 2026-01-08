@@ -82,7 +82,7 @@
                                                 id="category<?= $catId ?>"
                                                 onclick="handleCategoryChange(this)"
                                                 data-title="<?= esc($row['title']); ?>"
-                                                data-image="<?= base_url($row['image']); ?>"
+                                                data-image="<?= base_url($row['image'] ?? 'assets/img/no-image.png') ?>"
                                                 <?= $isChecked ?>>
 
                                             <label class="form-check-label" for="category<?= $catId ?>">
@@ -111,7 +111,7 @@
                                                         id="category<?= $subId ?>"
                                                         onclick="handleCategoryChange(this)"
                                                         data-title="<?= esc($sub['title']); ?>"
-                                                        data-image="<?= base_url($sub['image']); ?>"
+                                                        data-image="<?= base_url($row['image'] ?? 'assets/img/no-image.png') ?>"
                                                         <?= $subChecked ?>>
 
                                                     <label class="form-check-label" for="category<?= $subId ?>">
