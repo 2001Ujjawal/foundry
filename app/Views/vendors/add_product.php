@@ -37,7 +37,7 @@
                             <select class="form-control" name="subcategory" id="subcategory_id">
                                 <option value="">Select Sub category</option>
                             </select>
-                            <label for="subcategory_id">Sub Category <span class="text-danger">*</span></label>
+                            <label for="subcategory_id">Sub Category <span class="text-danger"></span></label>
                         </div>
                     </div>
 

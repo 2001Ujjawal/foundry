@@ -76,9 +76,49 @@
                         <option value="">Select Sub category</option>
                     </select>
                 </div>
+                <div class="col-md-6">
+                    <label class="mb-1 d-block">Meta Title</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="metaTitle"
+                        id="metaTitle"
+                        value="<?= esc($resp['meta_title'] ?? '') ?>"
+                        readonly>
+                </div>
+                <div class="col-md-6">
+                    <label class="mb-1 d-block">Meta Keywords</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="metaKeywords"
+                        id="metaKeywords"
+                        value="<?= esc($resp['meta_keywords'] ?? '') ?>"
+                        readonly>
+                </div>
+                <div class="col-md-6">
+                    <label class="mb-1 d-block">Meta Description</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="metaDescription"
+                        id="metaDescription"
+                        value="<?= esc($resp['meta_description'] ?? '') ?>"
+                        readonly>
+                </div>
+                <div class="col-md-6">
+                    <label class="mb-1 d-block">Meta Tags</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="metaTags"
+                        id="metaTags"
+                        value="<?= esc($resp['tags'] ?? '') ?>"
+                        readonly>
+                </div>
                 <div class="col-md-12">
                     <label class="mb-1 d-block" for="description">Short Description</label>
-                    <textarea  rows="10" cols="90" class="form-control documentTextEditor" name="description" id="description"
+                    <textarea rows="10" cols="90" class="form-control documentTextEditor" name="description" id="description"
                         style="height: 120px;" readonly><?= esc($resp['description'] ?? '') ?></textarea>
                 </div>
                 <!-- <div class="col-md-12">
@@ -154,7 +194,6 @@
     // Submit logic
     document.getElementById('submitProductinputs').addEventListener('click', function() {
         const formData = new FormData();
-        console.log("formData:", formData);
 
         formData.append('uid', '<?= $resp['uid'] ?? "" ?>'); // ensure uid is sent
 
@@ -164,7 +203,11 @@
         // formData.append('content', document.getElementById('content').value);
         formData.append('category', document.getElementById('category').value);
         formData.append('subcategory', document.getElementById('subcategory_id').value);
-
+        formData.append('metaTitle', document.getElementById('metaTitle').value);
+        formData.append('metaKeywords', document.getElementById('metaKeywords').value);
+        formData.append('metaDescription', document.getElementById('metaDescription').value);
+        formData.append('metaTags', document.getElementById('metaTags').value);
+        
         selectedImages.forEach((file) => {
             formData.append('images[]', file);
         });

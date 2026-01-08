@@ -653,7 +653,34 @@ class ApiService
             ];
             $success = $this->commonModel->UpdateData(PRODUCT_TABLE, ['uid' => $data['uid']], $addData);
 
+            $seoData = [
+                'meta_title'       => $data['metaTitle'] ?? null,
+                'meta_description' => $data['metaDescription'] ?? null,
+                'meta_keywords'    => $data['metaKeywords'] ?? null,
+                'tags'             => $data['metaTags'] ?? null,
+            ];
 
+            $seoExists = $this->db
+                ->table('product_seo')
+                ->where('product_uid', $data['uid'])
+                ->get()
+                ->getRowArray();
+
+
+            if ($seoExists) {
+                $this->commonModel->UpdateData(
+                    'product_seo',
+                    ['product_uid' => $data['uid']],
+                    $seoData
+                );
+            } else {
+                $seoData['uid']         = generateUid();
+                $seoData['product_uid'] = $data['uid'];
+                $seoData['status']      = 'active';
+
+                $this->commonModel->insertData('product_seo', $seoData);
+            }
+            
             if (!empty($image_paths)) {
 
                 foreach ($image_paths as $imgPath) {

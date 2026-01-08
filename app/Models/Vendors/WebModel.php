@@ -35,10 +35,15 @@ class WebModel extends Model
         $builder->select('
             p.*, 
             v.name AS vendor_name, 
-            c.title AS category_name
+            c.title AS category_name,
+            ps.meta_title,
+            ps.meta_description,
+            ps.meta_keywords,
+            ps.tags
         ');
         $builder->join('vendor v', 'v.uid = p.vendor_id', 'left');
         $builder->join('category c', 'c.uid = p.category_id', 'left');
+        $builder->join('product_seo ps', 'ps.product_uid = p.uid', 'left');
         $builder->orderBy('p.created_at', 'desc');
         $builder->where('p.status !=', DELETED_STATUS);
         $builder->where('p.vendor_id', $vendorId);
