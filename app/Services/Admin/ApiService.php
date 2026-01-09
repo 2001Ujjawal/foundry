@@ -626,15 +626,16 @@ class ApiService
     public function updateCategory($data, $file)
     {
         $validationRules = [
-            'name'      => 'required'
+            'name' => 'required'
         ];
         $validationResult = validateData($data, $validationRules);
         if (!$validationResult['success']) {
             return [false, $validationResult['status'], $validationResult['message'], $validationResult['errors']];
         }
+
         $categoryUid = $data['categoryUid'];
-        $timestamp = timestamp();
-        // Handle file upload
+        $timestamp   = timestamp();
+
         $uploadResult = null;
         $image_path = '';
         if ($file && $file->isValid() && !$file->hasMoved()) {
@@ -658,11 +659,17 @@ class ApiService
                 'updated_by' => $data['user_id'] ?? NULL,
                 'updated_at' => date('Y-m-d H:i:s')
             ];
+
             if (!empty($image_path)) {
                 $updateData['image'] = $image_path;
             }
 
-            $success = $this->commonModel->UpdateData(CATEGORY_TABLE, ['uid' => $categoryUid], $updateData);
+            $success = $this->commonModel->UpdateData(
+                CATEGORY_TABLE,
+                ['uid' => $categoryUid],
+                $updateData
+            );
+
             if (!$success) {
                 return [
                     false,
@@ -670,6 +677,20 @@ class ApiService
                     'Category Details Update failed.',
                     ['error' => 'Database update failed']
                 ];
+            }
+
+            if (!empty($data['path'])) {
+                $this->commonModel->UpdateData(
+                    PRODUCT_TABLE,
+                    ['category_id' => $categoryUid],
+                    ['subcategory_id' => $data['path']]
+                );
+            } else {
+                $this->commonModel->UpdateData(
+                    PRODUCT_TABLE,
+                    ['category_id' => $categoryUid],
+                    ['subcategory_id' => NULL]
+                );
             }
 
             return [
@@ -682,6 +703,7 @@ class ApiService
             return [false, 500, 'Unexpected server error occurred', [$e->getMessage()]];
         }
     }
+
     public function deleteCategory($data)
     {
         $validationRules = [
