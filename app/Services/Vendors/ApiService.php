@@ -98,7 +98,7 @@ class ApiService
                 'slug'              => $slug,
                 'description'       => $data['description'],
                 'price'             => $data['product_price'] ?? 1000,
-                'brand'             => $data['product_brand'] ?? null,
+                // 'brand'             => $data['product_brand'] ?? null,
                 'html_description'  => $data['content'],
                 'vendor_id'         => $data['user_id'],
                 'category_id'       => $data['category'],
