@@ -56,14 +56,15 @@
                                     <div><?= $row['category_name']; ?></div>
                                 </td>
                                 <td>
-                                    <div class="d-flex align-items-center">
-                                        <input type="number"
-                                            class="form-control form-control-sm sort-order-input"
-                                            value="<?= esc($row['sort_order']) ?>"
-                                            data-id="<?= esc($row['uid']) ?>"
-                                            style="width:70px;" />
-                                    </div>
-                                </td>
+    <div class="d-flex align-items-center">
+        <input type="number"
+            class="form-control form-control-sm"
+            value="<?= esc($row['sort_order']) ?>"
+            style="width:70px;" />
+        <span class="d-none"><?= esc($row['sort_order']) == '0' ? 'on' : 'off' ?></span>
+    </div>
+</td>
+
 
                                 <td>
                                     <div class="form-check form-switch d-flex justify-content-center">
@@ -71,6 +72,9 @@
                                             id="productVerify_<?= $row['uid']; ?>"
                                             onchange="productApproval(this, '<?= $row['uid']; ?>')"
                                             <?= $row['is_admin_allow'] == 1 ? 'checked' : '' ?>>
+                                        <span class="d-none">
+                                            <?= $row['is_admin_allow'] == 1 ? 'off' : 'on' ?>
+                                        </span>
                                         <label class="form-check-label" for="productVerify_<?= $row['uid']; ?>"></label>
                                     </div>
 
@@ -83,7 +87,9 @@
                                             value="1"
                                             onchange="productVerify(this, '<?= $row['uid']; ?>')"
                                             <?= $row['is_verify'] == 1 ? 'checked' : '' ?>>
-                                        <span class="d-none"><?= $row['is_verify'] == 1 ? 'off' : 'on' ?></span>
+                                        <span class="d-none">
+                                            <?= $row['is_verify'] == 1 ? 'off' : 'on' ?>
+                                        </span>
                                         <label class="form-check-label" for="productSponsored_<?= $row['uid']; ?>"></label>
                                     </div>
                                 </td>
@@ -94,6 +100,9 @@
                                                 id="flexSwitchCheckChecked_<?= $row['id']; ?>"
                                                 onchange="handleStatusChange(this, '<?= $row['uid']; ?>')"
                                                 <?= ($row['status'] == ACTIVE_STATUS) ? 'checked' : ''; ?>>
+                                            <span class="d-none">
+                                                <?= ($row['status'] == ACTIVE_STATUS) ? 'active' : 'inactive' ?>
+                                            </span>
                                             <label class="form-check-label" for="flexSwitchCheckChecked"></label>
                                         <?php } ?>
                                     </div>
