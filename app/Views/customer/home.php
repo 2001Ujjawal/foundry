@@ -6,7 +6,7 @@
                 <!-- <h1 class="mb-3 fadeUp">India's Most Trusted <span>Foundry Equipment</span> Marketplace</h1> -->
                 <!-- <div class="px-lg-5 mb-3 fadeUp">Explore 25,000+ industrial-grade products from 1,200+ verified manufacturers and brands in the foundry, metallurgy, and metalworking industry.</div> -->
                 <div class="mb-3 col-lg-9 mx-auto p-0 fadeUp position-relative" style="z-index: 50;">
-                    <div class="input-group">
+                    <!-- <div class="input-group">
                         <input
                             type="text"
                             id="searchInput"
@@ -19,7 +19,7 @@
                                 </svg>
                             </button>
                         </a>
-                    </div>
+                    </div> -->
                     <div id="searchResults" class="position-absolute w-100 start-0 text-start overflow-auto" style="display: none; top:100%;z-index:5;height:300px;font-size:12px;">
                         <!-- <div class="d-flex flex-column overflow-hidden bg-white list-group">
                             <a href="" class="d-flex gap-2 list-group-item text-dark">
@@ -86,10 +86,10 @@
                     </div> -->
                 </div>
             </div>
-            <div class="d-flex align-items-center justify-content-center gap-3 mb-3 fadeUp">
+            <!-- <div class="d-flex align-items-center justify-content-center gap-3 mb-3 fadeUp">
                 <a href="<?= base_url('/product-list') ?>" class="btn btn-primary">Go to shop</a>
-                <!-- <a href="<?= base_url('/category') ?>" class="btn btn-white">Browse Categories</a> -->
-            </div>
+                <a href="<?= base_url('/category') ?>" class="btn btn-white">Browse Categories</a> 
+            </div> -->
             <!-- <div class="fadeUp">
                 <img src="<?= base_url('assets/customer/images/xdfvbdfv.webp') ?>" alt="" width="300">
             </div> -->
