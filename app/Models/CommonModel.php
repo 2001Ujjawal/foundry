@@ -60,4 +60,14 @@ class CommonModel extends Model
         $builder->where(['status' => ACTIVE_STATUS]);
         return $builder->get()->getResultArray();
     }
+    public function getVendors()
+    {
+        return $this->db->table('vendors')
+            ->select('id, name, email')
+            ->where('status', 1)
+            ->orderBy('name', 'ASC')
+            ->get()
+            ->getResultArray();
+    }
+
 }
