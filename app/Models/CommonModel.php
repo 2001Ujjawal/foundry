@@ -62,7 +62,7 @@ class CommonModel extends Model
     }
     public function getVendors()
     {
-        return $this->db->table('vendors')
+        return $this->db->table('vendor')
             ->select('id, name, email')
             ->where('status', 1)
             ->orderBy('name', 'ASC')
