@@ -453,7 +453,7 @@ class ApiController extends Common
     {
         $payload = $this->validateJwtApiToken();
         if (!$payload) {
-            return redirect()->to(base_url('vendor/login'));
+            return redirect()->to(base_url('admin/login'));
         }
 
         $imageDetails = $this->request->getJSON(true);
@@ -469,7 +469,7 @@ class ApiController extends Common
     {
         $payload = $this->validateJwtApiToken();
         if (!$payload) {
-            return redirect()->to(base_url('vendor/login'));
+            return redirect()->to(base_url('admin/login'));
         }
         $productDetails = $this->request->getPost();
        

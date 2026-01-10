@@ -82,6 +82,48 @@
                         <option value="">Select Sub category</option>
                     </select>
                 </div>
+                <div class="col-md-6">
+                    <label class="mb-1 d-block">Meta Title</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="metaTitle"
+                        id="metaTitle_id"
+                        value="<?= esc($resp['meta_title'] ?? '') ?>"
+
+
+                        readonly>
+                </div>
+                <div class="col-md-6">
+                    <label class="mb-1 d-block">Meta Keywords</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="metaKeywords"
+                        id="metaKeywords_id"
+                        value="<?= esc($resp['meta_keywords'] ?? '') ?>"
+                        readonly>
+                </div>
+                <div class="col-md-6">
+                    <label class="mb-1 d-block">Meta Description</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="metaDescription"
+                        id="metaDescription_id"
+                        value="<?= esc($resp['meta_description'] ?? '') ?>"
+                        readonly>
+                </div>
+                <div class="col-md-6">
+                    <label class="mb-1 d-block">Meta Tags</label>
+                    <input
+                        type="text"
+                        class="form-control"
+                        name="metaTags"
+                        id="metaTags_id"
+                        value="<?= esc($resp['tags'] ?? '') ?>"
+                        readonly>
+                </div>
                 <div class="col-md-12">
                     <label class="mb-1 d-block " for="description">Short Description</label>
                     <textarea rows="10" cols="90" class="form-control documentTextEditor" name="description" id="description"
@@ -165,15 +207,19 @@
         formData.append('description', document.getElementById('description').value);
         formData.append('category', document.getElementById('category').value);
         formData.append('subcategory', document.getElementById('subcategory_id').value);
+        formData.append('metaTitle', document.getElementById('metaTitle_id').value);
+        formData.append('metaKeywords', document.getElementById('metaKeywords_id').value);
+        formData.append('metaDescription', document.getElementById('metaDescription_id').value);
+        formData.append('metaTags', document.getElementById('metaTags_id').value);
 
         selectedImages.forEach((file) => {
             formData.append('images[]', file);
         });
         for (let [key, value] of formData.entries()) {
-            console.log(key + ":", value);
+            // console.log(key + ":", value);
         }
 
-
+// console.log(formData);
         $.ajax({
             url: BASE_URL + "/admin/api/product/edit-product",
             type: "POST",
@@ -187,7 +233,9 @@
                         icon: 'success',
                         title: 'Product updated successfully.',
                     });
-                    location.reload();
+                    // location.reload();
+                    window.location.assign(BASE_URL + "/admin/products");
+
                 } else {
                     alert("Error: " + response.message);
                 }
@@ -201,7 +249,7 @@
 
 <script>
     function productImageDelete(imageID) {
-        console.log("Deleting image with ID:", imageID);
+        // console.log("Deleting image with ID:", imageID);
 
         if (confirm("Are you sure you want to delete this image?")) {
             $.ajax({
@@ -253,7 +301,7 @@
     });
 
     const preselectedSubcategory = "<?= $resp['subcategory_id'] ?? '' ?>";
-    console.log(" === ", preselectedSubcategory);
+    // console.log(" === ", preselectedSubcategory);
 
     $(document).ready(function() {
 

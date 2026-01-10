@@ -1264,9 +1264,40 @@ class ApiService
                 'subcategory_id'    => $data['subcategory'] ?? null,
                 'image'             => '',
                 'created_by'        => $data['user_id'] ?? NULL,
-                'is_admin_allow'    => 0,
+                'is_admin_allow'    => 1,
             ];
             $success = $this->commonModel->UpdateData(PRODUCT_TABLE, ['uid' => $data['uid']], $addData);
+
+            $seoData = [
+                'meta_title'       => $data['metaTitle'] ?? null,
+                'meta_description' => $data['metaDescription'] ?? null,
+                'meta_keywords'    => $data['metaKeywords'] ?? null,
+                'tags'             => $data['metaTags'] ?? null,
+                'updated_at'       => date('Y-m-d H:i:s'),
+                'updated_by'       => $data['user_id'] ?? null,
+                
+            ];
+
+            $seoExists = $this->db
+                ->table('product_seo')
+                ->where('product_uid', $data['uid'])
+                ->get()
+                ->getRowArray();
+
+
+            if ($seoExists) {
+                $this->commonModel->UpdateData(
+                    'product_seo',
+                    ['product_uid' => $data['uid']],
+                    $seoData
+                );
+            } else {
+                $seoData['uid']         = generateUid();
+                $seoData['product_uid'] = $data['uid'];
+                $seoData['status']      = 'active';
+
+                $this->commonModel->insertData('product_seo', $seoData);
+            }
 
 
             if (!empty($image_paths)) {
@@ -1350,6 +1381,20 @@ class ApiService
             return [true, 200, 'Product Image deleted successfully.', []];
         } catch (\Throwable $e) {
             log_message('error', 'Image delete error: ' . $e->getMessage());
+            return [false, 500, 'Unexpected server error occurred', [$e->getMessage()]];
+        }
+    }
+
+    public function getSubCategories($categoryId)
+    {
+
+        try {
+            $subCategories = $this->commonModel->getAllData(CATEGORY_TABLE, ['path' => $categoryId, 'status' => ACTIVE_STATUS]);
+            if (empty($subCategories)) {
+                return [true, 200, 'No subcategories found', []];
+            }
+            return [true, 200, 'Subcategories retrieved successfully', ['data' => $subCategories]];
+        } catch (\Throwable $e) {
             return [false, 500, 'Unexpected server error occurred', [$e->getMessage()]];
         }
     }
