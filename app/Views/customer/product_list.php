@@ -82,7 +82,7 @@
                                                 id="category<?= $catId ?>"
                                                 onclick="handleCategoryChange(this)"
                                                 data-title="<?= esc($row['title']); ?>"
-                                                data-image="<?= base_url($row['image'] ?? 'assets/img/no-image.png') ?>"
+                                                data-image="<?= base_url($sub['image'] ?? 'assets/img/no-image.png') ?>"
                                                 <?= $isChecked ?>>
 
                                             <label class="form-check-label" for="category<?= $catId ?>">
@@ -111,14 +111,14 @@
                                                         id="category<?= $subId ?>"
                                                         onclick="handleCategoryChange(this)"
                                                         data-title="<?= esc($sub['title']); ?>"
-                                                        data-image="<?= base_url($row['image'] ?? 'assets/img/no-image.png') ?>"
+                                                        data-image="<?= base_url($sub['image'] ?? 'assets/img/no-image.png') ?>"
                                                         <?= $subChecked ?>>
 
                                                     <label class="form-check-label" for="category<?= $subId ?>">
                                                         <?= esc($sub['title']); ?>
                                                     </label>
-
                                                 </div>
+
                                             <?php endforeach; ?>
                                         <?php endif; ?>
                                     <?php endforeach; ?>
@@ -244,6 +244,8 @@
 </section>
 <script>
     function handleCategoryChange(checkbox) {
+        console.log("first checkbox ===> ", checkbox)
+
         document.querySelectorAll('.seller-type-checkbox').forEach(cb => {
             if (cb !== checkbox) {
                 cb.checked = false;
@@ -408,6 +410,7 @@
             container.innerHTML = '<div class="col-12 text-center py-4"><h5 class="text-muted">No products found </h5></div>';
             return;
         }
+
 
         list.forEach(row => {
             // Rating logic
@@ -596,6 +599,7 @@
 
 <script>
     function handleCategoryChange(checkbox = null) {
+        console.log("checkbox ===> ", checkbox)
         if (checkbox && checkbox.classList.contains('seller-type-checkbox') && checkbox.checked) {
             document.querySelectorAll('.seller-type-checkbox').forEach(cb => {
                 if (cb !== checkbox) {
@@ -641,7 +645,8 @@
             vendorStatus: selectedSellerType
         };
 
-        // console.log("FILTER DATA ===>", filterData);
+        //console.log("FILTER DATA ===>", filterData);
+
 
         const jsonStr = JSON.stringify(filterData);
         const base64 = btoa(jsonStr);
@@ -652,7 +657,9 @@
 
 
     function updateSelectedCategoryUI() {
+        console.log("AAAAA");
         const checkedCategory = document.querySelector('.category-checkbox:checked');
+        console.log('=======,=', checkedCategory)
         const imgEl = document.getElementById('selectedCategoryImage');
         const titleEl = document.getElementById('pageTitle');
 
@@ -677,6 +684,7 @@
         }
 
         if (imgEl) {
+
             if (catImage) {
                 imgEl.src = catImage;
                 imgEl.style.display = "block";
@@ -701,25 +709,26 @@
 
 
 
-    function updateSelectedCategoryUI() {
-        const c = document.querySelector('.category-checkbox:checked');
-        const img = document.getElementById('selectedCategoryImage');
+    // function updateSelectedCategoryUI() {
+    //     console.log("BBBB");
+    //     const c = document.querySelector('.category-checkbox:checked');
+    //     const img = document.getElementById('selectedCategoryImage');
 
 
-        if (!c) {
-            img.style.display = 'none';
-            return;
-        }
+    //     if (!c) {
+    //         img.style.display = 'none';
+    //         return;
+    //     }
 
-        let imgUrl = c.dataset.image;
+    //     let imgUrl = c.dataset.image;
 
 
-        if (imgUrl) {
-            img.src = imgUrl;
-            img.style.display = 'block';
-            // console.log("iiijjjjcdfklflkuklculylkiykliy", img.src);
-        }
-    }
+    //     if (imgUrl) {
+    //         img.src = imgUrl;
+    //         img.style.display = 'block';
+    //         // console.log("iiijjjjcdfklflkuklculylkiykliy", img.src);
+    //     }
+    // }
 
     const isLoggedIn = <?= !empty($customerLoggedIn) ? 'true' : 'false'; ?>;
     // console.log("HHHHHHHHHHHH", isLoggedIn);
