@@ -82,8 +82,9 @@
                                                 id="category<?= $catId ?>"
                                                 onclick="handleCategoryChange(this)"
                                                 data-title="<?= esc($row['title']); ?>"
-                                                data-image="<?= base_url($sub['image'] ?? 'assets/img/no-image.png') ?>"
+                                                data-image="<?= base_url($row['image'] ?? 'assets/img/no-image.png') ?>"
                                                 <?= $isChecked ?>>
+
 
                                             <label class="form-check-label" for="category<?= $catId ?>">
                                                 <?= esc($row['title']); ?>
@@ -113,12 +114,10 @@
                                                         data-title="<?= esc($sub['title']); ?>"
                                                         data-image="<?= base_url($sub['image'] ?? 'assets/img/no-image.png') ?>"
                                                         <?= $subChecked ?>>
-
                                                     <label class="form-check-label" for="category<?= $subId ?>">
                                                         <?= esc($sub['title']); ?>
                                                     </label>
                                                 </div>
-
                                             <?php endforeach; ?>
                                         <?php endif; ?>
                                     <?php endforeach; ?>
@@ -244,7 +243,7 @@
 </section>
 <script>
     function handleCategoryChange(checkbox) {
-        console.log("first checkbox ===> ", checkbox)
+        // console.log("first checkbox ===> ", checkbox)
 
         document.querySelectorAll('.seller-type-checkbox').forEach(cb => {
             if (cb !== checkbox) {
@@ -599,7 +598,7 @@
 
 <script>
     function handleCategoryChange(checkbox = null) {
-        console.log("checkbox ===> ", checkbox)
+        // console.log("checkbox ===> ", checkbox)
         if (checkbox && checkbox.classList.contains('seller-type-checkbox') && checkbox.checked) {
             document.querySelectorAll('.seller-type-checkbox').forEach(cb => {
                 if (cb !== checkbox) {
@@ -657,9 +656,9 @@
 
 
     function updateSelectedCategoryUI() {
-        console.log("AAAAA");
+        // console.log("AAAAA");
         const checkedCategory = document.querySelector('.category-checkbox:checked');
-        console.log('=======,=', checkedCategory)
+        // console.log('=======,=', checkedCategory)
         const imgEl = document.getElementById('selectedCategoryImage');
         const titleEl = document.getElementById('pageTitle');
 
