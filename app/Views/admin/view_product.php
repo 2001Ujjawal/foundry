@@ -134,11 +134,33 @@
                     <textarea rows="10" cols="90" class="form-control documentTextEditor" name="content" id="content"
                         style="height: 120px;" readonly><?= esc($resp['html_description'] ?? '') ?></textarea>
                 </div> -->
-                <div class="col-md-12 d-flex justify-content-end">
+                <!-- <div class="col-md-12 d-flex justify-content-end">
                     <button type="button" id="submitProductinputs" class="btn btn-primary">
                         Update
                     </button>
+                </div> -->
+                <div class="col-md-12 d-flex justify-content-end align-items-center gap-3">
+                    <!-- Approval Toggle -->
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="fw-semibold">Approved</span>
+
+                        <div class="form-check form-switch m-0">
+                            <input class="form-check-input"
+                                type="checkbox"
+                                id="approvalToggle"
+                                <?= ($resp['is_admin_allow'] ?? 0) == 1 ? 'checked' : '' ?>
+                                onchange="handleApprovalToggle(this,'<?= $resp['uid'] ?>')">
+                        </div>
+                    </div>
+                    <!-- Update Button -->
+                    <button type="button"
+                        id="submitProductinputs"
+                        class="btn btn-primary">
+                        Update
+                    </button>
                 </div>
+
+
             </div>
         </form>
     </div>
@@ -192,7 +214,7 @@
             reader.readAsDataURL(file);
         });
 
-        imageInput.value = ''; 
+        imageInput.value = '';
     });
 
     // Submit logic
@@ -200,7 +222,7 @@
         const formData = new FormData();
 
 
-        formData.append('uid', '<?= $resp['uid'] ?? "" ?>'); 
+        formData.append('uid', '<?= $resp['uid'] ?? "" ?>');
 
 
         formData.append('name', document.getElementById('name').value);
@@ -219,7 +241,7 @@
             // console.log(key + ":", value);
         }
 
-// console.log(formData);
+        // console.log(formData);
         $.ajax({
             url: BASE_URL + "/admin/api/product/edit-product",
             type: "POST",
@@ -280,6 +302,61 @@
         }
 
     }
+
+    function handleApprovalToggle(toggle, uid) {
+
+    const newStatus = toggle.checked ? 1 : 0;
+
+    Swal.fire({
+        title: "Are you sure?",
+        text: toggle.checked
+            ? "Do you want to approve this product?"
+            : "Do you want to revoke approval?",
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "Yes",
+        cancelButtonText: "Cancel",
+        reverseButtons: true
+    }).then((result) => {
+
+        if (!result.isConfirmed) {
+            toggle.checked = !toggle.checked; // revert
+            return;
+        }
+
+        // Call API only after confirmation
+        fetch(BASE_URL + "/admin/api/product/approval", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                uid: uid,
+                is_admin_allow: newStatus
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+
+            if (data.success) {
+                MessSuccess.fire({
+                    icon: "success",
+                    title: newStatus
+                        ? "Product approved successfully!"
+                        : "Approval revoked successfully!"
+                });
+            } else {
+                toggle.checked = !toggle.checked;
+                Swal.fire("Error", data.message, "error");
+            }
+        })
+        .catch(() => {
+            toggle.checked = !toggle.checked;
+            Swal.fire("Error", "Something went wrong", "error");
+        });
+    });
+}
+
 </script>
 
 <script>

@@ -1264,7 +1264,7 @@ class ApiService
                 'subcategory_id'    => $data['subcategory'] ?? null,
                 'image'             => '',
                 'created_by'        => $data['user_id'] ?? NULL,
-                'is_admin_allow'    => 1,
+                
             ];
             $success = $this->commonModel->UpdateData(PRODUCT_TABLE, ['uid' => $data['uid']], $addData);
 
