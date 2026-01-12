@@ -113,7 +113,7 @@ class ApiService
                 'meta_title'       => $data['meta_title'] ?? null,
                 'meta_description' => $data['meta_description'] ?? null,
                 'meta_keywords'    => $data['meta_keywords'] ?? null,
-                'meta_tags'             => $data['tags'] ?? null,
+                'meta_tags'        => $data['meta_tags'] ?? null,
                 'status'           => 'active',
                 'created_at'       => $timestamp,
                 'updated_at'       => $timestamp

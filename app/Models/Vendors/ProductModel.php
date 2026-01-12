@@ -83,7 +83,7 @@ class ProductSeoModel extends Model
         'meta_title',
         'meta_description',
         'meta_keywords',
-        'tags',
+        'meta_tags',
         'status'
     ];
     protected $useTimestamps = true;

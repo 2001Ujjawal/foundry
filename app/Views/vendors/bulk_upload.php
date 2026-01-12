@@ -142,7 +142,7 @@
                     });
 
                     setTimeout(() => {
-                        window.location.href = BASE_URL + '/vendor/products';
+                        window.location.href = BASE_URL + 'vendor/products';
                     }, 1500);
                 },
 

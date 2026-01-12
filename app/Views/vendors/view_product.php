@@ -224,7 +224,8 @@
                         icon: 'success',
                         title: 'Product updated successfully.',
                     });
-                    location.reload();
+                    // location.reload(); // Reload the page to reflect changes
+                    window.location.assign(BASE_URL + "vendor/products");
                 } else {
                     alert("Error: " + response.message);
                 }

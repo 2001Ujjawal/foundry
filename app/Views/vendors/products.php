@@ -29,7 +29,6 @@
                         <span>Bulk Upload</span>
                     </a>
                 </div>
-                 
             </div>
         </div>
         <div class="px-3 pb-3">

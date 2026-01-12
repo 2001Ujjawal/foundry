@@ -39,7 +39,7 @@ class WebModel extends Model
             ps.meta_title,
             ps.meta_description,
             ps.meta_keywords,
-            ps.tags
+            ps.meta_tags
         ');
         $builder->join('vendor v', 'v.uid = p.vendor_id', 'left');
         $builder->join('category c', 'c.uid = p.category_id', 'left');

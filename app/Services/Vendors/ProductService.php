@@ -47,22 +47,23 @@ class ProductService
                     'message' => 'Excel file is empty.'
                 ];
             }
-            
+
+            /** Map Headers **/
             $header = array_shift($rows);
             $colMap = [];
 
             foreach ($header as $col => $title) {
                 $t = strtolower(trim((string) $title));
 
-                if ($t === 'product name')        $colMap['name'] = $col;
-                if ($t === 'category name')       $colMap['category'] = $col;
+                if ($t === 'product name')     $colMap['name'] = $col;
+                if ($t === 'category name')    $colMap['category'] = $col;
                 if (in_array($t, ['sub category', 'subcategory', 'sub-category']))
-                                                $colMap['subcategory'] = $col;
-                if ($t === 'description')         $colMap['description'] = $col;
-                if ($t === 'meta title')          $colMap['meta_title'] = $col;
-                if ($t === 'meta description')    $colMap['meta_description'] = $col;
-                if ($t === 'meta keywords')       $colMap['meta_keywords'] = $col;
-                if ($t === 'meta tags')           $colMap['meta_tags'] = $col;
+                    $colMap['subcategory'] = $col;
+                if ($t === 'description')      $colMap['description'] = $col;
+                if ($t === 'meta title')       $colMap['meta_title'] = $col;
+                if ($t === 'meta description') $colMap['meta_description'] = $col;
+                if ($t === 'meta keywords')    $colMap['meta_keywords'] = $col;
+                if ($t === 'meta tags')        $colMap['meta_tags'] = $col;
             }
 
             foreach (['name', 'category', 'description'] as $req) {
@@ -117,11 +118,18 @@ class ProductService
                     continue;
                 }
 
-                /** Get Category **/
-                $category = $this->commonModel->getSingleData(CATEGORY_TABLE, [
-                    'LOWER(title)' => strtolower($categoryName),
-                    'status'       => ACTIVE_STATUS
-                ]);
+                /** Normalize category name **/
+                $normalizedCategoryName = strtolower(
+                    preg_replace('/\s+/', ' ', trim($categoryName))
+                );
+
+                /** Parent Category **/
+                $category = $this->commonModel->getSingleDataNormalized(
+                    'category',
+                    'title',
+                    $normalizedCategoryName
+                );
+
 
                 if (!$category) {
                     $errors[] = "Row {$rowNumber}: Category '{$categoryName}' not found.";
@@ -131,20 +139,30 @@ class ProductService
 
                 $categoryId = $category['uid'];
 
-                $subcategoryId = '';
+                /** Sub Category (same table, child of parent) **/
+                $subcategoryId = null;
 
                 if ($subcategoryName !== '') {
-                    $subcat = $this->commonModel->getSingleData(SUB_CATEGORY_TABLE, [
-                        'category_id'  => $categoryId,
-                        'LOWER(title)' => strtolower($subcategoryName),
-                        'status'       => ACTIVE_STATUS
-                    ]);
+                    $normalizedSubName = strtolower(
+                        preg_replace('/\s+/', ' ', trim($subcategoryName))
+                    );
+
+                    $subcat = $this->commonModel->getSingleDataLike(
+                        'category',
+                        [
+                            'status' => 'active',
+                            'path'   => $categoryId
+                        ],
+                        'title',
+                        $normalizedSubName
+                    );
 
                     if ($subcat) {
                         $subcategoryId = $subcat['uid'];
                     }
                 }
 
+                /** Insert Product **/
                 $productUid = $this->generateUid();
 
                 $this->productModel->insert([
@@ -155,11 +173,12 @@ class ProductService
                     'name'           => $name,
                     'description'    => $description,
                     'image'          => $this->defaultImagePath,
-                    'status'         => 'active',
-                    'is_admin_allow' => 1,
+                    'status'         => 'inactive',
+                    'is_admin_allow' => 0,
                     'created_at'     => date('Y-m-d H:i:s'),
                 ]);
 
+                /** Insert Default Image **/
                 $this->productImageModel->insert([
                     'uid'        => $this->generateUid(),
                     'product_id' => $productUid,
@@ -170,6 +189,7 @@ class ProductService
                     'created_at' => date('Y-m-d H:i:s'),
                 ]);
 
+                /** Insert SEO **/
                 $this->productSeoModel->insert([
                     'uid'              => $this->generateUid(),
                     'product_uid'      => $productUid,
@@ -180,9 +200,9 @@ class ProductService
                     'meta_keywords'    => $metaKeywords !== ''
                         ? strtolower($metaKeywords)
                         : strtolower($name . ', ' . $categoryName),
-                    'meta_tags'             => $metaTags !== ''
-                        ? strtolower($metaTags )
-                        : strtolower($categoryName . ($subcategoryName ? ', ' . $subcategoryName : '')),
+                    'meta_tags'        => $metaTags !== ''
+                        ? strtolower($metaTags)
+                        : strtolower($categoryName),
                     'status'           => 'active',
                     'created_at'       => date('Y-m-d H:i:s'),
                     'updated_at'       => date('Y-m-d H:i:s'),
@@ -203,7 +223,6 @@ class ProductService
                 'success' => true,
                 'message' => 'Products uploaded successfully.'
             ];
-
         } catch (\Throwable $e) {
             return [
                 'success' => false,
@@ -211,6 +230,7 @@ class ProductService
             ];
         }
     }
+
     protected function generateUid()
     {
         return strtoupper(bin2hex(random_bytes(8)));
