@@ -385,7 +385,7 @@ class WebController extends Common
 
         try {
             // Load your product service
-            $productService = new \App\Services\Admin\ProductService();
+            $productService = new \App\Services\admin\ProductService();
             $result = $productService->bulkUploadFromExcel($file, $payload->user_id);
 
             if (!empty($result['success'])) {
