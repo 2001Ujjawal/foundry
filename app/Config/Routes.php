@@ -119,6 +119,7 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin'], function ($rou
     $routes->get('customers', 'WebController::customers');
     $routes->get('category', 'WebController::category');
     $routes->get('products', 'WebController::products');
+    $routes->get('add-product', 'WebController::add_product');
     $routes->get('view-product', 'WebController::view_product');
     $routes->get('view-vendor-details', 'WebController::view_vendor_details');
     $routes->get('change-password', 'WebController::changePassword');
@@ -132,12 +133,17 @@ $routes->group('admin', ['namespace' => 'App\Controllers\Admin'], function ($rou
     $routes->post('send-email', 'WebController::send_email');
     $routes->post('categories/get-subcategories', 'WebController::getSubCategories');
 
+    // Bulk Upload 
+    $routes->get('bulk-upload', 'WebController::bulkUploadForm');
+    $routes->post('bulk-upload-submit', 'WebController::bulkUploadSubmit');
+
 });
 
 $routes->group('admin/api', ['namespace' => 'App\Controllers\Admin'], function ($routes) {
     $routes->post('login', 'ApiController::login');
     $routes->post('change-password', 'ApiController::changePassword');
     $routes->get('get-excel-sheet-data', 'ApiController::getExcelData');
+    $routes->get('get-subcategories', 'ApiController::getSubCategories');
 
     /** Customer */
     $routes->group("customer", function ($routes) {

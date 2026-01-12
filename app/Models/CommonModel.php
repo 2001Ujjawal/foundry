@@ -70,4 +70,49 @@ class CommonModel extends Model
             ->getResultArray();
     }
 
+    public function getSingleDataNormalized(string $table, string $column, string $value)
+    {
+        if (!$this->db) {
+            $this->db = \Config\Database::connect();
+        }
+
+        $builder = $this->db->table($table);
+
+        $escapedValue = $this->db->escape(strtolower(trim($value)));
+
+        $builder->where("
+        LOWER(
+            TRIM(
+                REPLACE(
+                    REPLACE(
+                        REPLACE($column, '\n', ' '),
+                    '\r', ' '),
+                '\t', ' ')
+            )
+        ) = {$escapedValue}
+    ", null, false);
+
+        return $builder->get()->getRowArray();
+    }
+    public function getSingleDataLike(
+        string $table,
+        array $conditions,
+        string $column,
+        string $value
+    ) {
+        if (!$this->db) {
+            $this->db = \Config\Database::connect();
+        }
+
+        $builder = $this->db->table($table);
+
+        foreach ($conditions as $key => $val) {
+            $builder->where($key, $val);
+        }
+
+        return $builder
+            ->like("LOWER($column)", strtolower(trim($value)))
+            ->get()
+            ->getRowArray();
+    }
 }

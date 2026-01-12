@@ -1272,7 +1272,7 @@ class ApiService
                 'meta_title'       => $data['metaTitle'] ?? null,
                 'meta_description' => $data['metaDescription'] ?? null,
                 'meta_keywords'    => $data['metaKeywords'] ?? null,
-                'tags'             => $data['metaTags'] ?? null,
+                'meta_tags'             => $data['metaTags'] ?? null,
                 'updated_at'       => date('Y-m-d H:i:s'),
                 'updated_by'       => $data['user_id'] ?? null,
                 

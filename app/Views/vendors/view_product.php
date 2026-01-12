@@ -113,7 +113,7 @@
                         class="form-control"
                         name="metaTags"
                         id="metaTags"
-                        value="<?= esc($resp['tags'] ?? '') ?>"
+                        value="<?= esc($resp['meta_tags'] ?? '') ?>"
                         readonly>
                 </div>
                 <div class="col-md-12">

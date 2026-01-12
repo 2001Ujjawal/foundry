@@ -241,6 +241,21 @@ class WebController extends Common
             view('admin/view_product.php', $resp) .
             view('admin/templates/footer.php');
     }
+    public function add_product()
+    {
+        $payload = $this->validateJwtWebToken();
+        if (!$payload) {
+            return redirect()->to(base_url('admin/login'));
+        }
+        $resp['category'] = $this->commonModel->getCategory();
+        $resp['resp'] = $this->webService->getProductsDetails($payload->user_id);
+
+
+        return
+            view('admin/templates/header.php') .
+            view('admin/add_product.php', $resp) .
+            view('admin/templates/footer.php');
+    }
 
     public function getSubCategories()
     {
@@ -332,6 +347,65 @@ class WebController extends Common
 
 
             echo "⚠️ Email sending error: " . $e->getMessage();
+        }
+    }
+
+
+    /** Bulk Upload **/
+    public function bulkUploadForm()
+    {
+        $payload = $this->validateJwtWebTokenVendor();
+        if (!$payload) {
+            return redirect()->to(base_url('vendor/login'));
+        }
+        $resp['vendors'] = $this->commonModel->getVendors();
+        return
+            view('admin/templates/header.php') .
+            view('admin/bulk_upload.php', $resp) .
+            view('admin/templates/footer.php');
+    }
+
+
+
+    public function bulkUploadSubmit()
+    {
+        $payload = $this->validateJwtWebTokenVendor();
+        if (!$payload) {
+            return redirect()->to(base_url('vendor/login'));
+        }
+
+        $file = $this->request->getFile('excel_file');
+
+        if (!$file || !$file->isValid()) {
+            return $this->response->setStatusCode(400)->setJSON([
+                'success' => false,
+                'message' => 'Please upload a valid Excel file.'
+            ]);
+        }
+
+        try {
+            $productService = new \App\Services\admin\ProductService();
+            $result = $productService->bulkUploadFromExcel($file, $payload->user_id);
+
+            if (!empty($result['success'])) {
+                return $this->response->setJSON([
+                    'success' => true,
+                    'message' => $result['message'] ?? 'Products uploaded successfully.'
+                ]);
+            }
+
+            return $this->response->setStatusCode(422)->setJSON([
+                'success' => false,
+                'message' => $result['message'] ?? 'Upload failed.',
+                'errors'  => $result['errors'] ?? []
+            ]);
+        } catch (\Throwable $e) {
+            log_message('error', 'Bulk upload error: ' . $e->getMessage());
+
+            return $this->response->setStatusCode(500)->setJSON([
+                'success' => false,
+                'message' => 'Server error occurred: ' . $e->getMessage()
+            ]);
         }
     }
 }

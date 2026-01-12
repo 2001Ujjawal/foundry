@@ -113,7 +113,7 @@ class ApiService
                 'meta_title'       => $data['meta_title'] ?? null,
                 'meta_description' => $data['meta_description'] ?? null,
                 'meta_keywords'    => $data['meta_keywords'] ?? null,
-                'tags'             => $data['tags'] ?? null,
+                'meta_tags'             => $data['tags'] ?? null,
                 'status'           => 'active',
                 'created_at'       => $timestamp,
                 'updated_at'       => $timestamp
@@ -657,7 +657,7 @@ class ApiService
                 'meta_title'       => $data['metaTitle'] ?? null,
                 'meta_description' => $data['metaDescription'] ?? null,
                 'meta_keywords'    => $data['metaKeywords'] ?? null,
-                'tags'             => $data['metaTags'] ?? null,
+                'meta_tags'             => $data['metaTags'] ?? null,
             ];
 
             $seoExists = $this->db

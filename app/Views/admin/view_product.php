@@ -121,7 +121,7 @@
                         class="form-control"
                         name="metaTags"
                         id="metaTags_id"
-                        value="<?= esc($resp['tags'] ?? '') ?>"
+                        value="<?= esc($resp['meta_tags'] ?? '') ?>"
                         readonly>
                 </div>
                 <div class="col-md-12">
@@ -149,7 +149,8 @@
                                 type="checkbox"
                                 id="approvalToggle"
                                 <?= ($resp['is_admin_allow'] ?? 0) == 1 ? 'checked' : '' ?>
-                                onchange="handleApprovalToggle(this,'<?= $resp['uid'] ?>')">
+                               onchange="handleApprovalToggle(this, '<?= $resp['uid'] ?? '' ?>')">
+
                         </div>
                     </div>
                     <!-- Update Button -->
