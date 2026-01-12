@@ -478,4 +478,15 @@ class WebModel extends Model
         $builder->where('status', ACTIVE_STATUS);
         return $builder->countAllResults();
     }
+
+    public function getProductSeoByProductUid($productUid)
+    {
+        return $this->db->table('product_seo')
+            ->select('meta_title, meta_description, meta_keywords, meta_tags')
+            ->where('product_uid', $productUid)
+            ->where('status', 'active')
+            ->get()
+            ->getRowArray();
+    }
+
 }

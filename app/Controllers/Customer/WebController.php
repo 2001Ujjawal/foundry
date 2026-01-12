@@ -213,10 +213,32 @@ class WebController extends Common
         $vendorUid = $resp['product'][0]['vendor_id'] ?? null;
 
         // $isMatch = in_array($categoryUID, array_column($resp['product'], 'uid')) ? 1 : 0;
+        // $metaTags = [
+        //     'meta_title' => 'Product Details',
+        //     'meta_description' => 'Equip your project with the best. Foundry offers a full range of heavy-duty machines and commercial equipment built for performance and durability. Find the power you need, delivered straight to your site'
+        // ];
+
+        $productSeo = $this->db->table('product_seo')
+            ->where('product_uid', $productId)
+            ->where('status', 'active')
+            ->get()
+            ->getRowArray();
+
         $metaTags = [
-            'meta_title' => 'Product Details',
-            'meta_description' => 'Equip your project with the best. Foundry offers a full range of heavy-duty machines and commercial equipment built for performance and durability. Find the power you need, delivered straight to your site'
+            'meta_title' => !empty($productSeo['meta_title'])
+                ? $productSeo['meta_title']
+                : ($resp['resp']['name'] ?? 'Product Details'),
+
+            'meta_description' => !empty($productSeo['meta_description'])
+                ? $productSeo['meta_description']
+                : substr(strip_tags($resp['resp']['description'] ?? ''), 0, 160),
+
+            'meta_keywords' => $productSeo['meta_keywords'] ?? '',
+            'meta_tags'     => $productSeo['meta_tags'] ?? '',
         ];
+
+
+
         if (!empty($vendorUid)) {
             $resp['vendor'] = $this->commonModel->getAllData(
                 VENDOR_TABLE,

@@ -305,7 +305,7 @@
                                     <div class="swiper-slide">
                                         <a href="<?= base_url('product/' . $slug) ?>"
                                             class="h-100 rounded-10 border bg-white overflow-hidden d-block">
-                                            <img src="<?= base_url($row['main_image']) ?>" alt="" class="w-100 object-fit-cover"
+                                            <img src="<?= base_url($row['main_image'] ?? '') ?>" alt="" class="w-100 object-fit-cover">
                                                 style="height:250px;">
                                             <div class="p-lg-3 p-2">
                                                 <h5 class="mb-1" style="height:50px;">

@@ -321,7 +321,6 @@ class ApiService
                 'city'        => $data['city'] ?? null,
                 'states'      => $data['states'] ?? null,
                 'gst'         => $data['gst'] ?? null,
-                'created_by'  => "",
                 'status'      => 'inactive'
             ];
 

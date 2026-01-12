@@ -183,13 +183,6 @@ class ProductService
                     'created_by' => $vendorId,
                     'created_at' => date('Y-m-d H:i:s'),
                 ]);
-
-                /** Insert SEO **/
-                log_message('error', json_encode([
-    'meta_tags' => $metaTags
-]));
-
- 
                 $this->productSeoModel->insert([
                     'uid'              => $this->generateUid(),
                     'product_uid'      => $productUid,
