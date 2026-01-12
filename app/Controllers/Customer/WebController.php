@@ -127,6 +127,10 @@ class WebController extends Common
             $resp['countries'],
             $resp['vendor_type']
         );
+        // echo '<pre>';
+        //     var_dump($resp['product']);
+        //     die();
+
 
         $resp['review'] = $this->webService->getCustomerReview();
         $resp['vendorCountryList'] = $this->webmodel->getVendorCountryList();
