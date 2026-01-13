@@ -31,6 +31,7 @@
                 </div>
             </div>
         </div>
+     
         <div class="px-3 pb-3">
             <table id="tableProduct" class=" display border">
                 <thead>
