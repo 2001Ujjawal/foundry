@@ -359,6 +359,7 @@ class WebController extends Common
             return redirect()->to(base_url('vendor/login'));
         }
         $resp['vendors'] = $this->commonModel->getVendors();
+        // dd($resp);
         return
             view('admin/templates/header.php') .
             view('admin/bulk_upload.php', $resp) .
