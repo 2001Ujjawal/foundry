@@ -235,7 +235,7 @@ class WebController extends Common
         $resp['images'] = $this->vendorWebModel->getProductImage($productId);
         $resp['category'] = $this->commonModel->getCategory();
 
-        // $this->dd($resp);
+        // $this->dd($resp['category']);
         return
             view('admin/templates/header.php') .
             view('admin/view_product.php', $resp) .
@@ -256,7 +256,7 @@ class WebController extends Common
             view('admin/add_product.php', $resp) .
             view('admin/templates/footer.php');
     }
-
+    
     public function getSubCategories()
     {
         $parentUid = $this->request->getPost('parent_uid');
