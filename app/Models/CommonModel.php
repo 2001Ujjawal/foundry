@@ -54,8 +54,8 @@ class CommonModel extends Model
         $db = \Config\Database::connect();
         $builder = $db->table(CATEGORY_TABLE);
         $builder->groupStart()
-            ->where('path', '')     // Empty string
-            ->orWhere('path IS NULL', null, false) // NULL value
+            ->where('path', '')
+            ->orWhere('path IS NULL', null, false)
             ->groupEnd();
         $builder->where(['status' => ACTIVE_STATUS]);
         return $builder->get()->getResultArray();
